@@ -4,7 +4,14 @@ Cross-agent rulebook. Read at task start (always in context for OpenCode, Claude
 
 ## Stack
 
-SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright · pnpm · stylebase + Bits UI · Storybook · Sentry + Axiom · OpenCode (primary) / Claude Code (fallback).
+SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright · pnpm · stylebase + Bits UI · Storybook.
+
+## Git workflow
+
+- Always branch from `main`. Pull latest `main` before creating the new branch.
+- All tasks are reviewed in a pull request.
+- The agent never pushes directly to `main` and never merges to `main`. The human reviews the PR and merges.
+- The human is the commit author for all commits. Agent-made commits add a `Co-authored-by: opencode <noreply@opencode.ai>` trailer to credit assistance.
 
 ## Layout
 
@@ -29,7 +36,7 @@ Agents own (TypeScript only):
 
 ## Task lifecycle
 
-End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. Always create a task note in `agent-notes/`, regardless of task size. Size of note scales with task.
+End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. The agent owns the task note — create it at task end without being asked, regardless of task size. Size of note scales with task.
 
 ## Guardrails
 
