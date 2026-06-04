@@ -28,3 +28,13 @@ worker-configuration.d.ts
 
 *storybook.log
 storybook-static
+
+# Deciduous database (local)
+.deciduous/
+
+# Deciduous exported web viewer (regenerated per machine via `deciduous sync`)
+docs/
+
+# Claude-Code-specific artifacts (not part of this OpenCode-primary project)
+CLAUDE.md
+.claude/
