@@ -38,6 +38,24 @@ Agents own (TypeScript only):
 
 End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. The agent owns the task note — create it at task end without being asked, regardless of task size. Size of note scales with task.
 
+## Releases
+
+Suede uses [chronver](https://chronver.org). Version lives in `package.json#version` (chronver format `YYYY.M.D[.N][-feature|-break]`; `pnpm version` normalizes leading zeros, so e.g. `2026.6.4`, not `2026.06.04`).
+
+### Cutting a release
+
+1. Final commit on the release branch, before merge, is `chore(release): cut <version>`. Bump with `pnpm version <version> --no-git-tag-version` (or hand-edit), commit only the `version` field.
+2. Tag the merge commit on `main` with the bare chronver string, annotated. Push with `git push origin main --follow-tags`.
+3. `git log <prev>..<new>` is the changelog. No `CHANGELOG.md`.
+
+### Downstream lineage
+
+When a project duplicates suede, it adds `"suede": { "from": "<tag>" }` to its own `package.json` with the chronver tag of the suede commit it branched from. Suede's own `package.json` carries no such field.
+
+### Version policy
+
+chronver for apps and templates (temporal releases, no API contract to break); semver for packages consumed by dependents (persistent breaking-change signals).
+
 ## Guardrails
 
 Always:
