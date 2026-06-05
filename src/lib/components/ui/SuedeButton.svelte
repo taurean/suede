@@ -14,9 +14,8 @@
 	{@render children?.()}
 </Button.Root>
 
-<!-- svelte-ignore css_unused_selector -->
 <style>
-	.suede-button {
+	:global(.suede-button) {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -36,16 +35,16 @@
 			transform 0.05s ease;
 	}
 
-	.suede-button:hover:not(:disabled):not([aria-disabled='true']) {
+	:global(.suede-button:hover:not(:disabled):not([aria-disabled='true'])) {
 		background-color: var(--hue-blue-600);
 	}
 
-	.suede-button:active:not(:disabled):not([aria-disabled='true']) {
+	:global(.suede-button:active:not(:disabled):not([aria-disabled='true'])) {
 		transform: scale(0.98);
 	}
 
-	.suede-button:disabled,
-	.suede-button[aria-disabled='true'] {
+	:global(.suede-button:disabled),
+	:global(.suede-button[aria-disabled='true']) {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
