@@ -17,19 +17,19 @@
 	});
 </script>
 
-<Story name="Primary">
+<Story name="Primary" asChild>
 	<SuedeButton onclick={fn()}>Click me</SuedeButton>
 </Story>
 
-<Story name="Disabled">
+<Story name="Disabled" asChild>
 	<SuedeButton disabled onclick={fn()}>Disabled</SuedeButton>
 </Story>
 
-<Story name="As link">
+<Story name="As link" asChild>
 	<SuedeButton href="https://bits-ui.com" onclick={fn()}>Visit bits-ui</SuedeButton>
 </Story>
 
-<Story name="With class override">
+<Story name="With class override" asChild>
 	<SuedeButton class="u:fs-3" style="background-color: var(--hue-emerald-500);" onclick={fn()}>
 		Custom styled
 	</SuedeButton>
