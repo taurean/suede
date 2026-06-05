@@ -38,3 +38,9 @@ docs/
 # Claude-Code-specific artifacts (not part of this OpenCode-primary project)
 CLAUDE.md
 .claude/
+
+# .opencode workspace (pnpm-managed; its own internal .gitignore handles
+# workspace-level rules but git only reads the root .gitignore)
+.opencode/node_modules
+.opencode/package.json
+.opencode/package-lock.json
