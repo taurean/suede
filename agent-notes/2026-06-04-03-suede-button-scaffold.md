@@ -26,21 +26,22 @@ Scaffold a Suede-wrapped bits-ui Button (`SuedeButton`) that demonstrates the bo
 - Class-merge verification (the "With class override" story): the consumer's `class="u:fs-3"` was correctly appended to the default — final class string was `suede-button u:fs-1 u:fs-3` (consumer wins the cascade order for the same-specificity font-size utility).
 - Committed `c7c153b` — `feat(ui): scaffold SuedeButton (bits-ui + stylebase wrapper)`. Unstaged the pre-existing staged files (`.github/workflows/cleanup-decision-graphs.yml`, `.opencode/commands/serve-ui.md`) so the commit diff is exactly the two new files; the user can commit those separately.
 - Committed `6299973` — `fix(storybook): use asChild to prevent button-in-button nesting`.
-- Created deciduous outcome node 70 with `--commit HEAD`; linked to action nodes 68 (wrapper) and 69 (story).
+- **Follow-up unblock: removed `src/stories/Button.stories.svelte` and `src/stories/Accordion.stories.svelte`** (committed `bbdd827`). The user's working tree already had `src/lib/components/ui/{Button,Accordion,index}.{svelte,spec.ts}` deleted locally, which made the two stories' `$lib/components/ui/{Button,Accordion}.svelte` imports unresolvable. Vite's import-analysis plugin then failed at build time on those files, blocking Storybook entirely. The same `asChild` issue from the previous fix would have hit these stories the moment the broken imports were repaired (their `component: Button` + children-in-Story pattern had the same button-in-button structure). `src/stories/Page.stories.svelte` and `src/stories/Header.stories.svelte` were kept — their imports are local (`./Page.svelte`, `./Header.svelte`) and still resolve. **Verified via Playwright across all 6 surviving stories (4 SuedeButton + 2 examples): 0 console errors, 0 vite import-analysis errors, 0 nested buttons.** `pnpm check` is now **fully clean** (0 errors, 0 warnings project-wide — first time in the history of this branch).
+- Created deciduous outcome node 70 with `--commit HEAD`; linked to action nodes 68 (wrapper), 69 (story), 71 (asChild fix). Action node 72 + outcome 73 added for the story-file cleanup, all linked to goal 67.
 
 ## Files touched
 - `src/lib/components/ui/SuedeButton.svelte` — new (52 lines)
 - `src/stories/SuedeButton.stories.svelte` — new (36 lines)
 
 ## Verification
-- `pnpm check` — 0 errors / 0 warnings on the two new files. 2 pre-existing errors remain in `src/stories/{Button,Accordion}.stories.svelte`.
+- `pnpm check` — **0 errors / 0 warnings project-wide** (after the story-file cleanup).
 - `pnpm prettier --check` on new files — pass
 - `pnpm eslint` on new files — pass
-- `pnpm storybook --port 6006` + Playwright DOM inspection — all four stories render a single root-level button (or anchor, for "As link"); no nested-button-in-button or anchor-in-button anywhere in the story canvas
-- `git log -2` — `c7c153b feat(ui): scaffold SuedeButton (bits-ui + stylebase wrapper)` + `6299973 fix(storybook): use asChild to prevent button-in-button nesting` on `feat/install-bits-ui-stylebase`
+- `pnpm storybook --port 6006` + Playwright DOM inspection — all 4 SuedeButton stories render a single root-level button (or anchor, for "As link"); no nested-button-in-button or anchor-in-button anywhere in the story canvas. Both remaining example stories (`example-header`, `example-page`) compile cleanly. Zero console errors across all 6 URLs.
+- `git log -3` — `c7c153b feat(ui): scaffold SuedeButton (bits-ui + stylebase wrapper)` + `6299973 fix(storybook): use asChild to prevent button-in-button nesting` + `bbdd827 fix(storybook): remove broken Button/Accordion story files` on `feat/install-bits-ui-stylebase`
 
 ## Follow-ups / stubs
-- **Pre-existing pnpm check errors**: `src/stories/Button.stories.svelte` and `src/stories/Accordion.stories.svelte` both import non-existent components. The working tree has those components deleted locally too (git shows them as `deleted: not staged`). When the user is ready to remove the example storybook content (their stated intent for "later"), `git rm` the two `.stories.svelte` files plus the deleted `src/lib/components/ui/{Button,Accordion,index}` files in one cleanup commit.
+- **Pre-existing deleted files in working tree (not committed)**: `src/lib/components/ui/{Accordion,Button,index}.{svelte,spec.ts}` and the matching `spec.ts` files are deleted locally but uncommitted. The user can `git rm` them in a separate commit when ready; they were not staged in the current cleanup commit because the user had not asked for that scope. The story-file removal (`bbdd827`) is the only cleanup committed here.
 - **Pre-existing prettier drift** in 30+ files (AGENTS.md, opencode.json, .opencode/*, etc.). Not in scope for this change; consider a separate `chore(format): run prettier` commit.
 - **CSS scope caveat**: the `<!-- svelte-ignore css_unused_selector -->` comment is currently scoped to the whole `<style>` block. If a future user adds a new rule with a class name that IS used statically in the template, the ignore is over-broad. Consider moving to per-rule ignore once more selectors exist.
 - **The `{...rest as Record<string, unknown>}` cast** is a known escape hatch we discussed. If bits-ui ever exports a `WithoutButtonRest` helper, swap the cast for that. The cast preserves runtime behavior — every HTML attribute the consumer passes flows through to `Button.Root` correctly; the union is what blocks TypeScript, not what the runtime does.
