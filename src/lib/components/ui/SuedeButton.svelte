@@ -3,13 +3,13 @@
 
 	type Props = ButtonRootProps;
 
-	let { href, children, class: klass, ...rest }: Props = $props();
+	let { href, children, class: className, ...rest }: Props = $props();
 </script>
 
 <Button.Root
 	{href}
 	{...rest as Record<string, unknown>}
-	class={`suede-button u:fs-1${klass ? ` ${klass}` : ''}`}
+	class={`suede-button u:fs-1${className ? ` ${className}` : ''}`}
 >
 	{@render children?.()}
 </Button.Root>
@@ -32,15 +32,29 @@
 		text-decoration: none;
 		transition:
 			background-color 0.15s ease,
+			color 0.15s ease,
 			transform 0.05s ease;
 	}
 
-	:global(.suede-button:hover:not(:disabled):not([aria-disabled='true'])) {
+	:global(.suede-button:not([href]):hover:not(:disabled):not([aria-disabled='true'])) {
 		background-color: var(--hue-blue-600);
 	}
 
-	:global(.suede-button:active:not(:disabled):not([aria-disabled='true'])) {
+	:global(.suede-button:not([href]):active:not(:disabled):not([aria-disabled='true'])) {
 		transform: scale(0.98);
+	}
+
+	:global(.suede-button[href]) {
+		background-color: transparent;
+		color: var(--hue-blue-500);
+		padding-inline: 0;
+		text-decoration: underline;
+		text-decoration-thickness: from-font;
+		text-underline-offset: 0.2em;
+	}
+
+	:global(.suede-button[href]:hover:not(:disabled):not([aria-disabled='true'])) {
+		color: var(--hue-blue-600);
 	}
 
 	:global(.suede-button:disabled),

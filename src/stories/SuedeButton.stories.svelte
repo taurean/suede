@@ -30,7 +30,7 @@
 </Story>
 
 <Story name="With class override" asChild>
-	<SuedeButton class="u:fs-3" style="background-color: var(--hue-emerald-500);" onclick={fn()}>
+	<SuedeButton class="u:fs-1" style="background-color: var(--hue-emerald-500);" onclick={fn()}>
 		Custom styled
 	</SuedeButton>
 </Story>
