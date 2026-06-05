@@ -50,6 +50,11 @@ After the work was pushed, the user opened the PR and reported a conflict agains
 
 Pushed the merge commit (`8ff5a7b`) to `origin/feat/install-bits-ui-stylebase`. `pnpm check` still 0 errors / 0 warnings project-wide post-merge. Ready for human review-and-merge to main.
 
+### PR-viewer conflict report (false positive)
+The user reported the PR viewer was still flagging a conflict after the merge push, at "line 31 of AGENTS.md". Investigated: locally git reports zero conflict. The actual diff between main and my branch is a pure addition (`40a41,318` — main ends at line 40, my branch adds lines 41-318 with the `## Releases` and `## Decision Graph Workflow` sections). Line 31 of AGENTS.md ("Agents own (TypeScript only):") is byte-identical on both branches (verified with `od -c`); the only thing the PR viewer could possibly be flagging is the hunk boundary in the naive diff view, not an actual merge conflict.
+
+Best guess: Tangled's PR view uses a different merge analysis (naive diff rather than 3-way) and flags any non-trivial AGENTS.md divergence as a conflict indicator. Resolved by `git rebase origin/main` — 23 commits replayed on top of main with no conflicts, producing a linear history with no merge commit. `pnpm check` still 0/0. Force-pushed (`f1645ba`) to update the remote. The PR should now show a clean linear diff rather than the merge-commit structure that may have confused the viewer.
+
 ## Verification
 - `pnpm check` — **0 errors / 0 warnings project-wide**.
 - `pnpm prettier --check` on new files — pass
