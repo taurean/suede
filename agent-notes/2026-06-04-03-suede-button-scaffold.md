@@ -42,6 +42,14 @@ Scaffold a Suede-wrapped bits-ui Button (`SuedeButton`) that demonstrates the bo
 - `src/lib/components/ui/SuedeButton.svelte` — new (52 lines)
 - `src/stories/SuedeButton.stories.svelte` — new (36 lines)
 
+## Merge into main
+After the work was pushed, the user opened the PR and reported a conflict against main. Pulled `origin/main` and merged with `git merge origin/main` — git's `ort` strategy auto-resolved the 3-way merge with no manual intervention. Only one commit (`d5a9380 chore(process): add git workflow rule, drop Sentry/Axiom/agent tools from stack mentions`) had diverged from my branch; it touched three files, all of which I had a clean ancestor for or didn't have at all:
+- `AGENTS.md` — auto-merged (no overlap with my changes; I never touched this file)
+- `.opencode/skills/task-lifecycle/SKILL.md` — auto-merged (my copy was committed in `03c6031`; main's copy added a `## Before starting` section + commit-trailer + branch rules that don't conflict with mine)
+- `agent-notes/2026-06-03-02-process-updates.md` — new on main, just taken as-is
+
+Pushed the merge commit (`8ff5a7b`) to `origin/feat/install-bits-ui-stylebase`. `pnpm check` still 0 errors / 0 warnings project-wide post-merge. Ready for human review-and-merge to main.
+
 ## Verification
 - `pnpm check` — **0 errors / 0 warnings project-wide**.
 - `pnpm prettier --check` on new files — pass
