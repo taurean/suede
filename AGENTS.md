@@ -51,9 +51,43 @@ clearly applies (don't load for the sake of loading):
 Zed's plan/build mode toggle is the human's lever — follow the active mode
 without prompting. See **Verification before completion** for done criteria.
 
-## Task lifecycle
+## Task flow
 
-End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. The agent owns the task note — create it at task end without being asked, regardless of task size. Size of note scales with task.
+Every release branch follows this flow from task start to task done. The
+procedural reference lives at `.opencode/skills/task-lifecycle/SKILL.md`;
+this section is the in-context summary that consolidates the rules
+scattered above (Authoring boundaries, Working style, Releases, Decision
+Graph) into one sequence.
+
+### Start
+
+1. `git pull origin main` — sync with `main`.
+2. `git checkout -b <type>/<slug>` — branch from `main`.
+3. For non-trivial work, log a goal node with the verbatim user prompt.
+4. For design or unclear requirements, use Zed plan mode until the human
+   approves a direction. No code edits in plan mode.
+
+### During
+
+1. Before each major edit, log an action node and link it to the goal.
+2. Apply `~/.agents/skills/` process skills when they clearly apply
+   (`tdd`, `diagnose`, `prototype`, `review`, `qa`, `handoff`, `caveman`,
+   `write-a-skill`).
+3. Honour Authoring boundaries — humans own presentation, agents own TS.
+4. Commit on the branch with the `Co-authored-by: opencode` trailer.
+5. Link each commit: `deciduous add action|outcome "..." --commit HEAD`.
+
+### End
+
+1. Verify: `pnpm check`, `pnpm test`, and `pnpm lint` if lintable files
+   changed. Capture command + result in the task note.
+2. Write the task note at `agent-notes/YYYY-MM-DD-NN-<slug>.md` from the
+   template. Append to the chronological record — never delete.
+3. Bump the version: `pnpm version <YYYY.M.D> --no-git-tag-version`.
+4. Commit the version bump: `chore(release): cut <version>`.
+5. Hand back. The human reviews the PR, merges to `main`, and tags the
+   merge commit on `main` with the bare version string. The agent does
+   not push, merge, or tag.
 
 ## Releases
 
