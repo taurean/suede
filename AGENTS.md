@@ -34,6 +34,23 @@ Agents own (TypeScript only):
 - Drizzle schemas and queries
 - Server routes, API integrations, Workers
 
+## Working style
+
+Process skills live in `~/.agents/skills/`. Load the relevant one when it
+clearly applies (don't load for the sake of loading):
+
+- `tdd` — test-first (vertical slices, user-confirmed priorities)
+- `diagnose` — hard bugs (build a feedback loop first)
+- `prototype` — throwaway code that answers a question
+- `review` — two-axis PR review (Standards + Spec)
+- `qa` — conversational bug reports → durable GitHub issues
+- `handoff` — compact the session for the next agent
+- `caveman` — terse mode, ~75% token drop
+- `write-a-skill` — authoring a new skill
+
+Zed's plan/build mode toggle is the human's lever — follow the active mode
+without prompting. See **Verification before completion** for done criteria.
+
 ## Task lifecycle
 
 End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. The agent owns the task note — create it at task end without being asked, regardless of task size. Size of note scales with task.
@@ -41,6 +58,8 @@ End-of-task skill: `.opencode/skills/task-lifecycle/SKILL.md`. The agent owns th
 ## Releases
 
 Suede uses [chronver](https://chronver.org). Version lives in `package.json#version` (chronver format `YYYY.M.D[.N][-feature|-break]`; `pnpm version` normalizes leading zeros, so e.g. `2026.6.4`, not `2026.06.04`).
+
+**Every release branch — a branch ready to be reviewed and merged to `main` — ships as its own chronver version.** The bump is the final commit on the release branch, before merge. No versionless merges.
 
 ### Cutting a release
 
