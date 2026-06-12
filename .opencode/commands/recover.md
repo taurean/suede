@@ -44,6 +44,7 @@ done
 ```
 
 **Review each flagged node (flow: goal -> options -> decision -> actions -> outcomes):**
+
 - Root `goal` nodes are VALID without parents
 - `option` nodes MUST link to their parent goal
 - `decision` nodes MUST link from the option(s) being chosen
@@ -51,6 +52,7 @@ done
 - `outcome` nodes MUST link back to their action
 
 **Fix missing connections:**
+
 ```bash
 deciduous link <parent_id> <child_id> -r "Retroactive connection - <reason>"
 ```
@@ -82,6 +84,7 @@ cat git.log | tail -30
 ### Branch Configuration
 
 Check `.deciduous/config.toml` for branch settings:
+
 ```toml
 [branch]
 main_branches = ["main", "master"]  # Which branches are "main"

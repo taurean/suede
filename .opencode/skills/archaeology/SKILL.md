@@ -42,6 +42,7 @@ deciduous archaeology pivot <from_id> "<what was learned>" "<new approach>" -c 8
 ```
 
 This automatically creates:
+
 - observation node (what was learned)
 - revisit node (reconsidering the old approach)
 - decision node (the new approach)
@@ -49,6 +50,7 @@ This automatically creates:
 - Marks the old approach as superseded
 
 Preview before executing:
+
 ```bash
 deciduous archaeology pivot <from_id> "observation" "new approach" --dry-run
 ```

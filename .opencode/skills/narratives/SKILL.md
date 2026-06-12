@@ -33,6 +33,7 @@ Edit `.deciduous/narratives.md`. For each section:
 5. Check attached documents (`deciduous doc list`)
 
 Signs of a pivot:
+
 - Two approaches coexisting (migration in progress)
 - Comments explaining "we used to do X"
 - Config for old + new system
@@ -56,11 +57,13 @@ Each narrative section in `.deciduous/narratives.md`:
 
 ```markdown
 ## <Name>
+
 > <One sentence: what this piece of the system does>
 
 **Current state:** <How it works today>
 
 **Evolution:**
+
 1. <First approach> - <why>
 2. **PIVOT:** <what changed> - <why it changed>
 3. <Current approach> - <why this is better>

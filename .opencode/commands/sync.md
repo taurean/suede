@@ -20,6 +20,7 @@ deciduous events status
 ```
 
 Look for:
+
 - **Pending events**: Events from teammates not yet in your local DB
 - **Event files**: Each teammate has their own `.jsonl` file
 
@@ -61,6 +62,7 @@ git push
 ```
 
 **When to checkpoint:**
+
 - After major milestones
 - When event files get large (>100KB)
 - Before releases
@@ -86,11 +88,11 @@ that haven't been pulled yet. Pull and rebuild again.
 
 ## Quick Reference
 
-| Command | What it does |
-|---------|--------------|
-| `deciduous events status` | Show pending events, authors, file sizes |
-| `deciduous events rebuild` | Apply all events to local DB |
-| `deciduous events rebuild --dry-run` | Preview without applying |
-| `deciduous events checkpoint` | Snapshot current state |
-| `deciduous events checkpoint --clear-events` | Snapshot + delete old events |
-| `deciduous events emit <id>` | Manually emit event for a node |
+| Command                                      | What it does                             |
+| -------------------------------------------- | ---------------------------------------- |
+| `deciduous events status`                    | Show pending events, authors, file sizes |
+| `deciduous events rebuild`                   | Apply all events to local DB             |
+| `deciduous events rebuild --dry-run`         | Preview without applying                 |
+| `deciduous events checkpoint`                | Snapshot current state                   |
+| `deciduous events checkpoint --clear-events` | Snapshot + delete old events             |
+| `deciduous events emit <id>`                 | Manually emit event for a node           |

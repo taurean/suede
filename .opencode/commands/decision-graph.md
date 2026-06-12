@@ -61,6 +61,7 @@ gh pr list --state merged --search "<keyword>" --limit 30
 PR descriptions and review threads are goldmines for understanding **why** decisions were made. Reviewers often challenge approaches, surface alternatives that were considered, and document trade-offs - exactly the kind of reasoning that belongs in the decision graph.
 
 When you find relevant PR discussion:
+
 - Use it to enrich observation and decision node descriptions
 - Quote reviewer comments as evidence (e.g., "PR #42 review: 'We should use Redis instead because...'")
 - Note when a PR was blocked or revised - these are often pivot points
@@ -133,7 +134,7 @@ For each narrative, list the key concepts/APIs/identifiers and their lifecycle s
 - **Introduced**: First appearance of the concept
 - **Changed**: Modifications to behavior or implementation
 - **Renamed/Deprecated/Removed**: End of life or replacement
-- **Marked stable**: Became public API or removed "unstable_" prefix
+- **Marked stable**: Became public API or removed "unstable\_" prefix
 
 Example addition to narrative:
 

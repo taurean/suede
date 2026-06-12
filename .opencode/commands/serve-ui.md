@@ -13,6 +13,7 @@ Launch the deciduous web server for viewing and navigating the decision graph.
 ## Instructions
 
 1. Start the server:
+
    ```bash
    deciduous serve --port ${PORT:-3000}
    ```
@@ -26,6 +27,7 @@ Launch the deciduous web server for viewing and navigating the decision graph.
 3. The server will run in the foreground. Remind user to stop it when done (Ctrl+C).
 
 ## UI Features
+
 - **Chains View**: See decision chains grouped by goals
 - **Timeline View**: Chronological view of all decisions
 - **Graph View**: Interactive force-directed graph
@@ -39,6 +41,7 @@ Launch the deciduous web server for viewing and navigating the decision graph.
 ## Alternative: Static Hosting
 
 For GitHub Pages or other static hosting:
+
 ```bash
 deciduous sync  # Exports to docs/graph-data.json
 ```

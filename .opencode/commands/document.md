@@ -11,6 +11,7 @@ arguments:
 **Comprehensive documentation that shakes the tree to understand everything.**
 
 This skill generates in-depth documentation for a file or directory, focusing on:
+
 - Human readability while covering ALL surface area
 - Linking to tests as working examples
 - Refining tests to look more real-world if needed
@@ -73,18 +74,21 @@ Store the goal ID for linking later.
 For each file/component, document:
 
 ### 3.1 Purpose
+
 - One sentence: what does this do?
 - Why does it exist? (The "why" is more important than the "what")
 
 ### 3.2 API Surface
+
 For every public function/method/class:
 
-```markdown
+````markdown
 ### `function_name(param1: Type, param2: Type) -> ReturnType`
 
 **Purpose:** What this does and why you'd call it.
 
 **Parameters:**
+
 - `param1` - Description and valid values
 - `param2` - Description and valid values
 
@@ -93,14 +97,17 @@ For every public function/method/class:
 **Throws/Errors:** What can go wrong
 
 **Example:**
+
 ```code
 // From: tests/example_test.rs:42
 let result = function_name("input", 42);
 assert_eq!(result, expected);
 ```
+````
 
 **Related:** Links to related functions
-```
+
+````
 
 ### 3.3 Internal Architecture
 - How does it work internally?
@@ -145,7 +152,7 @@ High-level explanation of what this does and why it exists.
 
 ```code
 // Most common usage pattern - from real tests
-```
+````
 
 ## API Reference
 
@@ -171,7 +178,8 @@ High-level explanation of what this does and why it exists.
 
 - Links to other relevant docs
 - Links to test files
-```
+
+````
 
 ---
 
@@ -190,7 +198,7 @@ If tests are too synthetic (meaningless variable names, unrealistic values):
 ```bash
 deciduous add observation "Refined tests for <component> - made more real-world" -c 85
 deciduous link <action_id> <observation_id> -r "Test improvements during documentation"
-```
+````
 
 ---
 
@@ -236,6 +244,7 @@ If anything is missing, go back and fill it in. **Do not miss any surface area.*
 ## Decision Criteria
 
 **What to document:**
+
 - Public APIs (always)
 - Complex internal logic (when it's not obvious)
 - Design decisions (why, not just what)
@@ -243,11 +252,13 @@ If anything is missing, go back and fill it in. **Do not miss any surface area.*
 - Integration points
 
 **What NOT to document:**
+
 - Trivial getters/setters
 - Auto-generated code
 - Implementation details obvious from code
 
 **How deep to go:**
+
 - Deep enough that someone new could understand and use the code
 - Deep enough that someone could modify it without breaking things
 - Capture the "why" behind design decisions
@@ -268,6 +279,7 @@ If anything is missing, go back and fill it in. **Do not miss any surface area.*
 ```
 
 **What happens:**
+
 1. Goal node created
 2. Code analyzed thoroughly
 3. Tests found and used as examples
@@ -300,6 +312,7 @@ When documentation is created, the `require-documentation.sh` hook will recogniz
 ```
 
 **Always creates:**
+
 - Goal node (before starting)
 - Action node (for the documentation work)
 - Outcome node (on completion)
