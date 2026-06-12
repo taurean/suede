@@ -14,12 +14,45 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 - **The agent may push branches and may apply tags, but never merges to `main` and never pushes directly to `main`.** The human reviews the PR and merges. (Pushing the release branch to the remote and tagging the human's merge commit on `main` are both agent-OK; the act of merging the PR into `main` is human-only.)
 - The human is the commit author for all commits. Agent-made commits add a `Co-authored-by: opencode <noreply@opencode.ai>` trailer to credit assistance.
 
+### Branch and commit naming
+
+The branch name and the commit-message type share a vocabulary. **Branch names** are `<type>/<slug>` where `<slug>` is a short kebab-case description of the work. **Commit messages** are `<type>(<scope>): <subject>` where `<scope>` is optional and `<subject>` is a present-tense imperative ("add X", not "added X"). The `chore(release):` type is reserved for the version-bump commit on a release branch — see the **Releases** section.
+
+**Canonical type list** (conventional-commits 1.0.0, as of this writing):
+
+- `feat` — new user-visible feature
+- `fix` — bug fix for user-visible behaviour
+- `chore` — maintenance, dependency bumps, tooling, version bumps
+- `docs` — documentation only (AGENTS.md, task notes, READMEs, ADRs)
+- `refactor` — code change that neither fixes a bug nor adds a feature
+- `test` — test additions or corrections, no production code change
+- `build` — build system or external dependency change
+- `ci` — CI configuration change
+- `perf` — performance improvement
+- `style` — formatting, whitespace, missing semicolons, etc. (no logic change)
+
+A fork that needs to extend the list (e.g. add `i18n` for a content-heavy project) or trim it (e.g. drop `perf` for a backend MCP that doesn't have a measurable perf budget) records the override in `suede-kickoff` Step 3 Thread B Q9. The full [conventional-commits 1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/) is the upstream reference; AGENTS.md inherits the type list from it and re-states it here so the agent doesn't have to fetch the spec on first use.
+
 ## Layout
 
 - `AGENTS.md` — this file
-- `agent-notes/` — chronological task notes (one per task, written at end)
-- `agent-notes/plans/` — plan artifacts (write-only at task end, not auto-loaded)
+- `agent-notes/` — chronological task notes, one per task, written at task end. Filename: `YYYY-MM-DD-NN-<slug>.md` where `NN` is a per-day counter (`01`, `02`, ...) zero-padded to 2 digits. The counter is the order tasks _landed_, not the order they were _started_ — if the day ends with 3 notes, the next task the next day starts at `01` again, not `04`. `<slug>` is short kebab-case, lower-case, no trailing dash.
+- `agent-notes/plans/` — gitignored (transient scratchpads; see Task flow for the full rule)
 - `.opencode/skills/` — in-repo skills (cross-cutting process skills live in your global plugin, not here)
+- `.opencode/{agents,commands,plugins,tools}/` — OpenCode integration files. All filenames in `.opencode/` use kebab-case. Skill directories are `kebab-case` and contain a single `SKILL.md`.
+
+### Task note section headings
+
+Every task note uses the six section headings from the template at `agent-notes/0000-00-00-00-task-template.md`, in this order:
+
+1. `## Task` — what was asked, scope, done-when.
+2. `## Decisions` — choices made, with the why.
+3. `## Actions` — steps taken, with brief results or pointers.
+4. `## Files touched` — list of paths with one-line descriptions of what changed.
+5. `## Verification` — `pnpm check` / `pnpm test` / `pnpm lint` results, with command + outcome.
+6. `## Follow-ups / stubs` — things deferred, stubbed, or flagged for later.
+
+The template says "fill at end, not during" and "size scales with task" — trivial tasks get short notes (one or two lines per section), not skipped sections. A task note with fewer than the six sections is incomplete.
 
 ## Constant process pipeline
 

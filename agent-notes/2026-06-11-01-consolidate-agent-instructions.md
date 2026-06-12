@@ -173,3 +173,48 @@ This matches the actual prior-task pattern: the 2026-06-04-03 SuedeButton task e
 ## Follow-ups / stubs (turn 3 additions)
 
 - The 2026-06-03-02 process-updates task note's "Refinement after first commit" decision is now slightly misleading — it says "The agent hands back; merge is a human decision," which is still true but doesn't capture the new "agent may push + may tag" detail. Not worth a separate doc-edit commit; future archaeology / pulse passes can pick it up.
+
+---
+
+# Turn 4: standardize the tags/labels vocabulary
+
+The user asked whether we are now standardizing the tags/labels we use. The honest answer before this turn: tags/labels were _partially_ standardized (chronver for version tags, the triage state machine for issue labels, the deciduous status vocabulary for graph nodes) but the _commit and branch naming_ vocabularies were de facto conventional-commits, not written down. The 2026-06-03-02 task note explicitly flagged this as "a future task."
+
+The user greenlit option (c) for the type list: enumerate the canonical 10 in AGENTS.md, link to conventional-commits 1.0.0 as the upstream reference, and let forks extend or trim the list per `suede-kickoff` Thread B.
+
+## Decisions (turn 4)
+
+- **Branch and commit naming now standardized.** AGENTS.md "Branch and commit naming" subsection is the canonical reference. Branch names are `<type>/<slug>`; commit messages are `<type>(<scope>): <subject>`; both share a single type vocabulary. The canonical 10 types (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`) are the conventional-commits 1.0.0 list, enumerated inline so the agent doesn't have to fetch the spec on first use. `chore(release):` is reserved for the version-bump commit on a release branch.
+
+- **Fork-extensible / fork-trimmable.** A fork that needs an extra type (`i18n` for a content project) or wants to drop one (`perf` for a backend MCP) records the override in `suede-kickoff` Step 3 Thread B Q8 sub-bullet "Branch and commit naming" and the agent updates AGENTS.md to match. The override lives in AGENTS.md, not in a per-fork convention file, because the agent should be able to read AGENTS.md at task start and get the right vocabulary.
+
+- **Task note naming convention formalized.** AGENTS.md "Layout" now defines `YYYY-MM-DD-NN-<slug>.md` with the per-day counter rules. The template at `agent-notes/0000-00-00-00-task-template.md` is referenced as the source for the 6 section headings; AGENTS.md restates the 6 sections and the "all six required, not optional" rule. (The 2026-06-04-03 SuedeButton task note's follow-up flagged that some prior task notes are missing sections — the new rule is the explicit answer.)
+
+- **OpenCode file naming standardized to kebab-case.** AGENTS.md "Layout" now states that all filenames in `.opencode/{agents,commands,plugins,tools}/` use kebab-case, and that skill directories are `kebab-case` and contain a single `SKILL.md`. Aligns with the existing files (`suede-kickoff/`, `tdd-supplementary/`, `task-lifecycle/`, `require-action-node.ts`, `post-commit-reminder.ts`).
+
+- **What I did NOT change.** Deciduous node labels (`-c 0-100`, status `completed` / `rejected` / `pending` / `superseded` / `abandoned`) — already standardized in the global `deciduous` tool, no rule needed in suede. GitHub triage labels (`needs-triage` etc.) — already standardized in the global `triage` skill, referenced in AGENTS.md pipeline section. Storybook `tags: ['autodocs']` — Storybook's own, not our concern. Svelte / TypeScript identifier casing — language conventions, not ours.
+
+## Actions (turn 4)
+
+- Updated `AGENTS.md` Git workflow: new `### Branch and commit naming` subsection with the type vocabulary, branch-name format, commit-message format, and fork-extension rule.
+- Updated `AGENTS.md` Layout: bullet 1 (task notes) now spells out the `YYYY-MM-DD-NN-<slug>.md` filename pattern with the per-day counter rules. New bullet 4 added for `.opencode/{agents,commands,plugins,tools}/` (kebab-case files + skill directories).
+- Updated `AGENTS.md` Layout: new `### Task note section headings` subsection listing the 6 required sections from the template, in order, with the "all six required" rule.
+- Updated `.opencode/skills/suede-kickoff/SKILL.md` Thread B Q8 sub-bullet "Branch and commit naming": rewritten to point at AGENTS.md's new rule, with the extension/trim override path.
+
+## Files touched (turn 4)
+
+- `AGENTS.md` — Git workflow (new Branch and commit naming subsection), Layout (task-note filename pattern, opencode kebab-case rule, new Task note section headings subsection).
+- `.opencode/skills/suede-kickoff/SKILL.md` — Thread B Q8 sub-bullet rewritten to reference the new AGENTS.md rule.
+
+## Verification (turn 4)
+
+- `pnpm check` — pass. `svelte-check found 0 errors and 0 warnings`.
+- `pnpm test` — pass. 5 files, 10 tests, 0 errors.
+- `pnpm prettier --write` on the 2 touched files; both clean.
+
+## Follow-ups / stubs (turn 4 additions)
+
+- **Pre-existing task notes don't all conform to the new 6-section rule.** The 2026-06-04-03 follow-up noted that the SuedeButton task note's "Merge into main" section is in addition to the 6 standard sections, which is fine (extra sections are OK; missing ones are not). A pulse / archaeology pass could audit prior task notes and flag any that are missing required sections. Out of scope here; documented in the new rule for _future_ notes.
+- **AGENTS.md is approaching 500 lines** (was ~390 before this PR, now ~498). Not yet at the threshold where it should be split, but a future consolidation pass could move the Decision Graph Workflow section to its own file (e.g. `DECISION_GRAPH.md`) and link to it from AGENTS.md. Not urgent.
+- **The conventional-commits type list will eventually need updating.** When conventional-commits 1.1.0 ships (or whenever a fork-overridable extension becomes common), a future pass will need to revisit the list. The current date stamp ("as of this writing") and the upstream link make the renewal point obvious.
+- **The `narratives` / `pulse` / `archaeology` skill directories are all kebab-case and contain a single `SKILL.md`** — they conform to the new rule, no action needed.
