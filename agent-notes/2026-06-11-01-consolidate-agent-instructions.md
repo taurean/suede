@@ -137,3 +137,39 @@ The user came back with six follow-up points after the turn-1 commit (5af6fe2). 
 - **`deciduous sync` boundary not resolved.** The archaeology note (2026-06-04-02) ran it; the kill-superpowers note (2026-06-05-05) explicitly didn't. AGENTS.md Releases doesn't say who runs it. Out of scope here.
 - **`tdd-supplementary` skill has no tests-of-its-own.** It's a process skill, not a software feature, so the TDD skill doesn't apply. But a RED→GREEN check that the skill _exists_ and _references the right files_ would be a one-shot pre-commit hook worth adding. Out of scope.
 - **Storybook rip = rewriting AGENTS.md + `tdd-supplementary`.** The mechanics are stated in the kickoff skill; the actual rewrite has not been exercised. Worth a future `chore(opencode): rip Storybook on a test fork` task to validate the override path is complete.
+
+---
+
+# Turn 3: agent may push and may tag (corrected rule)
+
+The user pointed out the turn-1 / turn-2 hand-back message overstated the agent's role. The correct rule:
+
+- **The agent may push branches and may apply tags.**
+- **The agent may not push directly to `main` and may not merge to `main`.**
+
+The human reviews the PR, merges to `main`, and the merge commit on `main` is the thing that gets the annotated tag. The agent is fine doing the push of the release branch (`git push origin <branch>`) and the tag (`git tag -a 2026.6.12 -m "Release 2026.6.12" && git push origin <tag>`); the agent just doesn't drive the PR-merge button.
+
+This matches the actual prior-task pattern: the 2026-06-04-03 SuedeButton task explicitly involved the agent pushing the branch and the human opening the PR; the 2026-06-05-06 chronver task said the human tags the merge commit but didn't preclude the agent from doing so.
+
+## Decisions (turn 3)
+
+- **Agent can push, agent can tag.** Updated AGENTS.md Git workflow bullet 4 and the Task flow End step 5 to say so explicitly. Releases section intro rewritten to remove the "human tags and pushes" wording — the tag-and-push step is agent-OK, only the merge-to-`main` is human-only.
+- **No version bump for this turn.** This is a one-line policy correction, not a release-worthy change. Bundling it into the existing `2026.6.12` version (i.e. amending the version-bump commit) would be cleaner, but the version-bump commit is already on the branch and amending it would force-push. Cleaner to land as a third substantive commit on the same release branch; the human tags whichever merge commit on `main` they want. If you'd rather the rule correction ride with `2026.6.12`, say so and I'll rebase / re-bump.
+
+## Actions (turn 3)
+
+- Updated `AGENTS.md` Git workflow bullet 4: "The agent may push branches and may apply tags, but never merges to `main` and never pushes directly to `main`."
+- Updated `AGENTS.md` Task flow End step 5: "Hand back. The human reviews the PR, merges to `main`, and tags the merge commit on `main` with the bare version string. The agent may push the release branch and apply the tag (see Git workflow rule), but the merge to `main` is human-only."
+- Updated `AGENTS.md` Releases intro: removed "the human tags" wording, replaced with neutral "the merge commit on `main` is tagged ... and pushed with `--follow-tags`."
+
+## Files touched (turn 3)
+
+- `AGENTS.md` — Git workflow bullet 4, Task flow End step 5, Releases intro.
+
+## Verification (turn 3)
+
+- (none — pure doc edit, no code, no test surface)
+
+## Follow-ups / stubs (turn 3 additions)
+
+- The 2026-06-03-02 process-updates task note's "Refinement after first commit" decision is now slightly misleading — it says "The agent hands back; merge is a human decision," which is still true but doesn't capture the new "agent may push + may tag" detail. Not worth a separate doc-edit commit; future archaeology / pulse passes can pick it up.

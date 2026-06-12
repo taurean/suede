@@ -11,7 +11,7 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 - Always branch from `main`. Pull latest `main` before creating the new branch.
 - **Never branch off an in-flight branch.** The only base for a new branch is `main`. While a PR is open (not yet merged), new work either becomes a follow-up commit on the _same_ branch (new goal node, same PR) or waits. A branch-of-branch creates a PR whose base vanishes the moment the first PR merges.
 - All tasks are reviewed in a pull request.
-- The agent never pushes directly to `main` and never merges to `main`. The human reviews the PR and merges.
+- **The agent may push branches and may apply tags, but never merges to `main` and never pushes directly to `main`.** The human reviews the PR and merges. (Pushing the release branch to the remote and tagging the human's merge commit on `main` are both agent-OK; the act of merging the PR into `main` is human-only.)
 - The human is the commit author for all commits. Agent-made commits add a `Co-authored-by: opencode <noreply@opencode.ai>` trailer to credit assistance.
 
 ## Layout
@@ -144,14 +144,15 @@ Graph) into one sequence.
 3. Bump the version: `pnpm version <YYYY.M.D> --no-git-tag-version`.
 4. Commit the version bump: `chore(release): cut <version>`.
 5. Hand back. The human reviews the PR, merges to `main`, and tags the
-   merge commit on `main` with the bare version string. The agent does
-   not push, merge, or tag.
+   merge commit on `main` with the bare version string. The agent may
+   push the release branch and apply the tag (see Git workflow rule),
+   but the merge to `main` is human-only.
 
 ## Releases
 
 Suede uses [chronver](https://chronver.org) by default. Version lives in `package.json#version` (chronver format `YYYY.M.D[.N][-feature|-break]`; `pnpm version` normalizes leading zeros, so e.g. `2026.6.4`, not `2026.06.04`).
 
-**The _mechanics_ are constant across forks; the _scheme_ is a fork-time decision.** The mechanics: every release branch ships as its own version bump; the bump is the final commit on the branch, before merge; the human tags the merge commit on `main` and pushes with `--follow-tags`; the changelog is `git log <prev>..<new>` (no CHANGELOG.md). The scheme is one of the questions in `suede-kickoff` Step 3 Thread B — chronver is the suede default for apps and templates, semver is the override for libraries consumed by dependents. A fork that picks semver rewrites this section during its kickoff follow-up.
+**The _mechanics_ are constant across forks; the _scheme_ is a fork-time decision.** The mechanics: every release branch ships as its own version bump; the bump is the final commit on the branch, before merge; the merge commit on `main` is tagged with the bare version string, annotated, and pushed with `--follow-tags`; the changelog is `git log <prev>..<new>` (no CHANGELOG.md). The scheme is one of the questions in `suede-kickoff` Step 3 Thread B — chronver is the suede default for apps and templates, semver is the override for libraries consumed by dependents. A fork that picks semver rewrites this section during its kickoff follow-up.
 
 **Every release branch — a branch ready to be reviewed and merged to `main` — ships as its own version.** The bump is the final commit on the release branch, before merge. No versionless merges.
 
