@@ -48,14 +48,14 @@ goal -> options -> decision -> actions -> outcomes
 
 ## Connection Rules
 
-| When you create... | IMMEDIATELY link to... |
-|-------------------|------------------------|
-| `option` | Its parent goal |
-| `decision` | The option(s) it chose between |
-| `action` | The decision that spawned it |
-| `outcome` | The action that produced it |
-| `observation` | Related goal/action |
-| `revisit` | The decision being reconsidered |
+| When you create... | IMMEDIATELY link to...          |
+| ------------------ | ------------------------------- |
+| `option`           | Its parent goal                 |
+| `decision`         | The option(s) it chose between  |
+| `action`           | The decision that spawned it    |
+| `outcome`          | The action that produced it     |
+| `observation`      | Related goal/action             |
+| `revisit`          | The decision being reconsidered |
 
 ## After Git Commits
 

@@ -19,7 +19,7 @@ tagged through the formal flow.
 - **Versioning rule goes in the Releases intro paragraph, not a new
   subsection.** One bold sentence plus a pointer to "Cutting a release" is
   enough. The mechanics already say "final commit is `chore(release): cut
-  <version>`" — the rule just elevates the principle.
+<version>`" — the rule just elevates the principle.
 
 ## Actions
 

@@ -57,6 +57,6 @@ toggle. Done-when: plugin reference gone from `~/.config/opencode/opencode.jsonc
   effect — config is loaded once at startup.
 - Branch `chore/kill-superpowers-plugin` is ready for human review/commit.
   Suggested commit: `chore(config): remove superpowers plugin + add working style
-  to AGENTS.md` with `Co-authored-by: opencode <noreply@opencode.ai>` trailer.
+to AGENTS.md` with `Co-authored-by: opencode <noreply@opencode.ai>` trailer.
 - Preexisting prettier issues across the repo are a separate cleanup task;
   out of scope here.

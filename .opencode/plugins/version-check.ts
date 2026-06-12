@@ -15,30 +15,30 @@
 // single line to `.deciduous/plugin.log` so the no-op is observable
 // to anyone reading the log.
 
-import type { Plugin } from "@opencode-ai/plugin"
+import type { Plugin } from '@opencode-ai/plugin';
 
 export const VersionCheck: Plugin = async () => {
-  return {
-    "tool.execute.before": async () => {
-      try {
-        const fs = await import("fs")
-        const path = await import("path")
-        if (!fs.existsSync(".deciduous")) return
-        const marker = path.join(".deciduous", ".version_check_disabled")
-        if (fs.existsSync(marker)) return
-        fs.writeFileSync(
-          marker,
-          `version-check plugin disabled at ${new Date().toISOString()}\n` +
-            `See AGENTS.md: do not run \`deciduous update\`.\n`,
-        )
-        const logFile = path.join(".deciduous", "plugin.log")
-        fs.appendFileSync(
-          logFile,
-          `[${new Date().toISOString()}] version-check plugin: no-op. Do not run \`deciduous update\` (see AGENTS.md).\n`,
-        )
-      } catch {
-        // Never let the plugin break edits.
-      }
-    },
-  }
-}
+	return {
+		'tool.execute.before': async () => {
+			try {
+				const fs = await import('fs');
+				const path = await import('path');
+				if (!fs.existsSync('.deciduous')) return;
+				const marker = path.join('.deciduous', '.version_check_disabled');
+				if (fs.existsSync(marker)) return;
+				fs.writeFileSync(
+					marker,
+					`version-check plugin disabled at ${new Date().toISOString()}\n` +
+						`See AGENTS.md: do not run \`deciduous update\`.\n`
+				);
+				const logFile = path.join('.deciduous', 'plugin.log');
+				fs.appendFileSync(
+					logFile,
+					`[${new Date().toISOString()}] version-check plugin: no-op. Do not run \`deciduous update\` (see AGENTS.md).\n`
+				);
+			} catch {
+				// Never let the plugin break edits.
+			}
+		}
+	};
+};

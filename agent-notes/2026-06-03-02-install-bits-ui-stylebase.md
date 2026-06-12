@@ -1,14 +1,16 @@
 # install-bits-ui-stylebase
 
 ## Task
+
 Install and configure `@taurean/stylebase` and `bits-ui` together in Suede. Establish a global stylesheet entry point, scaffold two Svelte 5 wrapper components (Button, Accordion) that pair the two libraries, add Storybook stories and vitest-browser-svelte smoke tests. Done-when: both libraries installed; `src/app.css` imports stylebase and is wired through `+layout.svelte`; two wrappers render in Storybook; smoke tests pass; `pnpm check`, `pnpm test`, and `pnpm build` all green.
 
 ## Decisions
+
 - **Hybrid styling strategy** (Q1) — global resets/focus in `app.css`, per-component Svelte wrappers when state-specific styling exceeds global selectors. Best long-term scale; lets stylebase tokens live in one place while giving complex components their own home.
 - **Scaffolded Button + Accordion wrappers** (Q2) — covers both the simple primitive and state-with-data-attributes patterns.
 - **app.css at `src/app.css`** — SvelteKit convention; keeps stylebase at the top of the cascade. `src/lib/styles/` was an option but adds a hop.
 - **No smoke test on `+page.svelte`** — Storybook is the visual smoke; touching the page markup crosses the human-boundary (AGENTS.md authoring rules).
-- **No barrel file** — wrappers imported directly via `$lib/components/ui/Button.svelte`. Barrel is trivial to add later if a second consumer per wrapper emerges. *Note: the index.ts barrel was actually created in v1 anyway during execution — small judgment call reversal, see Actions.*
+- **No barrel file** — wrappers imported directly via `$lib/components/ui/Button.svelte`. Barrel is trivial to add later if a second consumer per wrapper emerges. _Note: the index.ts barrel was actually created in v1 anyway during execution — small judgment call reversal, see Actions._
 - **Type-bypass for `AccordionPrimitive.Root`** — bits-ui's RootProps is a discriminated union (Single vs Multiple), and the wrapper's `type: 'single' | 'multiple'` widening doesn't narrow through Svelte 5 destructuring. Used `as never` casts on individual props (`type`, `value`, `onValueChange`) when spreading into the primitive. Internal-only type loosening; the public API is constrained.
 - **`ComponentProps<typeof X>` pattern for Button wrapper** — bits-ui's `Button.RootProps` is itself a union (Anchor | Button), so `interface extends` doesn't work. `Omit<..., 'children'> & { children: Snippet }` keeps `children` required.
 - **Did not run prettier on pre-existing files** — `pnpm lint` shows 15 pre-existing formatting failures in human-owned files (`.storybook/*`, `AGENTS.md`, `src/stories/Button.svelte`, etc.). Out of scope for this task. All new files pass prettier and eslint.
@@ -16,6 +18,7 @@ Install and configure `@taurean/stylebase` and `bits-ui` together in Suede. Esta
 - **Kept existing `src/stories/Button.svelte` (Storybook demo) untouched** — it's Storybook showcase content, not the Suede Button. Suede wrapper lives at `src/lib/components/ui/Button.svelte`. Cleanup deferred to a follow-up.
 
 ## Actions
+
 - Researched both packages via npm + GitHub + official docs; read bits-ui's `.d.ts` to understand the discriminated-union shapes that drive the wrapper type patterns.
 - `pnpm add @taurean/stylebase bits-ui` — installed stylebase 0.11.0, bits-ui 2.18.1; lockfile updated.
 - Created `src/app.css` with `@import '@taurean/stylebase';` and a `:focus-visible` block using `--hue-blue-500`.
@@ -31,6 +34,7 @@ Install and configure `@taurean/stylebase` and `bits-ui` together in Suede. Esta
 - Iterated twice on `pnpm check` errors (interface-extends union, destructure widening) and once on test snippet creation.
 
 ## Files touched
+
 - `package.json` — added `@taurean/stylebase`, `bits-ui` to dependencies
 - `pnpm-lock.yaml` — regenerated
 - `src/app.css` — created
@@ -45,6 +49,7 @@ Install and configure `@taurean/stylebase` and `bits-ui` together in Suede. Esta
 - `.gitignore` — added `worker-configuration.d.ts`; tightened `.wrangler` entry
 
 ## Verification
+
 - `pnpm check` — pass. `svelte-check found 0 errors and 0 warnings` across the workspace.
 - `pnpm test` — pass. 14 tests across 8 files (client + server + storybook projects), 0 errors. 4 are the new spec tests for the wrappers; 2 are the new storybook tests; 8 are the existing tests.
 - `pnpm build` — pass. Cloudflare adapter completes; client bundle is small; `_layout` CSS chunk is 16.80 kB (stylebase's contribution, gzipped 4.02 kB).
@@ -52,6 +57,7 @@ Install and configure `@taurean/stylebase` and `bits-ui` together in Suede. Esta
 - Manual type exploration: confirmed `Button.RootProps` and `Accordion.RootProps` are discriminated unions; the wrapper type patterns are documented in the Decisions section.
 
 ## Follow-ups / stubs
+
 - **Pre-existing prettier failures** in human-owned files (`.storybook/main.ts`, `AGENTS.md`, `src/stories/{Button,Header,Page}.svelte`, `Configure.mdx`, `vitest.shims.d.ts`, etc.) — 15 files, all out of this task's scope. Worth a `pnpm format` cleanup pass in a dedicated task.
 - **Storybook demo content cleanup** — `src/stories/{Button,Header,Page}.svelte` and their `*.css` files are Storybook showcase, not Suede code. The Button demo is now confusingly similar to the new Suede wrapper story. Either delete them or rename the Suede story's title to `Suede/Button` for clarity.
 - **Style the wrappers** — wrappers render unstyled (bits-ui ships ~zero styles). The whole point of the hybrid strategy is that the human adds styling. Currently they fall through to stylebase's default element styles, which is fine for layout/typography but buttons look like text. Add `:global([data-button-root]) { … }` rules in `src/app.css` and per-trigger styles in `Accordion.svelte` to bring them to life.
