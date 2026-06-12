@@ -10,7 +10,7 @@ arguments:
 
 **USE THIS BEFORE STARTING ANY IMPLEMENTATION.**
 
-This skill creates the required deciduous nodes BEFORE you write any code. The Edit/Write hooks will BLOCK you if you don't have a recent node.
+This skill creates the required deciduous nodes BEFORE you write any code. The `require-action-node` plugin will nag to `.deciduous/plugin.log` if you don't have a recent node — it does not block edits. The post-commit-reminder plugin will nag again to link the commit. Treat the nags as guardrails, not gates.
 
 ## Step 1: Create the Goal Node
 
@@ -28,6 +28,7 @@ EOF
 ## Step 2: Announce the Goal ID
 
 After creating the goal, tell the user:
+
 - The goal ID that was created
 - What you're about to implement
 - That you'll create action nodes as you work
@@ -87,7 +88,7 @@ deciduous sync
 
 ## Why This Matters
 
-- **Hooks will block you** if no recent action/goal exists
+- **The plugins nag, they don't block.** If no recent action/goal exists, `.deciduous/plugin.log` records the reminder; the edit still goes through. Same for post-commit.
 - **Commits will remind you** to link them to the graph
 - **The graph captures your reasoning** for future sessions
 - **Context recovery works** because the graph has everything
