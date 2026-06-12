@@ -20,15 +20,44 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 - `agent-notes/plans/` — plan artifacts (write-only at task end, not auto-loaded)
 - `.opencode/skills/` — in-repo skills (cross-cutting process skills live in your global plugin, not here)
 
+## Constant process pipeline
+
+The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (issue tracker, branch convention, version policy, which global skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B and recorded in the fork's first task note. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it (see "Size scales with task" under **Working style**) but keep the shape.
+
+| Stage                                                                               | Skill                                                                              | When to load                                                                                                                                                                    |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. **Concept / problem** exists in conversation, in an issue, or as a QA bug report | —                                                                                  | Always; this is the input to the pipeline                                                                                                                                       |
+| 2. **Grill** the design until shared understanding                                  | `~/.agents/skills/grill-me` (open-ended) or `grill-with-docs` (against the domain) | Whenever the concept is fuzzy, the requirements are in tension, or a non-trivial decision is being made                                                                         |
+| 3. **PRD**                                                                          | `~/.agents/skills/to-prd`                                                          | After the grill resolves. Synthesises the conversation into a PRD with problem statement, user stories, implementation decisions, testing decisions, out of scope               |
+| 4. **Issues**                                                                       | `~/.agents/skills/to-issues`                                                       | Breaks the PRD into tracer-bullet vertical slices; each is independently demoable and ideally AFK-able                                                                          |
+| 5. **Triage**                                                                       | `~/.agents/skills/triage`                                                          | Labels and queues issues (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`); uses the project's label vocabulary, which is captured in the kickoff's Thread B |
+| 6. **Build**                                                                        | `~/.agents/skills/tdd`                                                             | Tracer-bullet RED→GREEN per slice; one test, then one implementation, repeat. Public-interface behaviour only                                                                   |
+| 7. **Diagnose**                                                                     | `~/.agents/skills/diagnose`                                                        | When a build hits a hard bug, performance regression, or non-deterministic failure. Build a feedback loop first, then bisect                                                    |
+| 8. **Review**                                                                       | `~/.agents/skills/review`                                                          | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents                                                                                       |
+| 9. **QA**                                                                           | `~/.agents/skills/qa`                                                              | Conversational bug filing against the running app. Produces durable GitHub (or project-tracker) issues from the user's perspective                                              |
+| 10. **Release**                                                                     | (in-repo, this section "Releases")                                                 | chronver bump as final commit on the release branch; human tags the merge commit on `main` and pushes with `--follow-tags`                                                      |
+| 11. **Handoff**                                                                     | `~/.agents/skills/handoff`                                                         | When context is running out and a fresh session needs to pick up. Compacts to the OS temp dir, not the workspace                                                                |
+
+**Always-on supporting layer** (not a stage — runs throughout):
+
+- **Decision graph** (`deciduous` CLI + this file's "Decision Graph Workflow" section) — every commit linked to a node, goal → options → decision → actions → outcomes, real-time logging
+- **Task notes** (`agent-notes/YYYY-MM-DD-NN-<slug>.md`, template at `agent-notes/0000-00-00-00-task-template.md`) — one per task, written at end. Records decisions, actions, files touched, verification evidence
+- **Git workflow** (this file's "Git workflow" section) — branch from `main`, PR review, agent never pushes/merges, `Co-authored-by: opencode` trailer on agent-made commits
+- **Authoring boundaries** (this file's "Authoring boundaries" section) — humans own Svelte markup / scoped CSS / design tokens; agents own `<script lang="ts">` and `*.ts`
+
+The pipeline is the same regardless of project shape (full-stack, content, backend, other) and regardless of project formality. A 2-day prototype compresses stages 3–5 (no PRD file, issues live in the task note, no triage labels); a 2-year production app runs every stage.
+
 ## Authoring boundaries
 
 Humans own:
+
 - Svelte component markup
 - Svelte `<style>` blocks
 - CSS files in `src/lib/styles/`
 - Layout, spacing, typography, design tokens
 
 Agents own (TypeScript only):
+
 - `<script lang="ts">` blocks within `.svelte` files
 - `*.ts` files in `src/lib/`, `src/routes/`
 - Drizzle schemas and queries
@@ -36,17 +65,31 @@ Agents own (TypeScript only):
 
 ## Working style
 
-Process skills live in `~/.agents/skills/`. Load the relevant one when it
-clearly applies (don't load for the sake of loading):
+The **Constant process pipeline** section above is the canonical reference for which skill applies at which stage. Load the relevant one when the stage applies (don't load for the sake of loading):
 
-- `tdd` — test-first (vertical slices, user-confirmed priorities)
-- `diagnose` — hard bugs (build a feedback loop first)
-- `prototype` — throwaway code that answers a question
+Design-stage skills (load during stages 2–5):
+
+- `grill-me` — open-ended stress-test of a plan; one question at a time, recommended answer with each
+- `grill-with-docs` — like `grill-me` but grills against the existing domain model and updates `CONTEXT.md` / ADRs inline
+- `to-prd` — synthesise the conversation into a PRD
+- `to-issues` — break a PRD into tracer-bullet vertical slices
+- `triage` — label and queue issues through the state machine
+
+Build-stage skills (load during stages 6–9):
+
+- `tdd` — vertical-slice RED→GREEN; public-interface behaviour only
+- `diagnose` — feedback-loop-first debugging for hard bugs
 - `review` — two-axis PR review (Standards + Spec)
-- `qa` — conversational bug reports → durable GitHub issues
+- `qa` — conversational bug filing against the running app
+
+Wraparound skills (load any time):
+
+- `prototype` — throwaway code that answers a question before committing
 - `handoff` — compact the session for the next agent
 - `caveman` — terse mode, ~75% token drop
 - `write-a-skill` — authoring a new skill
+- `improve-codebase-architecture` — find deepening opportunities
+- `find-skills` — discover skills the user hasn't surfaced
 
 Zed's plan/build mode toggle is the human's lever — follow the active mode
 without prompting. See **Verification before completion** for done criteria.
@@ -64,15 +107,22 @@ Graph) into one sequence.
 1. `git pull origin main` — sync with `main`.
 2. `git checkout -b <type>/<slug>` — branch from `main`.
 3. For non-trivial work, log a goal node with the verbatim user prompt.
-4. For design or unclear requirements, use Zed plan mode until the human
-   approves a direction. No code edits in plan mode.
+4. For design or unclear requirements, load `grill-me` (stage 2 of the
+   **Constant process pipeline**) and grill until the human approves a
+   direction. Continue into `to-prd` / `to-issues` / `triage` as
+   appropriate. No code edits during design stages.
 
 ### During
 
 1. Before each major edit, log an action node and link it to the goal.
-2. Apply `~/.agents/skills/` process skills when they clearly apply
-   (`tdd`, `diagnose`, `prototype`, `review`, `qa`, `handoff`, `caveman`,
-   `write-a-skill`).
+2. Apply `~/.agents/skills/` process skills when the relevant pipeline
+   stage applies (see **Constant process pipeline** above). The "During"
+   steps in particular: `tdd` (build), `diagnose` (when stuck),
+   `prototype` (when you need to throw code at a question), `review`
+   (before merge), `qa` (when the human reports a bug),
+   `improve-codebase-architecture` (when diagnose flags architectural
+   debt), `handoff` (when context is running out), `caveman` (terse
+   mode), `write-a-skill` (when capturing a new process).
 3. Honour Authoring boundaries — humans own presentation, agents own TS.
 4. Commit on the branch with the `Co-authored-by: opencode` trailer.
 5. Link each commit: `deciduous add action|outcome "..." --commit HEAD`.
@@ -143,14 +193,14 @@ AUDIT regularly -> Check for missing connections
 
 ### Behavioral Triggers - MUST LOG WHEN:
 
-| Trigger | Log Type | Example |
-|---------|----------|---------|
-| User asks for a new feature | `goal` **with -p** | "Add dark mode" |
-| Exploring possible approaches | `option` | "Use Redux for state" |
-| Choosing between approaches | `decision` | "Choose state management" |
-| About to write/edit code | `action` | "Implementing Redux store" |
-| Something worked or failed | `outcome` | "Redux integration successful" |
-| Notice something interesting | `observation` | "Existing code uses hooks" |
+| Trigger                       | Log Type           | Example                        |
+| ----------------------------- | ------------------ | ------------------------------ |
+| User asks for a new feature   | `goal` **with -p** | "Add dark mode"                |
+| Exploring possible approaches | `option`           | "Use Redux for state"          |
+| Choosing between approaches   | `decision`         | "Choose state management"      |
+| About to write/edit code      | `action`           | "Implementing Redux store"     |
+| Something worked or failed    | `outcome`          | "Redux integration successful" |
+| Notice something interesting  | `observation`      | "Existing code uses hooks"     |
 
 ### What NOT to Log - CRITICAL
 
@@ -159,6 +209,7 @@ AUDIT regularly -> Check for missing connections
 Nodes should capture what the user is building, choosing, and accomplishing. Do NOT create nodes for your own thinking, planning, or tooling steps.
 
 **DO NOT create nodes for:**
+
 - Reading/exploring the codebase ("Analyzing project structure", "Reading config files")
 - Your planning process ("Planning implementation approach", "Evaluating options internally")
 - Tool usage ("Running tests to check status", "Checking git log")
@@ -166,6 +217,7 @@ Nodes should capture what the user is building, choosing, and accomplishing. Do 
 - Meta-commentary ("Starting work on this task", "Preparing to implement")
 
 **DO create nodes for:**
+
 - What the user asked for (goals)
 - Concrete approaches being considered (options)
 - Choices made between approaches (decisions)
@@ -198,12 +250,12 @@ deciduous doc gc                # Remove orphaned files from disk
 
 **When to suggest document attachment:**
 
-| Situation | Action |
-|-----------|--------|
-| User shares an image or screenshot | Ask: "Want me to attach this to the current goal/action node?" |
-| User references an external document | Ask: "Should I attach a copy to the decision graph?" |
-| Architecture diagram is discussed | Suggest attaching it to the relevant goal node |
-| Files not in the project are dropped in | Attach to the most relevant active node |
+| Situation                               | Action                                                         |
+| --------------------------------------- | -------------------------------------------------------------- |
+| User shares an image or screenshot      | Ask: "Want me to attach this to the current goal/action node?" |
+| User references an external document    | Ask: "Should I attach a copy to the decision graph?"           |
+| Architecture diagram is discussed       | Suggest attaching it to the relevant goal node                 |
+| Files not in the project are dropped in | Attach to the most relevant active node                        |
 
 **Do NOT aggressively prompt for documents.** Only suggest when files are directly relevant to a decision node. Files are stored in `.deciduous/documents/` with content-hash naming for deduplication.
 
@@ -212,12 +264,14 @@ deciduous doc gc                # Remove orphaned files from disk
 **Prompts must be the EXACT user message, not a summary.** When a user request triggers new work, capture their full message word-for-word.
 
 **BAD - summaries are useless for context recovery:**
+
 ```bash
 # DON'T DO THIS - this is a summary, not a prompt
 deciduous add goal "Add auth" -p "User asked: add login to the app"
 ```
 
 **GOOD - verbatim prompts enable full context recovery:**
+
 ```bash
 # Use --prompt-stdin for multi-line prompts
 deciduous add goal "Add auth" -c 90 --prompt-stdin << 'EOF'
@@ -233,11 +287,13 @@ EOF
 ```
 
 **When to capture prompts:**
+
 - Root `goal` nodes: YES - the FULL original request
 - Major direction changes: YES - when user redirects the work
 - Routine downstream nodes: NO - they inherit context via edges
 
 **Updating prompts on existing nodes:**
+
 ```bash
 deciduous prompt <node_id> "full verbatim prompt here"
 cat prompt.txt | deciduous prompt <node_id>  # Multi-line from stdin
@@ -249,14 +305,14 @@ Prompts are viewable in the web viewer.
 
 **The graph's value is in its CONNECTIONS, not just nodes.**
 
-| When you create... | IMMEDIATELY link to... |
-|-------------------|------------------------|
-| `outcome` | The action that produced it |
-| `action` | The decision that spawned it |
-| `decision` | The option(s) it chose between |
-| `option` | Its parent goal |
-| `observation` | Related goal/action |
-| `revisit` | The decision/outcome being reconsidered |
+| When you create... | IMMEDIATELY link to...                  |
+| ------------------ | --------------------------------------- |
+| `outcome`          | The action that produced it             |
+| `action`           | The decision that spawned it            |
+| `decision`         | The option(s) it chose between          |
+| `option`           | Its parent goal                         |
+| `observation`      | Related goal/action                     |
+| `revisit`          | The decision/outcome being reconsidered |
 
 **Root `goal` nodes are the ONLY valid orphans.**
 
@@ -310,6 +366,7 @@ The exported `docs/` directory is gitignored (regenerated per machine via `decid
 ### Branch-Based Grouping
 
 Nodes are auto-tagged with the current git branch. Configure in `.deciduous/config.toml`:
+
 ```toml
 [branch]
 main_branches = ["main", "master"]
@@ -325,17 +382,20 @@ auto_detect = true
 ### Git Staging Rules - CRITICAL
 
 **NEVER use broad git add commands that stage everything:**
+
 - ❌ `git add -A` - stages ALL changes including untracked files
 - ❌ `git add .` - stages everything in current directory
 - ❌ `git add -a` or `git commit -am` - auto-stages all tracked changes
 - ❌ `git add *` - glob patterns can catch unintended files
 
 **ALWAYS stage files explicitly by name:**
+
 - ✅ `git add src/lib/components/ui/Button.svelte`
 - ✅ `git add package.json pnpm-lock.yaml`
 - ✅ `git add .opencode/commands/work.md`
 
 **Why this matters:**
+
 - Prevents accidentally committing sensitive files (.env, credentials)
 - Prevents committing large binaries or build artifacts
 - Forces you to review exactly what you're committing
@@ -372,11 +432,13 @@ Events auto-emit on add/link/status commands. Git merges event files automatical
 ## Guardrails
 
 Always:
+
 - Create an `agent-notes/` entry at task end.
 - Run verification before claiming done.
 - Preserve `agent-notes/` history (append, never delete).
 
 Never:
+
 - Modify the presentation layer (Svelte markup, scoped CSS, `src/lib/styles/`).
 - Skip the task note.
 - Commit secrets.
