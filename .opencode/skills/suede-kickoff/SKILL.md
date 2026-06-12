@@ -44,15 +44,14 @@ The working tree is now a fresh suede fork. Use `/grill-me` (one question at a t
 
 The process itself is constant across every suede fork — the workflow from concept through `grill-me` → `to-prd` → `to-issues` → `triage` → `tdd` → `diagnose` → `review` → `qa` → release → `handoff` ships to every project (see AGENTS.md "Constant process pipeline"). What _varies_ is the _details_ of that pipeline. Grill on each axis that might differ:
 
-7. **Tooling keep/rip** — Cloudflare, D1+Drizzle, Storybook, Bits UI, stylebase, Vitest, Playwright, SvelteKit itself. Default to keep if unsure.
-8. **Process details to tailor** — open-ended. Examples of the _kind_ of thing that might apply to this fork but not every fork:
-   - Issue tracker is GitHub vs Tangled vs Linear vs a markdown dir — affects `qa`, `triage`, `to-issues`, `review`.
-   - Branch-naming convention (the repo currently has no enforced rule; a backend-only project might want `fix/` and `chore/` segregated, a content project might not need `feat/`).
-   - Whether the project ships an MVP without a PRD (a 2-day prototype might collapse `to-prd` into the task note).
-   - Which global skills from `~/.agents/skills/` apply — e.g. a docs-heavy content project might pull in `writing-shape`; a backend project might pull in `improve-codebase-architecture`; a CLI might pull in `web-haptics`'s opposite.
-   - The version policy (chronver for apps/templates per AGENTS.md; semver for libraries).
-   - Triage label vocabulary (the canonical `needs-triage` / `ready-for-agent` etc. may need a project-specific label set).
-   - Anything else that the human knows about this project that the agent can't infer.
+7. **Tooling keep/rip** — Cloudflare, D1+Drizzle, Storybook, Bits UI, stylebase, Vitest, Playwright, SvelteKit itself. **Defaults: keep all.** Storybook is the suede default for UI forks; ripping it triggers the Authoring Boundaries Storybook-discipline override (the agent rewrites AGENTS.md + `.opencode/skills/tdd-supplementary/` to reflect the rip during this follow-up branch). SvelteKit is the suede default runtime; ripping it means the project is a backend MCP, a CLI, or another non-web shape — capture which, and rewrite the parts of AGENTS.md / `.opencode/commands/build-test.md` that assume a SvelteKit context.
+8. **Process details to tailor** — open-ended. The process itself is constant; what varies is the _details_. Examples of the _kind_ of thing that might apply to this fork but not every fork:
+   - **Issue tracker** — default is **GitHub Issues** (where `qa` / `triage` / `to-issues` / `review` expect to read and write). Override options: a markdown-dir tracker (e.g. `.scratch/issues/`) for forks that don't want an external service, or Linear / GitLab if you actually use them. Tangled is a git-host mirror, not a tracker.
+   - **Version scheme** — default is **chronver** (suede's apps-and-templates convention). Override to **semver** if this fork is a library consumed by dependents. A fork that picks semver rewrites the AGENTS.md Releases section during this follow-up branch.
+   - **Branch naming** — the repo currently has no enforced rule. Conventional-commits type prefixes (`feat/`, `chore/`, `fix/`, `docs/`, `refactor/`) are the de-facto convention. Override per project if needed.
+   - **Pipeline compression** — for a 2-day prototype you might collapse `to-prd` / `to-issues` / `triage` into the task note (no PRD file, no tracker, no labels). The stages still happen; the artifacts don't.
+   - **Which global skills from `~/.agents/skills/` apply** — e.g. a docs-heavy content project might pull in `writing-shape`; a backend project might pull in `improve-codebase-architecture`; a CLI might _not_ need `web-haptics`. The pipeline's Working style section lists the canonical set; you can subtract.
+   - **Anything else that the human knows about this project that the agent can't infer.**
 
 The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, `agent-notes/`, and `.opencode/plugins/` to edit, add, or remove.
 

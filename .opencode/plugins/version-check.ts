@@ -1,87 +1,44 @@
-// OpenCode Plugin: Version Check
-// Checks for new deciduous versions via crates.io (always-on, once per 24h)
-// Non-blocking: informational only
-// Patch updates get a quiet one-liner; minor/major updates get a prominent banner
+// OpenCode Plugin: Version Check (no-op)
+//
+// Suede does not run `deciduous update` (see AGENTS.md "Do not run
+// `deciduous update`" note). The upstream `deciduous` tool's
+// `update` subcommand regenerates `.opencode/`, `.claude/`, and
+// `AGENTS.md` from its own defaults, which would silently overwrite
+// the hand-edited integration files in this repo. We treat version
+// upgrades as opt-in: install a new `deciduous` binary if you want
+// new features, then *manually* reconcile any new files you want to
+// pull in — never via `deciduous update`.
+//
+// This plugin used to phone crates.io once per 24h and prompt the
+// user to upgrade + run `deciduous update`. It was rewritten as a
+// no-op for the reason above. The first time it runs, it appends a
+// single line to `.deciduous/plugin.log` so the no-op is observable
+// to anyone reading the log.
 
 import type { Plugin } from "@opencode-ai/plugin"
 
-function classifyUpdate(current: string, latest: string): "patch" | "major" {
-  const [curMaj, curMin] = current.split(".").map(Number)
-  const [latMaj, latMin] = latest.split(".").map(Number)
-  return (curMaj === latMaj && curMin === latMin) ? "patch" : "major"
-}
-
-function notifyUpdate(current: string, latest: string) {
-  if (classifyUpdate(current, latest) === "patch") {
-    console.error(`DECIDUOUS: Patch update available (v${current} -> v${latest}). Run 'cargo install deciduous' to upgrade.`)
-  } else {
-    console.error(`╔══════════════════════════════════════════════════════════════╗
-║  DECIDUOUS: New major update available! v${current} -> v${latest}
-╚══════════════════════════════════════════════════════════════╝
-Run 'deciduous check-update' for details, then 'cargo install deciduous' to upgrade.
-After upgrading, run 'deciduous update' to refresh integration files.
-Please let the user know a significant new version is available and encourage them to upgrade.`)
-  }
-}
-
-export const VersionCheck: Plugin = async ({ $ }) => {
+export const VersionCheck: Plugin = async () => {
   return {
-    "tool.execute.before": async (input) => {
+    "tool.execute.before": async () => {
       try {
         const fs = await import("fs")
-
-        // Check if deciduous is initialized
+        const path = await import("path")
         if (!fs.existsSync(".deciduous")) return
-
-        // Rate limit: once per 24 hours
-        const checkFile = ".deciduous/.last_version_check"
-        if (fs.existsSync(checkFile)) {
-          const lastCheck = parseInt(fs.readFileSync(checkFile, "utf-8").trim() || "0")
-          const now = Math.floor(Date.now() / 1000)
-          if (now - lastCheck < 86400) {
-            // Check cached result
-            const cachedFile = ".deciduous/.latest_version"
-            if (fs.existsSync(cachedFile)) {
-              const latest = fs.readFileSync(cachedFile, "utf-8").trim()
-              const versionResult = await $`deciduous --version 2>/dev/null`.quiet().nothrow()
-              const current = versionResult.stdout.toString().match(/(\d+\.\d+\.\d+)/)?.[1]
-              if (current && latest && latest !== current) {
-                notifyUpdate(current, latest)
-              }
-            }
-            return
-          }
-        }
-
-        // Fetch latest version from crates.io
-        const controller = new AbortController()
-        const timeout = setTimeout(() => controller.abort(), 3000)
-        try {
-          const resp = await fetch("https://crates.io/api/v1/crates/deciduous", {
-            signal: controller.signal,
-            headers: { "User-Agent": "deciduous-version-check" }
-          })
-          clearTimeout(timeout)
-          const data = await resp.json() as any
-          const latest = data?.crate?.max_version
-          if (!latest) return
-
-          // Cache result
-          fs.writeFileSync(".deciduous/.latest_version", latest)
-          fs.writeFileSync(".deciduous/.last_version_check", Math.floor(Date.now() / 1000).toString())
-
-          // Compare
-          const versionResult = await $`deciduous --version 2>/dev/null`.quiet().nothrow()
-          const current = versionResult.stdout.toString().match(/(\d+\.\d+\.\d+)/)?.[1]
-          if (current && latest !== current) {
-            notifyUpdate(current, latest)
-          }
-        } catch {
-          // Network error or timeout - skip silently
-        }
+        const marker = path.join(".deciduous", ".version_check_disabled")
+        if (fs.existsSync(marker)) return
+        fs.writeFileSync(
+          marker,
+          `version-check plugin disabled at ${new Date().toISOString()}\n` +
+            `See AGENTS.md: do not run \`deciduous update\`.\n`,
+        )
+        const logFile = path.join(".deciduous", "plugin.log")
+        fs.appendFileSync(
+          logFile,
+          `[${new Date().toISOString()}] version-check plugin: no-op. Do not run \`deciduous update\` (see AGENTS.md).\n`,
+        )
       } catch {
-        // Any error - skip silently
+        // Never let the plugin break edits.
       }
-    }
+    },
   }
 }

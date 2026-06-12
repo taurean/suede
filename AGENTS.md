@@ -9,6 +9,7 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 ## Git workflow
 
 - Always branch from `main`. Pull latest `main` before creating the new branch.
+- **Never branch off an in-flight branch.** The only base for a new branch is `main`. While a PR is open (not yet merged), new work either becomes a follow-up commit on the _same_ branch (new goal node, same PR) or waits. A branch-of-branch creates a PR whose base vanishes the moment the first PR merges.
 - All tasks are reviewed in a pull request.
 - The agent never pushes directly to `main` and never merges to `main`. The human reviews the PR and merges.
 - The human is the commit author for all commits. Agent-made commits add a `Co-authored-by: opencode <noreply@opencode.ai>` trailer to credit assistance.
@@ -47,6 +48,8 @@ The workflow below ships to every project forked from suede. The _process_ is co
 
 The pipeline is the same regardless of project shape (full-stack, content, backend, other) and regardless of project formality. A 2-day prototype compresses stages 3–5 (no PRD file, issues live in the task note, no triage labels); a 2-year production app runs every stage.
 
+**Tracker preconditions.** Stages 4 (issues), 5 (triage), 8 (review), and 9 (qa) all assume a project tracker exists with the conventional label vocabulary (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`, `bug` / `enhancement`). The default tracker is **GitHub Issues**; forks that want a markdown-dir tracker or Linear can override via `suede-kickoff` Step 3 Thread B. When no tracker is configured, these stages collapse to mental checks on the task note's Follow-ups list and the stage-skill descriptions still apply as vocabulary, just not as formal workflow.
+
 ## Authoring boundaries
 
 Humans own:
@@ -63,6 +66,10 @@ Agents own (TypeScript only):
 - Drizzle schemas and queries
 - Server routes, API integrations, Workers
 
+### Storybook discipline (UI forks)
+
+A change to a UI primitive in `src/lib/components/` is **incomplete without a story update** in the same commit. Stories are the agent-owned form of the human-owned visual contract: the story captures the component's rendered states, and any new state, prop, or visual branch added in code is a story-add or story-edit. A primitive without a matching story is invisible to QA and to the next contributor. Storybook is the suede default; a fork that rips it records the override in the kickoff follow-up task note, and the agent rewrites AGENTS.md / `.opencode/skills/tdd-supplementary/` references to Storybook as part of that override.
+
 ## Working style
 
 The **Constant process pipeline** section above is the canonical reference for which skill applies at which stage. Load the relevant one when the stage applies (don't load for the sake of loading):
@@ -78,6 +85,7 @@ Design-stage skills (load during stages 2–5):
 Build-stage skills (load during stages 6–9):
 
 - `tdd` — vertical-slice RED→GREEN; public-interface behaviour only
+- `tdd-supplementary` (in-repo, `.opencode/skills/tdd-supplementary/`) — suede-specific supplements: test pruning pass, Storybook-when-in-use discipline, "earn their keep" rule
 - `diagnose` — feedback-loop-first debugging for hard bugs
 - `review` — two-axis PR review (Standards + Spec)
 - `qa` — conversational bug filing against the running app
@@ -141,9 +149,13 @@ Graph) into one sequence.
 
 ## Releases
 
-Suede uses [chronver](https://chronver.org). Version lives in `package.json#version` (chronver format `YYYY.M.D[.N][-feature|-break]`; `pnpm version` normalizes leading zeros, so e.g. `2026.6.4`, not `2026.06.04`).
+Suede uses [chronver](https://chronver.org) by default. Version lives in `package.json#version` (chronver format `YYYY.M.D[.N][-feature|-break]`; `pnpm version` normalizes leading zeros, so e.g. `2026.6.4`, not `2026.06.04`).
 
-**Every release branch — a branch ready to be reviewed and merged to `main` — ships as its own chronver version.** The bump is the final commit on the release branch, before merge. No versionless merges.
+**The _mechanics_ are constant across forks; the _scheme_ is a fork-time decision.** The mechanics: every release branch ships as its own version bump; the bump is the final commit on the branch, before merge; the human tags the merge commit on `main` and pushes with `--follow-tags`; the changelog is `git log <prev>..<new>` (no CHANGELOG.md). The scheme is one of the questions in `suede-kickoff` Step 3 Thread B — chronver is the suede default for apps and templates, semver is the override for libraries consumed by dependents. A fork that picks semver rewrites this section during its kickoff follow-up.
+
+**Every release branch — a branch ready to be reviewed and merged to `main` — ships as its own version.** The bump is the final commit on the release branch, before merge. No versionless merges.
+
+**Tracker and remotes.** The default project tracker is **GitHub Issues** (where the `qa` / `triage` / `to-issues` / `review` skills expect to read and write). Forks that want a different tracker override via `suede-kickoff` Step 3 Thread B. Tangled (or any other git host) can be added as an additional remote for mirroring, but is not a substitute for the tracker.
 
 ### Cutting a release
 
@@ -404,13 +416,13 @@ auto_detect = true
 ### Session Start Checklist
 
 ```bash
-deciduous check-update    # Update needed? Run 'deciduous update' if yes
-                          # (auto-checked every 24h if auto-update is on)
 deciduous nodes           # What decisions exist?
 deciduous edges           # What connections? Any gaps?
 deciduous doc list        # Any attached documents to review?
 git status                # Current state
 ```
+
+**Do not run `deciduous update`.** The `update` subcommand regenerates `.opencode/`, `.claude/`, and AGENTS.md content from the upstream `deciduous` CLI defaults, which will overwrite any hand-edits in those files (including this AGENTS.md and the `.opencode/commands/` overrides). If a new version of `deciduous` is needed for a feature, install it (`cargo install deciduous` or `brew upgrade deciduous`) and treat the new install as a _new_ integration to opt into — not a forced refresh. The `version-check.ts` plugin is a no-op in this repo by design (it used to nag; the nag is now a footgun, see commit history).
 
 ### Multi-User Sync
 

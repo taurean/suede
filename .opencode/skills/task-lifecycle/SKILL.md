@@ -10,7 +10,7 @@ Run at the start of a task (branch setup) and at the end (note + verification).
 
 ## Steps at task end
 
-1. If a plan was generated in this conversation, persist it to `agent-notes/plans/<slug>.md` (Goal, Approach, Alternatives, Files anticipated, Test plan, Acceptance criteria). Slug matches the task note.
+1. **Do not write a plan file to `agent-notes/plans/`.** That directory is gitignored. The plan is a per-task scratchpad; the compiled form (graph nodes, the task note's Decisions section) is what persists. If you need to resume work on a different machine, use `~/.agents/skills/handoff` — it captures the chat context, which is a superset of the plan file.
 2. Copy `agent-notes/0000-00-00-00-task-template.md` to `agent-notes/YYYY-MM-DD-NN-<slug>.md`. **Always.** No skip-step.
 3. Fill all sections from the work just done. Size scales with task; trivial tasks get short notes.
 4. Run verification per AGENTS.md, fill `## Verification` with results.
@@ -20,7 +20,7 @@ Run at the start of a task (branch setup) and at the end (note + verification).
 ## Rules
 
 - Task notes are records, not scratchpads. Fill at end, not during.
-- Plan files in `agent-notes/plans/` are write-only at task end. Do not read them as part of starting a task.
+- **Plan files in `agent-notes/plans/` are gitignored scratchpads, not artifacts.** Do not commit them. Do not read them at the start of a task — they're transient. Use `~/.agents/skills/handoff` to resume work across machines; the handoff doc supersedes any plan file.
 - AGENTS.md is always in context. Do not re-read it.
 - All work happens on a feature branch, not `main`. PR + merge per AGENTS.md.
 - The agent hands back at task end; it does not merge to `main`. The human reviews the PR and merges.
