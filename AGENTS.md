@@ -137,11 +137,9 @@ without prompting. See **Verification before completion** for done criteria.
 
 ## Task flow
 
-Every release branch follows this flow from task start to task done. The
-procedural reference lives at `.opencode/skills/task-lifecycle/SKILL.md`;
-this section is the in-context summary that consolidates the rules
-scattered above (Authoring boundaries, Working style, Releases, Decision
-Graph) into one sequence.
+Every release branch follows this flow from task start to task done. This
+section consolidates the rules scattered above (Authoring boundaries,
+Working style, Releases, Decision Graph) into one sequence.
 
 ### Start
 
