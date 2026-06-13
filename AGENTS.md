@@ -8,7 +8,7 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 
 ## Git workflow
 
-- Always branch from `main`. Pull latest `main` before creating the new branch.
+- Always branch from `main`, and always from the **latest** `main` (not a stale local view). The branch-from-`main` rule is only meaningful if the base commit is current — otherwise the new branch silently forks from a commit that has since been superseded, and the PR base vanishes the same way an in-flight branch does. Before `git checkout -b`, run `git checkout main && git pull origin main` and verify the tree is clean.
 - **Never branch off an in-flight branch.** The only base for a new branch is `main`. While a PR is open (not yet merged), new work either becomes a follow-up commit on the _same_ branch (new goal node, same PR) or waits. A branch-of-branch creates a PR whose base vanishes the moment the first PR merges.
 - All tasks are reviewed in a pull request.
 - **The agent may push branches and may apply tags, but never merges to `main` and never pushes directly to `main`.** The human reviews the PR and merges. (Pushing the release branch to the remote and tagging the human's merge commit on `main` are both agent-OK; the act of merging the PR into `main` is human-only.)
