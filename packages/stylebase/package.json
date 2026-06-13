@@ -1,0 +1,51 @@
+{
+    "name": "@taurean/stylebase",
+    "version": "0.11.0",
+    "description": "a starter set of CSS files",
+    "main": "dist/stylebase.min.css",
+    "style": "dist/stylebase.min.css",
+    "exports": {
+        ".": {
+            "style": "./dist/stylebase.min.css",
+            "default": "./dist/stylebase.min.css"
+        },
+        "./css": "./dist/stylebase.min.css",
+        "./dist/*": "./dist/*"
+    },
+    "files": [
+        "dist/",
+        "README.md",
+        "LICENSE"
+    ],
+    "keywords": [
+        "CSS",
+        "utility-classes",
+        "design-tokens",
+        "postcss",
+        "utility",
+        "reset"
+    ],
+    "author": "Taurean Bryant <later@taurean.work>",
+    "license": "SEE LICENSE IN LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/taurean/suede.git",
+        "directory": "packages/stylebase"
+    },
+    "homepage": "https://github.com/taurean/suede/tree/main/packages/stylebase",
+    "bugs": {
+        "url": "https://github.com/taurean/suede/issues"
+    },
+    "scripts": {
+        "build": "postcss stylebase/imports.css -o dist/stylebase.min.css",
+        "build:preview": "postcss stylebase/imports.css -o dist-preview/stylebase.css --no-map --env preview",
+        "prepublishOnly": "pnpm build"
+    },
+    "devDependencies": {
+        "browser-sync": "^3.0.4",
+        "cssnano": "^6.0.5",
+        "postcss": "^8.4.35",
+        "postcss-cli": "^11.0.0",
+        "postcss-import": "^16.0.0"
+    }
+}

@@ -1,0 +1,24 @@
+/* https://kilianvalkhof.com/2022/css-html/your-css-reset-needs-text-size-adjust-probably/ via Andy Bell's post on his updated reset */
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    color-scheme: light dark;
+    text-size-adjust: none;
+}
+
+body {
+    margin: 0;
+}
+
+hr {
+    border: unset;
+    background-color: var(--hue-z0-divider);
+    height: 1px;
+}
+
+img,
+svg,
+video {
+    max-width: 100%;
+    display: block;
+}
