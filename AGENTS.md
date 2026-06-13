@@ -52,7 +52,7 @@ The workflow below ships to every project forked from suede. The _process_ is co
 | 3. **PRD**                                                                          | `.opencode/skills/to-prd`                                                          | After the grill resolves. Synthesises the conversation into a PRD with problem statement, user stories, implementation decisions, testing decisions, out of scope               |
 | 4. **Issues**                                                                       | `.opencode/skills/to-issues`                                                       | Breaks the PRD into tracer-bullet vertical slices; each is independently demoable and ideally AFK-able                                                                          |
 | 5. **Triage**                                                                       | `.opencode/skills/triage`                                                          | Labels and queues issues (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`); uses the project's label vocabulary, which is captured in the kickoff's Thread B |
-| 6. **Build**                                                                        | `.opencode/skills/tdd` (+ in-repo `tdd-supplementary`)                             | Tracer-bullet RED→GREEN per slice; one test, then one implementation, repeat. Public-interface behaviour only                                                                   |
+| 6. **Build**                                                                        | `.opencode/skills/tdd`                                                             | Tracer-bullet RED→GREEN per slice; one test, then one implementation, repeat. Public-interface behaviour only                                                                   |
 | 7. **Diagnose**                                                                     | `.opencode/skills/diagnose`                                                        | When a build hits a hard bug, performance regression, or non-deterministic failure. Build a feedback loop first, then bisect                                                    |
 | 8. **Review**                                                                       | `.opencode/skills/review`                                                          | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents                                                                                       |
 | 9. **QA**                                                                           | `.opencode/skills/qa`                                                              | Conversational bug filing against the running app. Produces durable GitHub (or project-tracker) issues from the user's perspective                                              |
@@ -87,7 +87,7 @@ Agents own (TypeScript only):
 
 ### Storybook discipline (UI forks)
 
-A change to a UI primitive in `src/lib/components/` is **incomplete without a story update** in the same commit. Stories are the agent-owned form of the human-owned visual contract: the story captures the component's rendered states, and any new state, prop, or visual branch added in code is a story-add or story-edit. A primitive without a matching story is invisible to QA and to the next contributor. Storybook is the suede default; a fork that rips it records the override in the kickoff follow-up PR description (or an ADR if the project uses one), and the agent rewrites AGENTS.md / `.opencode/skills/tdd-supplementary/` references to Storybook as part of that override.
+A change to a UI primitive in `src/lib/components/` is **incomplete without a story update** in the same commit. Stories are the agent-owned form of the human-owned visual contract: the story captures the component's rendered states, and any new state, prop, or visual branch added in code is a story-add or story-edit. A primitive without a matching story is invisible to QA and to the next contributor. Storybook is the suede default; a fork that rips it records the override in the kickoff follow-up PR description (or an ADR if the project uses one), and the agent rewrites AGENTS.md / `.opencode/skills/tdd/` references to Storybook as part of that override.
 
 ## Working style
 
@@ -103,8 +103,7 @@ Design-stage skills (load during stages 2–5):
 
 Build-stage skills (load during stages 6–9):
 
-- `tdd` — vertical-slice RED→GREEN; public-interface behaviour only
-- `tdd-supplementary` — suede-specific supplements: test pruning pass, Storybook-when-in-use discipline, "earn their keep" rule
+- `tdd` — vertical-slice RED→GREEN; public-interface behaviour only. Also covers the test pruning pass and the Storybook discipline.
 - `diagnose` — feedback-loop-first debugging for hard bugs
 - `review` — two-axis PR review (Standards + Spec)
 - `qa` — conversational bug filing against the running app

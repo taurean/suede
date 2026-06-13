@@ -87,7 +87,7 @@ The happy path is the eight stages that fire for almost every unit of work:
 3. **PRD** (`to-prd`) — synthesize the conversation into a PRD: problem, stories, decisions, scope.
 4. **Issues** (`to-issues`) — break the PRD into tracer-bullet vertical slices, each independently demoable.
 5. **Triage** (`triage`) — label and queue: `needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`.
-6. **Build** (`tdd` + in-repo `tdd-supplementary`) — RED → GREEN per slice; one test, one implementation, repeat; public-interface behaviour only.
+6. **Build** (`tdd`) — RED → GREEN per slice; one test, one implementation, repeat; public-interface behaviour only. Also covers the prune pass and Storybook discipline.
 7. **Review** (`review`) — two-axis PR review (Standards + Spec) in parallel sub-agents, before merge.
 8. **Release** (AGENTS.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
 
@@ -117,13 +117,13 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 
 ### In-repo skills (`.opencode/skills/`)
 
-| Skill               | Purpose                                                                    |
-| ------------------- | -------------------------------------------------------------------------- |
-| `suede-kickoff`     | One-shot bootstrap of a new project from a fresh suede clone (see above)   |
-| `tdd-supplementary` | Suede-specific TDD additions: the test prune pass and Storybook discipline |
-| `pulse`             | Map the system's _current_ state as decision nodes — no history, just now  |
-| `narratives`        | Reconstruct how the system evolved, as prose narratives                    |
-| `archaeology`       | Turn those narratives into a backdated, queryable decision graph           |
+| Skill           | Purpose                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------- |
+| `suede-kickoff` | One-shot bootstrap of a new project from a fresh suede clone (see above)                                    |
+| `tdd`           | RED → GREEN workflow, vertical slicing, mocking at boundaries, plus the prune pass and Storybook discipline |
+| `pulse`         | Map the system's _current_ state as decision nodes — no history, just now                                   |
+| `narratives`    | Reconstruct how the system evolved, as prose narratives                                                     |
+| `archaeology`   | Turn those narratives into a backdated, queryable decision graph                                            |
 
 Cross-cutting process skills (grill-me, to-prd, tdd, review, qa, …) all ship in `.opencode/skills/`.
 
