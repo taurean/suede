@@ -38,7 +38,7 @@ docs/
 # Plan files are per-task scratchpads; the compiled form (graph nodes +
 # task note Decisions section) is what persists. Handoff is the tool
 # for resuming work across machines, not the plan file.
-agent-notes/plans/
+agent-notes/
 
 # Claude-Code-specific artifacts (not part of this OpenCode-primary project)
 CLAUDE.md
