@@ -36,28 +36,28 @@ A fork that needs to extend the list (e.g. add `i18n` for a content-heavy projec
 ## Layout
 
 - `AGENTS.md` — this file
-- `.opencode/skills/` — in-repo skills (cross-cutting process skills live in your global plugin, not here)
+- `.opencode/skills/` — in-repo skills. The process layer (`grill-me`, `to-prd`, `tdd`, `review`, `qa`, `diagnose`, `handoff`, plus wraparound skills) ships with the repo. Skill directories are `kebab-case` and contain a `SKILL.md` (and optionally per-topic companion files like `tdd/tests.md`).
 - `.opencode/{agents,commands,plugins,tools}/` — OpenCode integration files. All filenames in `.opencode/` use kebab-case. Skill directories are `kebab-case` and contain a single `SKILL.md`.
 
 Durable records of work: the `deciduous` decision graph (real-time, in `.deciduous/`), the project's tracker (GitHub Issues), and the merged PR history. There is no per-task markdown note.
 
 ## Constant process pipeline
 
-The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (branch convention, version policy, which global skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it (see "Size scales with task" under **Working style**) but keep the shape.
+The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (branch convention, version policy, which in-repo skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it (see "Size scales with task" under **Working style**) but keep the shape.
 
 | Stage                                                                               | Skill                                                                              | When to load                                                                                                                                                                    |
 | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. **Concept / problem** exists in conversation, in an issue, or as a QA bug report | —                                                                                  | Always; this is the input to the pipeline                                                                                                                                       |
-| 2. **Grill** the design until shared understanding                                  | `~/.agents/skills/grill-me` (open-ended) or `grill-with-docs` (against the domain) | Whenever the concept is fuzzy, the requirements are in tension, or a non-trivial decision is being made                                                                         |
-| 3. **PRD**                                                                          | `~/.agents/skills/to-prd`                                                          | After the grill resolves. Synthesises the conversation into a PRD with problem statement, user stories, implementation decisions, testing decisions, out of scope               |
-| 4. **Issues**                                                                       | `~/.agents/skills/to-issues`                                                       | Breaks the PRD into tracer-bullet vertical slices; each is independently demoable and ideally AFK-able                                                                          |
-| 5. **Triage**                                                                       | `~/.agents/skills/triage`                                                          | Labels and queues issues (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`); uses the project's label vocabulary, which is captured in the kickoff's Thread B |
-| 6. **Build**                                                                        | `~/.agents/skills/tdd`                                                             | Tracer-bullet RED→GREEN per slice; one test, then one implementation, repeat. Public-interface behaviour only                                                                   |
-| 7. **Diagnose**                                                                     | `~/.agents/skills/diagnose`                                                        | When a build hits a hard bug, performance regression, or non-deterministic failure. Build a feedback loop first, then bisect                                                    |
-| 8. **Review**                                                                       | `~/.agents/skills/review`                                                          | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents                                                                                       |
-| 9. **QA**                                                                           | `~/.agents/skills/qa`                                                              | Conversational bug filing against the running app. Produces durable GitHub (or project-tracker) issues from the user's perspective                                              |
+| 2. **Grill** the design until shared understanding                                  | `.opencode/skills/grill-me` (open-ended) or `grill-with-docs` (against the domain) | Whenever the concept is fuzzy, the requirements are in tension, or a non-trivial decision is being made                                                                         |
+| 3. **PRD**                                                                          | `.opencode/skills/to-prd`                                                          | After the grill resolves. Synthesises the conversation into a PRD with problem statement, user stories, implementation decisions, testing decisions, out of scope               |
+| 4. **Issues**                                                                       | `.opencode/skills/to-issues`                                                       | Breaks the PRD into tracer-bullet vertical slices; each is independently demoable and ideally AFK-able                                                                          |
+| 5. **Triage**                                                                       | `.opencode/skills/triage`                                                          | Labels and queues issues (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`); uses the project's label vocabulary, which is captured in the kickoff's Thread B |
+| 6. **Build**                                                                        | `.opencode/skills/tdd` (+ in-repo `tdd-supplementary`)                             | Tracer-bullet RED→GREEN per slice; one test, then one implementation, repeat. Public-interface behaviour only                                                                   |
+| 7. **Diagnose**                                                                     | `.opencode/skills/diagnose`                                                        | When a build hits a hard bug, performance regression, or non-deterministic failure. Build a feedback loop first, then bisect                                                    |
+| 8. **Review**                                                                       | `.opencode/skills/review`                                                          | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents                                                                                       |
+| 9. **QA**                                                                           | `.opencode/skills/qa`                                                              | Conversational bug filing against the running app. Produces durable GitHub (or project-tracker) issues from the user's perspective                                              |
 | 10. **Release**                                                                     | (in-repo, this section "Releases")                                                 | chronver bump as final commit on the release branch; human tags the merge commit on `main` and pushes with `--follow-tags`                                                      |
-| 11. **Handoff**                                                                     | `~/.agents/skills/handoff`                                                         | When context is running out and a fresh session needs to pick up. Compacts to the OS temp dir, not the workspace                                                                |
+| 11. **Handoff**                                                                     | `.opencode/skills/handoff`                                                         | When context is running out and a fresh session needs to pick up. Compacts to the OS temp dir, not the workspace                                                                |
 
 **Always-on supporting layer** (not a stage — runs throughout):
 
@@ -91,7 +91,7 @@ A change to a UI primitive in `src/lib/components/` is **incomplete without a st
 
 ## Working style
 
-The **Constant process pipeline** section above is the canonical reference for which skill applies at which stage. Load the relevant one when the stage applies (don't load for the sake of loading):
+The **Constant process pipeline** section above is the canonical reference for which skill applies at which stage. All listed skills live in `.opencode/skills/`. Load the relevant one when the stage applies (don't load for the sake of loading):
 
 Design-stage skills (load during stages 2–5):
 
@@ -104,7 +104,7 @@ Design-stage skills (load during stages 2–5):
 Build-stage skills (load during stages 6–9):
 
 - `tdd` — vertical-slice RED→GREEN; public-interface behaviour only
-- `tdd-supplementary` (in-repo, `.opencode/skills/tdd-supplementary/`) — suede-specific supplements: test pruning pass, Storybook-when-in-use discipline, "earn their keep" rule
+- `tdd-supplementary` — suede-specific supplements: test pruning pass, Storybook-when-in-use discipline, "earn their keep" rule
 - `diagnose` — feedback-loop-first debugging for hard bugs
 - `review` — two-axis PR review (Standards + Spec)
 - `qa` — conversational bug filing against the running app
@@ -140,7 +140,7 @@ Working style, Releases, Decision Graph) into one sequence.
 ### During
 
 1. Before each major edit, log an action node and link it to the goal.
-2. Apply `~/.agents/skills/` process skills when the relevant pipeline
+2. Apply `.opencode/skills/` process skills when the relevant pipeline
    stage applies (see **Constant process pipeline** above). The "During"
    steps in particular: `tdd` (build), `diagnose` (when stuck),
    `prototype` (when you need to throw code at a question), `review`

@@ -5,11 +5,11 @@ description: Suede-specific supplements to the global tdd skill — test pruning
 
 # TDD supplementary
 
-The global `~/.agents/skills/tdd/` skill covers the core discipline: RED → GREEN → REFACTOR, vertical slices, public-interface behaviour, mocking at boundaries. This skill adds the Suede-specific rules that the global skill is silent on.
+The in-repo `.opencode/skills/tdd/` skill covers the core discipline: RED → GREEN → REFACTOR, vertical slices, public-interface behaviour, mocking at boundaries. This skill adds the Suede-specific rules that the core skill is silent on.
 
-## Prune pass — the rule the global skill is missing
+## Prune pass — the rule the core TDD skill is missing
 
-The global TDD skill is silent on what to do with the tests that _already exist_ after a slice wraps up. Two failure modes accumulate over a project's lifetime:
+The core TDD skill is silent on what to do with the tests that _already exist_ after a slice wraps up. Two failure modes accumulate over a project's lifetime:
 
 - **Insensitive tests** — they pass on broken code. They test a data structure shape or a private method, not user-facing behaviour. False confidence: "tests pass, so it works."
 - **Brittle tests** — they fail on harmless refactors. They assert on internal selectors (`page.locator('button.suede-button')`) or mock-heavy internal collaborator contracts. The team stops trusting them, then stops running them, then deletes the whole suite.
@@ -22,7 +22,7 @@ The global TDD skill is silent on what to do with the tests that _already exist_
 
 ### The pass
 
-For each test file in the slice, walk the `~/.agents/skills/tdd/tests.md` "Red flags" checklist:
+For each test file in the slice, walk the `.opencode/skills/tdd/tests.md` "Red flags" checklist:
 
 - Mocking internal collaborators? → Prune (delete or replace with an integration test at a higher seam).
 - Testing private methods? → Delete. Private methods are an implementation detail.
@@ -52,6 +52,6 @@ A fork that rips Storybook (e.g. a backend MCP, a content site using MDX for com
 
 ## What's intentionally not in this skill
 
-- **General testing theory** — that's in the global `tdd` skill. Load that one first.
+- **General testing theory** — that's in the in-repo `tdd` skill. Load that one first.
 - **Vitest / Playwright / svelte-check commands** — those are in AGENTS.md and the per-command `build-test.md` skill.
 - **Per-component test patterns** — those are the per-component file's call, not a global rule.

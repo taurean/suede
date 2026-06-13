@@ -58,7 +58,7 @@ Suede is a template you duplicate, not a dependency you install. The flow:
 3. **Run the kickoff skill.** Tell the agent something like _"start a new project from this template"_ or _"fork suede"_. That triggers [`suede-kickoff`](.opencode/skills/suede-kickoff/SKILL.md), which walks through:
    - **Capture lineage** — record the suede chronver tag and commit hash _before_ anything destructive. The tag lands in the new `package.json` as `"suede": { "from": "<tag>" }`.
    - **Reset history** — delete `.git`, init a fresh repo on `main`.
-   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which global skills apply.
+   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which skills apply.
    - **Bootstrap commit** — update `package.json` (name, version, `suede.from`), reset the `.deciduous/` graph, commit.
    - **Branch the follow-up task** — `chore/suede-kickoff`, where the Thread B answers are turned into actual edits to `AGENTS.md`, `.opencode/`, configs, and this README. The kickoff skill deletes itself at the end of that task — it's consumed once.
 
@@ -93,7 +93,7 @@ The happy path is the eight stages that fire for almost every unit of work:
 
 A few skills are loaded only when the situation matches: `diagnose` for hard bugs, `qa` for conversational bug filing, `handoff` when context runs out, plus `prototype`, `improve-codebase-architecture`, `write-a-skill`, `find-skills`, and `caveman` as wraparound tools.
 
-Stage skills live in the global `~/.agents/skills/` plugin; suede ships only its repo-specific supplements in `.opencode/skills/`.
+Stage skills all live in `.opencode/skills/`. No global plugin is required.
 
 ### The shape of a single task
 
@@ -125,7 +125,7 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 | `narratives`        | Reconstruct how the system evolved, as prose narratives                    |
 | `archaeology`       | Turn those narratives into a backdated, queryable decision graph           |
 
-Cross-cutting process skills (grill-me, to-prd, tdd, review, qa, …) live in the global `~/.agents/skills/` plugin, not in the repo.
+Cross-cutting process skills (grill-me, to-prd, tdd, review, qa, …) all ship in `.opencode/skills/`.
 
 ### Commands (`.opencode/commands/`)
 

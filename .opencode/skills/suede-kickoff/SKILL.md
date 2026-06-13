@@ -10,6 +10,33 @@ Reset a fresh suede clone into a standalone project. The working tree IS the new
 
 **Preconditions:** `git status` clean. `pnpm install` has been run. `deciduous` on `PATH`.
 
+## Step 0: Verify external dependencies
+
+Suede's process layer depends on a small set of system tools outside the `pnpm install` boundary. Verify each is installed and on `PATH` before any destructive op; if anything is missing, **stop and notify the human** — do not silently install or continue.
+
+```bash
+command -v deciduous >/dev/null 2>&1 && echo "OK: deciduous"     || echo "MISSING: deciduous"
+command -v gh         >/dev/null 2>&1 && echo "OK: gh (optional)" || echo "MISSING: gh (optional — only needed for `decision-graph` PR-history reconstruction)"
+command -v git        >/dev/null 2>&1 && echo "OK: git"          || echo "MISSING: git"
+command -v pnpm       >/dev/null 2>&1 && echo "OK: pnpm"         || echo "MISSING: pnpm"
+command -v node       >/dev/null 2>&1 && echo "OK: node"         || echo "MISSING: node"
+```
+
+**Required** (the kickoff cannot proceed without these):
+
+- `deciduous` — the decision-graph CLI. Install per [deciduous docs](https://github.com/anomalyco/deciduous) (`cargo install deciduous` is the typical path).
+- `git` — for the lineage capture, the `.git` reset, the branch creation.
+- `pnpm` — for the version bump, `pnpm install` re-verification.
+- `node` — required by `pnpm` and `wrangler`.
+
+**Optional** (the kickoff proceeds, but a specific skill is degraded):
+
+- `gh` — only the `/decision-graph` command's PR-history reconstruction uses it. The kickoff itself does not need it; the user can install it later.
+
+If any required tool is missing, list the missing tools in the notification, link to install instructions where reasonable, and stop. Do not proceed to Step 1.
+
+If all clear, continue.
+
 ## Step 1: Capture the lineage marker
 
 BEFORE any destructive op, capture the suede tag and commit. The `.git` history is the only ground truth.
@@ -50,7 +77,7 @@ The process itself is constant across every suede fork — the workflow from con
    - **Version scheme** — default is **chronver** (suede's apps-and-templates convention). Override to **semver** if this fork is a library consumed by dependents. A fork that picks semver rewrites the AGENTS.md Releases section during this follow-up branch.
    - **Branch and commit naming** — the canonical list of conventional-commits types is in AGENTS.md "Branch and commit naming." Most forks inherit the canonical 10 (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`) as-is. Override cases: a fork that needs an extra type (e.g. `i18n` for a content-heavy project) or wants to trim one (e.g. drop `perf` for a backend MCP with no measurable perf budget) records the override here, and the agent updates AGENTS.md's "Branch and commit naming" section to reflect the fork's list.
    - **Pipeline compression** — for a 2-day prototype you might collapse `to-prd` / `to-issues` / `triage` into the PR description (no PRD file, no tracker, no labels). The stages still happen; the artifacts don't.
-   - **Which global skills from `~/.agents/skills/` apply** — e.g. a docs-heavy content project might pull in `writing-shape`; a backend project might pull in `improve-codebase-architecture`; a CLI might _not_ need `web-haptics`. The pipeline's Working style section lists the canonical set; you can subtract.
+   - **Which skills apply** — the pipeline's Working style section lists the canonical set. A docs-heavy content project might pull in `writing-shape`; a backend project might pull in `improve-codebase-architecture`; a CLI might _not_ need `web-haptics`. You can subtract.
    - **Anything else that the human knows about this project that the agent can't infer.**
 
 The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, and `.opencode/plugins/` to edit, add, or remove.
@@ -120,7 +147,7 @@ The PR description for the follow-up branch is the audit trail. Open the PR (wit
 | "I'll work on a copy to be safe"                  | The working tree IS the new project. A copy just delays the same ops.                                                                                                                                                |
 | "Bootstrap commit doesn't need a follow-up task"  | Deep tooling decisions are a separate concern, separate branch, separate PR.                                                                                                                                         |
 | "I'll just plan the runtime-layer customizations" | Thread B captures process-layer customizations, not just runtime. The follow-up edits `AGENTS.md` / `.opencode/skills/` / `.opencode/commands/` / etc. — those are _also_ follow-up work, not part of the bootstrap. |
-| "I can decide the process tweaks for them"        | The process is the human's. The grill captures their call. The agent does not pick which `~/.agents/skills/` to load, which issue tracker to use, or which branch convention to enforce — those are Q8 in Thread B.  |
+| "I can decide the process tweaks for them"        | The process is the human's. The grill captures their call. The agent does not pick which `.opencode/skills/` to load, which issue tracker to use, or which branch convention to enforce — those are Q8 in Thread B.  |
 | "Let me also start editing files in Step 3"       | Step 3 produces a plan, not a diff. Step 8 turns the plan into a diff. Writing code in Step 3 violates the grill-then-act discipline.                                                                                |
 
 ## Verification before handing back
