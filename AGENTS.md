@@ -23,7 +23,7 @@ The branch name and the commit-message type share a vocabulary. **Branch names**
 - `feat` — new user-visible feature
 - `fix` — bug fix for user-visible behaviour
 - `chore` — maintenance, dependency bumps, tooling, version bumps
-- `docs` — documentation only (AGENTS.md, task notes, READMEs, ADRs)
+- `docs` — documentation only (AGENTS.md, READMEs, ADRs)
 - `refactor` — code change that neither fixes a bug nor adds a feature
 - `test` — test additions or corrections, no production code change
 - `build` — build system or external dependency change
@@ -36,27 +36,14 @@ A fork that needs to extend the list (e.g. add `i18n` for a content-heavy projec
 ## Layout
 
 - `AGENTS.md` — this file
-- `agent-notes/` — chronological task notes, one per task, written at task end. Filename: `YYYY-MM-DD-NN-<slug>.md` where `NN` is a per-day counter (`01`, `02`, ...) zero-padded to 2 digits. The counter is the order tasks _landed_, not the order they were _started_ — if the day ends with 3 notes, the next task the next day starts at `01` again, not `04`. `<slug>` is short kebab-case, lower-case, no trailing dash.
-- `agent-notes/plans/` — gitignored (transient scratchpads; see Task flow for the full rule)
 - `.opencode/skills/` — in-repo skills (cross-cutting process skills live in your global plugin, not here)
 - `.opencode/{agents,commands,plugins,tools}/` — OpenCode integration files. All filenames in `.opencode/` use kebab-case. Skill directories are `kebab-case` and contain a single `SKILL.md`.
 
-### Task note section headings
-
-Every task note uses the six section headings from the template at `agent-notes/0000-00-00-00-task-template.md`, in this order:
-
-1. `## Task` — what was asked, scope, done-when.
-2. `## Decisions` — choices made, with the why.
-3. `## Actions` — steps taken, with brief results or pointers.
-4. `## Files touched` — list of paths with one-line descriptions of what changed.
-5. `## Verification` — `pnpm check` / `pnpm test` / `pnpm lint` results, with command + outcome.
-6. `## Follow-ups / stubs` — things deferred, stubbed, or flagged for later.
-
-The template says "fill at end, not during" and "size scales with task" — trivial tasks get short notes (one or two lines per section), not skipped sections. A task note with fewer than the six sections is incomplete.
+Durable records of work: the `deciduous` decision graph (real-time, in `.deciduous/`), the project's tracker (GitHub Issues), and the merged PR history. There is no per-task markdown note.
 
 ## Constant process pipeline
 
-The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (issue tracker, branch convention, version policy, which global skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B and recorded in the fork's first task note. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it (see "Size scales with task" under **Working style**) but keep the shape.
+The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (branch convention, version policy, which global skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it (see "Size scales with task" under **Working style**) but keep the shape.
 
 | Stage                                                                               | Skill                                                                              | When to load                                                                                                                                                                    |
 | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -75,13 +62,12 @@ The workflow below ships to every project forked from suede. The _process_ is co
 **Always-on supporting layer** (not a stage — runs throughout):
 
 - **Decision graph** (`deciduous` CLI + this file's "Decision Graph Workflow" section) — every commit linked to a node, goal → options → decision → actions → outcomes, real-time logging
-- **Task notes** (`agent-notes/YYYY-MM-DD-NN-<slug>.md`, template at `agent-notes/0000-00-00-00-task-template.md`) — one per task, written at end. Records decisions, actions, files touched, verification evidence
 - **Git workflow** (this file's "Git workflow" section) — branch from `main`, PR review, agent never pushes/merges, `Co-authored-by: opencode` trailer on agent-made commits
 - **Authoring boundaries** (this file's "Authoring boundaries" section) — humans own Svelte markup / scoped CSS / design tokens; agents own `<script lang="ts">` and `*.ts`
 
-The pipeline is the same regardless of project shape (full-stack, content, backend, other) and regardless of project formality. A 2-day prototype compresses stages 3–5 (no PRD file, issues live in the task note, no triage labels); a 2-year production app runs every stage.
+The pipeline is the same regardless of project shape (full-stack, content, backend, other) and regardless of project formality. A 2-day prototype compresses stages 3–5 (no PRD file, no tracker, no triage labels); a 2-year production app runs every stage.
 
-**Tracker preconditions.** Stages 4 (issues), 5 (triage), 8 (review), and 9 (qa) all assume a project tracker exists with the conventional label vocabulary (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`, `bug` / `enhancement`). The default tracker is **GitHub Issues**; forks that want a markdown-dir tracker or Linear can override via `suede-kickoff` Step 3 Thread B. When no tracker is configured, these stages collapse to mental checks on the task note's Follow-ups list and the stage-skill descriptions still apply as vocabulary, just not as formal workflow.
+**Tracker preconditions.** Stages 4 (issues), 5 (triage), 8 (review), and 9 (qa) all assume a project tracker exists with the conventional label vocabulary (`needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`, `bug` / `enhancement`). The tracker is **GitHub Issues** (where `qa` / `triage` / `to-issues` / `review` expect to read and write). When no tracker is configured, these stages collapse to mental checks on the PR description's Follow-ups list and the stage-skill descriptions still apply as vocabulary, just not as formal workflow.
 
 ## Authoring boundaries
 
@@ -101,7 +87,7 @@ Agents own (TypeScript only):
 
 ### Storybook discipline (UI forks)
 
-A change to a UI primitive in `src/lib/components/` is **incomplete without a story update** in the same commit. Stories are the agent-owned form of the human-owned visual contract: the story captures the component's rendered states, and any new state, prop, or visual branch added in code is a story-add or story-edit. A primitive without a matching story is invisible to QA and to the next contributor. Storybook is the suede default; a fork that rips it records the override in the kickoff follow-up task note, and the agent rewrites AGENTS.md / `.opencode/skills/tdd-supplementary/` references to Storybook as part of that override.
+A change to a UI primitive in `src/lib/components/` is **incomplete without a story update** in the same commit. Stories are the agent-owned form of the human-owned visual contract: the story captures the component's rendered states, and any new state, prop, or visual branch added in code is a story-add or story-edit. A primitive without a matching story is invisible to QA and to the next contributor. Storybook is the suede default; a fork that rips it records the override in the kickoff follow-up PR description (or an ADR if the project uses one), and the agent rewrites AGENTS.md / `.opencode/skills/tdd-supplementary/` references to Storybook as part of that override.
 
 ## Working style
 
@@ -169,12 +155,10 @@ Working style, Releases, Decision Graph) into one sequence.
 ### End
 
 1. Verify: `pnpm check`, `pnpm test`, and `pnpm lint` if lintable files
-   changed. Capture command + result in the task note.
-2. Write the task note at `agent-notes/YYYY-MM-DD-NN-<slug>.md` from the
-   template. Append to the chronological record — never delete.
-3. Bump the version: `pnpm version <YYYY.M.D> --no-git-tag-version`.
-4. Commit the version bump: `chore(release): cut <version>`.
-5. Hand back. The human reviews the PR, merges to `main`, and tags the
+   changed. Capture command + result in the PR description.
+2. Bump the version: `pnpm version <YYYY.M.D> --no-git-tag-version`.
+3. Commit the version bump: `chore(release): cut <version>`.
+4. Hand back. The human reviews the PR, merges to `main`, and tags the
    merge commit on `main` with the bare version string. The agent may
    push the release branch and apply the tag (see Git workflow rule),
    but the merge to `main` is human-only.
@@ -187,7 +171,7 @@ Suede uses [chronver](https://chronver.org) by default. Version lives in `packag
 
 **Every release branch — a branch ready to be reviewed and merged to `main` — ships as its own version.** The bump is the final commit on the release branch, before merge. No versionless merges.
 
-**Tracker and remotes.** The default project tracker is **GitHub Issues** (where the `qa` / `triage` / `to-issues` / `review` skills expect to read and write). Forks that want a different tracker override via `suede-kickoff` Step 3 Thread B. Tangled (or any other git host) can be added as an additional remote for mirroring, but is not a substitute for the tracker.
+**Tracker and remotes.** The project tracker is **GitHub Issues** (where the `qa` / `triage` / `to-issues` / `review` skills expect to read and write). Tangled (or any other git host) can be added as an additional remote for mirroring, but is not a substitute for the tracker.
 
 ### Cutting a release
 
@@ -266,14 +250,13 @@ For all other `deciduous` commands and workflows — quick commands, node flags,
 
 Always:
 
-- Create an `agent-notes/` entry at task end.
 - Run verification before claiming done.
-- Preserve `agent-notes/` history (append, never delete).
+- Capture verification results in the PR description.
 
 Never:
 
 - Modify the presentation layer (Svelte markup, scoped CSS, `src/lib/styles/`).
-- Skip the task note.
+- Skip the PR description.
 - Commit secrets.
 
 ## Verification before completion

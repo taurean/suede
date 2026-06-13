@@ -52,10 +52,12 @@ branch from `suede-kickoff` rewrites it for the new project.
 ## Why this isn't `cargo build && cargo test`
 
 The stock deciduous template's build-test command assumes Rust. Suede's
-stack is pnpm + Vitest + svelte-check. The 2026-06-04-01 task note
-flagged this as a misaligned stock command; this rewrite lands the fix
-and pins it to the Suede defaults. Forks that rip SvelteKit should
-rewrite this skill during their kickoff follow-up branch.
+stack is pnpm + Vitest + svelte-check. The decision-graph log
+(commit 8e4e6b6, decision node for "swap stock deciduous build-test
+for the suede stack") flagged this as a misaligned stock command; this
+rewrite lands the fix and pins it to the Suede defaults. Forks that
+rip SvelteKit should rewrite this skill during their kickoff
+follow-up branch.
 
 ## Test categories in this project
 

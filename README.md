@@ -5,7 +5,7 @@ A SvelteKit starter template with an agentic development process baked in.
 Suede is two layers in one repo:
 
 1. **A runtime stack** — SvelteKit on Cloudflare Pages + Workers, D1 + Drizzle for data, Vitest + Playwright for tests, Storybook for component states, stylebase + Bits UI for the design layer.
-2. **A process layer** — a constant concept-to-merge pipeline, a decision graph (`deciduous`), per-task notes, in-repo skills and commands, and clear boundaries between what humans author and what agents author.
+2. **A process layer** — a constant concept-to-merge pipeline, a decision graph (`deciduous`), in-repo skills and commands, and clear boundaries between what humans author and what agents author.
 
 You don't build _in_ suede so much as you fork it: copy the repo, run the kickoff skill, and the new project inherits both layers with the details tailored to it.
 
@@ -47,7 +47,7 @@ Day-to-day scripts:
 | `pnpm storybook`                                            | Storybook dev server on port 6006                                                   |
 | `pnpm db:push` / `db:generate` / `db:migrate` / `db:studio` | Drizzle workflows against D1 (each verifies `.env` first via `scripts/db-check.js`) |
 
-The quality gate before any task is called done: `pnpm check`, `pnpm lint`, and `pnpm test` if tests changed — with command + result captured as evidence in the task note.
+The quality gate before any task is called done: `pnpm check`, `pnpm lint`, and `pnpm test` if tests changed — with command + result captured as evidence in the PR description.
 
 ## Starting a new project from suede
 
@@ -58,7 +58,7 @@ Suede is a template you duplicate, not a dependency you install. The flow:
 3. **Run the kickoff skill.** Tell the agent something like _"start a new project from this template"_ or _"fork suede"_. That triggers [`suede-kickoff`](.opencode/skills/suede-kickoff/SKILL.md), which walks through:
    - **Capture lineage** — record the suede chronver tag and commit hash _before_ anything destructive. The tag lands in the new `package.json` as `"suede": { "from": "<tag>" }`.
    - **Reset history** — delete `.git`, init a fresh repo on `main`.
-   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), issue tracker (GitHub Issues is the default), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which global skills apply.
+   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which global skills apply.
    - **Bootstrap commit** — update `package.json` (name, version, `suede.from`), reset the `.deciduous/` graph, commit.
    - **Branch the follow-up task** — `chore/suede-kickoff`, where the Thread B answers are turned into actual edits to `AGENTS.md`, `.opencode/`, configs, and this README. The kickoff skill deletes itself at the end of that task — it's consumed once.
 
@@ -74,25 +74,24 @@ Suede is built to be driven through a coding agent (OpenCode, Claude Code, or si
 - **Authoring boundaries.** Humans own the presentation layer: Svelte component markup, `<style>` blocks, `src/lib/styles/`, design tokens. Agents own the TypeScript: `<script lang="ts">` blocks, `*.ts` in `src/lib/` and `src/routes/`, Drizzle schemas, server routes, Workers. An agent never edits markup or scoped CSS.
 - **Storybook discipline.** A change to a UI primitive in `src/lib/components/` is incomplete without a story update in the same commit — stories are the agent-owned record of the human-owned visual contract.
 - **The human merges.** Agents may branch, commit (with a co-author trailer crediting assistance), push branches, and apply tags — but never merge to `main` or push to it directly. Every task lands through a PR the human reviews.
-- **Everything is recorded.** Decisions go in the decision graph in real time; each task ends with a note in `agent-notes/`.
+- **Everything is recorded.** Decisions go in the decision graph in real time. Closed issues and merged PRs are the durable record of what shipped.
 
 ## From concept to merge
 
-Every task moves through the same pipeline. The _process_ is constant across all suede forks; the _details_ (tracker, branch convention, version scheme) are tailored at kickoff. Stages compress for small tasks — a prototype might skip the PRD file and tracker labels — but the shape stays.
+Every task moves through a happy-path pipeline. The _process_ is constant across all suede forks; the _details_ (branch convention, version scheme) are tailored at kickoff. Stages compress for small tasks — a prototype might skip the PRD file and tracker labels — but the shape stays.
 
-| Stage       | Skill                                 | What happens                                                                                 |
-| ----------- | ------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 1. Concept  | —                                     | A problem exists: in conversation, an issue, or a QA bug report                              |
-| 2. Grill    | `grill-me` / `grill-with-docs`        | Stress-test the idea, one question at a time, until understanding is shared                  |
-| 3. PRD      | `to-prd`                              | Synthesize the conversation into a PRD: problem, stories, decisions, scope                   |
-| 4. Issues   | `to-issues`                           | Break the PRD into tracer-bullet vertical slices, each independently demoable                |
-| 5. Triage   | `triage`                              | Label and queue: `needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`          |
-| 6. Build    | `tdd` (+ in-repo `tdd-supplementary`) | RED → GREEN per slice; one test, one implementation, repeat; public-interface behaviour only |
-| 7. Diagnose | `diagnose`                            | For hard bugs: build a feedback loop first, then bisect                                      |
-| 8. Review   | `review`                              | Two-axis PR review (Standards + Spec) in parallel sub-agents, before merge                   |
-| 9. QA       | `qa`                                  | Conversational bug filing against the running app, producing tracker issues                  |
-| 10. Release | (AGENTS.md "Releases")                | chronver bump as the final commit on the branch; human merges and tags                       |
-| 11. Handoff | `handoff`                             | When context runs out, compact the session for the next agent                                |
+The happy path is the eight stages that fire for almost every unit of work:
+
+1. **Concept** — a problem exists: in conversation, an issue, or a QA bug report.
+2. **Grill** (`grill-me` / `grill-with-docs`) — stress-test the idea, one question at a time, until understanding is shared.
+3. **PRD** (`to-prd`) — synthesize the conversation into a PRD: problem, stories, decisions, scope.
+4. **Issues** (`to-issues`) — break the PRD into tracer-bullet vertical slices, each independently demoable.
+5. **Triage** (`triage`) — label and queue: `needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`.
+6. **Build** (`tdd` + in-repo `tdd-supplementary`) — RED → GREEN per slice; one test, one implementation, repeat; public-interface behaviour only.
+7. **Review** (`review`) — two-axis PR review (Standards + Spec) in parallel sub-agents, before merge.
+8. **Release** (AGENTS.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
+
+A few skills are loaded only when the situation matches: `diagnose` for hard bugs, `qa` for conversational bug filing, `handoff` when context runs out, plus `prototype`, `improve-codebase-architecture`, `write-a-skill`, `find-skills`, and `caveman` as wraparound tools.
 
 Stage skills live in the global `~/.agents/skills/` plugin; suede ships only its repo-specific supplements in `.opencode/skills/`.
 
@@ -100,7 +99,7 @@ Stage skills live in the global `~/.agents/skills/` plugin; suede ships only its
 
 1. **Start** — pull `main`, branch `<type>/<slug>` (always from `main`, never from an in-flight branch), log a goal node with the verbatim prompt. If requirements are fuzzy, grill before touching code.
 2. **During** — log action nodes before major edits, honour authoring boundaries, commit as `<type>(<scope>): <subject>` in present-tense imperative, link each commit to the graph.
-3. **End** — run the quality gate, write the task note, bump the version (`chore(release): cut <version>` as the final commit), hand back. The human reviews the PR, merges, and the merge commit gets tagged on `main`.
+3. **End** — run the quality gate, bump the version (`chore(release): cut <version>` as the final commit), hand back. The human reviews the PR, merges, and the merge commit gets tagged on `main`.
 
 Branch types and commit types share one vocabulary — the conventional-commits 1.0.0 list (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`), enumerated in AGENTS.md.
 
@@ -115,10 +114,6 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 - Session-start context recovery: [`.opencode/commands/recover.md`](.opencode/commands/recover.md)
 - Web viewer: [`.opencode/commands/serve-ui.md`](.opencode/commands/serve-ui.md) · multi-user sync: [`.opencode/commands/sync.md`](.opencode/commands/sync.md)
 - Two OpenCode plugins enforce the habit: `require-action-node` (no file edits without a recent action/goal node) and `post-commit-reminder` (link commits after the fact).
-
-### Task notes (`agent-notes/`)
-
-One markdown note per task, written at task end, never deleted. Filename `YYYY-MM-DD-NN-<slug>.md`; six fixed sections (Task, Decisions, Actions, Files touched, Verification, Follow-ups) from the [template](agent-notes/0000-00-00-00-task-template.md). Size scales with the task — trivial tasks get short notes, not skipped sections. `agent-notes/plans/` is a gitignored scratch space.
 
 ### In-repo skills (`.opencode/skills/`)
 
@@ -141,6 +136,6 @@ Cross-cutting process skills (grill-me, to-prd, tdd, review, qa, …) live in th
 - Branch from `main`, always. Every task is reviewed in a PR; the human is the only one who merges.
 - The human is commit author; agent-made commits carry a co-author trailer.
 - **chronver** by default (`YYYY.M.D[.N]`, no leading zeros): every release branch ships its own version bump as its final commit, the merge commit on `main` is tagged with the bare version string and pushed with `--follow-tags`, and `git log <prev>..<new>` is the changelog — no `CHANGELOG.md`. Libraries with dependents switch to semver at kickoff.
-- Default tracker is GitHub Issues; forks can override at kickoff.
+- Default tracker is GitHub Issues.
 
 Full details: AGENTS.md "Git workflow", "Task flow", and "Releases".

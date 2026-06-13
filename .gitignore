@@ -35,9 +35,8 @@ storybook-static
 # Deciduous exported web viewer (regenerated per machine via `deciduous sync`)
 docs/
 
-# Plan files are per-task scratchpads; the compiled form (graph nodes +
-# task note Decisions section) is what persists. Handoff is the tool
-# for resuming work across machines, not the plan file.
+# Per-task scratchpads; the compiled form (graph nodes + PR description)
+# is what persists. Handoff is the tool for resuming work across machines.
 agent-notes/plans/
 
 # Claude-Code-specific artifacts (not part of this OpenCode-primary project)

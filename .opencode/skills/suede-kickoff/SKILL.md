@@ -19,7 +19,7 @@ git describe --tags --abbrev=0   # the chronver tag, e.g. 2026.6.4
 git rev-parse HEAD               # the exact commit hash
 ```
 
-The `suede.from` field is the **tag**, not `package.json#version`. They can differ. Store both — the tag goes in `package.json` (Step 5), the commit hash goes in the Step 8 task note as the audit trail.
+The `suede.from` field is the **tag**, not `package.json#version`. They can differ. Store both — the tag goes in `package.json` (Step 5), the commit hash goes in the Step 8 follow-up PR description as the audit trail.
 
 ## Step 2: Delete `.git`
 
@@ -46,14 +46,14 @@ The process itself is constant across every suede fork — the workflow from con
 
 7. **Tooling keep/rip** — Cloudflare, D1+Drizzle, Storybook, Bits UI, stylebase, Vitest, Playwright, SvelteKit itself. **Defaults: keep all.** Storybook is the suede default for UI forks; ripping it triggers the Authoring Boundaries Storybook-discipline override (the agent rewrites AGENTS.md + `.opencode/skills/tdd-supplementary/` to reflect the rip during this follow-up branch). SvelteKit is the suede default runtime; ripping it means the project is a backend MCP, a CLI, or another non-web shape — capture which, and rewrite the parts of AGENTS.md / `.opencode/commands/build-test.md` that assume a SvelteKit context.
 8. **Process details to tailor** — open-ended. The process itself is constant; what varies is the _details_. Examples of the _kind_ of thing that might apply to this fork but not every fork:
-   - **Issue tracker** — default is **GitHub Issues** (where `qa` / `triage` / `to-issues` / `review` expect to read and write). Override options: a markdown-dir tracker (e.g. `.scratch/issues/`) for forks that don't want an external service, or Linear / GitLab if you actually use them. Tangled is a git-host mirror, not a tracker.
+   - **Issue tracker** — default is **GitHub Issues** (where `qa` / `triage` / `to-issues` / `review` expect to read and write). Tangled is a git-host mirror, not a tracker.
    - **Version scheme** — default is **chronver** (suede's apps-and-templates convention). Override to **semver** if this fork is a library consumed by dependents. A fork that picks semver rewrites the AGENTS.md Releases section during this follow-up branch.
    - **Branch and commit naming** — the canonical list of conventional-commits types is in AGENTS.md "Branch and commit naming." Most forks inherit the canonical 10 (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`) as-is. Override cases: a fork that needs an extra type (e.g. `i18n` for a content-heavy project) or wants to trim one (e.g. drop `perf` for a backend MCP with no measurable perf budget) records the override here, and the agent updates AGENTS.md's "Branch and commit naming" section to reflect the fork's list.
-   - **Pipeline compression** — for a 2-day prototype you might collapse `to-prd` / `to-issues` / `triage` into the task note (no PRD file, no tracker, no labels). The stages still happen; the artifacts don't.
+   - **Pipeline compression** — for a 2-day prototype you might collapse `to-prd` / `to-issues` / `triage` into the PR description (no PRD file, no tracker, no labels). The stages still happen; the artifacts don't.
    - **Which global skills from `~/.agents/skills/` apply** — e.g. a docs-heavy content project might pull in `writing-shape`; a backend project might pull in `improve-codebase-architecture`; a CLI might _not_ need `web-haptics`. The pipeline's Working style section lists the canonical set; you can subtract.
    - **Anything else that the human knows about this project that the agent can't infer.**
 
-The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, `agent-notes/`, and `.opencode/plugins/` to edit, add, or remove.
+The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, and `.opencode/plugins/` to edit, add, or remove.
 
 **Do not write any code in this step.** The grill produces a _plan_, not a diff. Step 8 turns the plan into a diff.
 
@@ -100,11 +100,11 @@ Human is commit author. A brand-new repo's first commit is `main` — the docume
 git checkout -b chore/suede-kickoff
 ```
 
-Write the first task note at `agent-notes/YYYY-MM-DD-01-suede-kickoff.md`. Capture:
+The PR description for the follow-up branch is the audit trail. Open the PR (with a placeholder diff — a `chore: open PR for follow-up` commit on the new branch is fine) and use the description to capture:
 
 - The human's answers verbatim from Step 3 (both Thread A and Thread B).
 - The commit hash from Step 1 (audit trail).
-- **A "process-layer edits" decision list** as the lead section — file-by-file list of what needs to change in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, `.opencode/agents/`, `.opencode/plugins/`, `agent-notes/`, etc. to match the human's Thread B answers. This is the _substantive_ follow-up work.
+- **A "process-layer edits" decision list** as the lead section — file-by-file list of what needs to change in `AGENTS.md`, `.opencode/skills/`, `.opencode/commands/`, `.opencode/agents/`, `.opencode/plugins/`, etc. to match the human's Thread B answers. This is the _substantive_ follow-up work.
 - A "runtime-layer edits" decision list — auth strategy, deploy target, design system scope, per-tooling customizations from Q7, wrangler/D1/Storybook string sweep, README rewrite, config files (`wrangler.jsonc`, `drizzle.config.ts`, `.storybook/`) rename/sweep, post-fork `pnpm lint`/`pnpm check`/`pnpm test` re-verification.
 - **Final action of this task:** delete `.opencode/skills/suede-kickoff/`. The skill is consumed once.
 
@@ -129,5 +129,5 @@ Write the first task note at `agent-notes/YYYY-MM-DD-01-suede-kickoff.md`. Captu
 - `git branch` shows `main` and `chore/suede-kickoff`.
 - `cat package.json` shows `suede.from` set to the tag from Step 1.
 - `.deciduous/` does not exist.
-- First task note exists at the path Step 8 wrote it to.
+- The follow-up PR is open on `chore/suede-kickoff` with the process-layer edits list in the description.
 - `pnpm install` succeeds (the bootstrap is mechanical; if it broke something, the follow-up task will surface it).

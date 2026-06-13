@@ -48,7 +48,7 @@ Storybook is the suede default for UI forks. A UI primitive change is incomplete
 
 Stories are the agent-owned form of the human-owned visual contract. The author of a Storybook story is the _consumer_ of the component, not the implementer. A primitive without a matching story is invisible to QA and to the next contributor.
 
-A fork that rips Storybook (e.g. a backend MCP, a content site using MDX for component docs) records the override in the kickoff follow-up task note and the agent rewrites AGENTS.md / this skill as part of that override. The discipline is unconditional for any fork that kept the default.
+A fork that rips Storybook (e.g. a backend MCP, a content site using MDX for component docs) records the override in the kickoff follow-up PR description (or an ADR if the project uses one) and the agent rewrites AGENTS.md / this skill as part of that override. The discipline is unconditional for any fork that kept the default.
 
 ## What's intentionally not in this skill
 
