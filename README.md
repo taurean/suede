@@ -1,4 +1,4 @@
-<img width="322" height="60" alt="suede logo" src="https://github.com/user-attachments/assets/dc3c0617-21b2-49c8-ab6d-883bf9e593d9" />
+<img width="322" height="60" alt="suede logo" src="./static/suede-logo.png" />
 
 
 # Suede
