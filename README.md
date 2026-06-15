@@ -1,4 +1,4 @@
-<img width="322" height="60" alt="suede logo" src="./static/suede-logo.png" />
+<img width="322" height="60" alt="suede logo" src="./static/suede-padding.png" />
 
 
 # Suede
