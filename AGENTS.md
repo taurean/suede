@@ -1,6 +1,10 @@
 # AGENTS
 
-Cross-agent rulebook. Read at task start (always in context for OpenCode, Claude Code, etc.).
+Cross-agent rulebook. Read at task start.This is the project-specific AGENTS.md file.
+
+## Suede overview
+
+Suede is an opinionated SvelteKit starter template for shipping full-stack apps on Cloudflare. It exists to give every project forked from it a consistent process pipeline — from concept through release — with defined git conventions, authoring boundaries, and decision tracking baked in from day one. Forks inherit the mechanics and tailor the details (version scheme, label vocabulary, tracker setup) during their own kickoff.
 
 ## Stack
 
