@@ -10,7 +10,8 @@ RFC 2119 applies. MUST/MUST NOT are absolute; SHOULD/SHOULD NOT are strong defau
 ## File mechanics
 
 - `SYSTEMS_MAP.md` MUST be a single flat markdown file at the project root.
-- The file MUST open with one short paragraph stating the promise (a reader can decide which small part of the project is relevant without opening anything else) and how the areas are divided, followed by an `## Areas` section holding the entries.
+- The file MUST open with one short paragraph stating the promise (a reader can decide which small part of the project is relevant without opening anything else) and how the areas are divided, followed by a `## Layout` section and then an `## Areas` section holding the entries.
+- `## Layout` holds a commented ASCII tree of the repo — each entry gets a one-phrase "what this is for" comment. Go only as deep as navigation requires (a directory whose contents all serve one purpose is one line). Mark gitignored-but-expected directories. Update the tree when files or directories it names move, appear, or disappear — not for changes inside them.
 - Unlike a Slice Brief, it MUST be committed to the repository — project-level documentation, not per-task working context.
 - MUST NOT split the file into multiple files preemptively. MAY propose a split once the file is hard to browse, but MUST NOT split without explicit human approval.
 
