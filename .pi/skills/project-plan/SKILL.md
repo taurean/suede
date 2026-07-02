@@ -32,7 +32,7 @@ An ordered list. Per cut:
 - **Title** — short enough to become a branch name.
 - **Outcome** — one sentence, user-observable.
 - **Stories** — one to three "Done when" lines (`<user> can <do X> and
-  observes <Y>`). These become the cut's test list, so restraint here is
+observes <Y>`). These become the cut's test list, so restraint here is
   restraint everywhere downstream.
 - **Blocked by** — earlier cuts it needs, if any.
 

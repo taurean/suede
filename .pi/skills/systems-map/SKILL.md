@@ -21,7 +21,7 @@ Pick the mode from the file's existence, not from how the request was phrased.
 **Create** — file does not exist:
 
 - Survey the codebase to propose an initial set of areas before writing anything.
-- Group functionality by this test: *do these parts change for the same reason, or different ones?* Parts that change for different reasons MUST be separate areas, even if they share a directory.
+- Group functionality by this test: _do these parts change for the same reason, or different ones?_ Parts that change for different reasons MUST be separate areas, even if they share a directory.
 - Present the proposed area breakdown to the human for confirmation before writing. The initial structure is more expensive to correct later than individual fields — MUST NOT finalize unilaterally.
 
 **Update** — file exists:

@@ -1,6 +1,5 @@
 <img width="400px" alt="suede logo" src="./static/suede-padding.png" />
 
-
 # Suede
 
 A SvelteKit starter template with an agentic development process baked in.
@@ -115,22 +114,22 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 
 ### In-repo skills (`.pi/skills/`)
 
-| Skill                  | Purpose                                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| `task`                 | The task-process spine: goal alignment, prep, per-type execution paths, testing discipline, closeout     |
-| `slice-brief`          | Per-PR brief that hands a vertical slice to a fresh agent session                                        |
-| `systems-map`          | Create and maintain `SYSTEMS_MAP.md`                                                                     |
-| `project-plan`         | Cut plan for multi-PR work; the fuller PRD / per-issue / triage ceremony preserved under `reference/`    |
-| `review`               | Two-axis PR review (Standards + Spec)                                                                    |
-| `decision-graph`       | Deciduous mechanics: node/edge commands, verbatim prompt capture, commit linking, audit, sync            |
-| `suede-kickoff`        | One-shot bootstrap of a new project from a fresh suede clone (see above)                                 |
+| Skill            | Purpose                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| `task`           | The task-process spine: goal alignment, prep, per-type execution paths, testing discipline, closeout  |
+| `slice-brief`    | Per-PR brief that hands a vertical slice to a fresh agent session                                     |
+| `systems-map`    | Create and maintain `SYSTEMS_MAP.md`                                                                  |
+| `project-plan`   | Cut plan for multi-PR work; the fuller PRD / per-issue / triage ceremony preserved under `reference/` |
+| `review`         | Two-axis PR review (Standards + Spec)                                                                 |
+| `decision-graph` | Deciduous mechanics: node/edge commands, verbatim prompt capture, commit linking, audit, sync         |
+| `suede-kickoff`  | One-shot bootstrap of a new project from a fresh suede clone (see above)                              |
 
 ### Prompts (`.pi/prompts/`)
 
 User-invoked, loaded only when called:
 
-| Prompt                   | Purpose                                                                  |
-| ------------------------ | ------------------------------------------------------------------------ |
+| Prompt                   | Purpose                                                                   |
+| ------------------------ | ------------------------------------------------------------------------- |
 | `/pulse`                 | Map the system's _current_ state as decision nodes — no history, just now |
 | `/narratives`            | Reconstruct how the system evolved, as prose narratives                   |
 | `/archaeology`           | Turn those narratives into a backdated, queryable decision graph          |
