@@ -1,7 +1,5 @@
 ---
-name: pulse
-description: Map the current model as decisions - no history, just now
-compatibility: opencode
+description: Snapshot the project's current decision state — active goals, coverage gaps, orphan nodes — with no history.
 ---
 
 # Pulse

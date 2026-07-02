@@ -7,14 +7,14 @@ description: Produces a per-PR BRIEF.md under tmp/ that hands off a vertical-sli
 
 ## When this runs
 
-Triggered by `/slice-brief`. This is step 7 of a standing workflow — runs after the worktree exists, the draft PR is open, and the systems map has been read. Do not run before the systems map exists; seam assessment and surface sections depend on it.
+Runs during task prep (`/skill:task`), after the worktree exists and the systems map has been read, and immediately before the draft PR opens with this brief as its body. Do not run before the systems map exists; seam assessment and surface sections depend on it.
 
 ## Prerequisites — what's already in context
 
 Spend each fact once. Don't re-derive what earlier steps already paid for:
 
-- **Goal from step 1** — seed for problem, opportunity, goal. Don't re-interview from zero.
-- **Systems map from step 6** — read it. Use it to identify the relevant code area before reading anything further. Do not re-scan the whole repository.
+- **Goal from the alignment conversation** (task step 0) — seed for problem, opportunity, goal. Don't re-interview from zero.
+- **Systems map from prep** — read it. Use it to identify the relevant code area before reading anything further. Do not re-scan the whole repository.
 - **Current branch name** — confirm scope from it; don't invent new context.
 
 ## Conversation behavior
@@ -30,7 +30,7 @@ Short conversation, not a form. Ask the human one at a time, only for parts requ
 **Investigate first, then confirm:**
 
 - **Background** — pull from systems map. Current state as it exists today. Zero failure framing.
-- **User stories** — propose from goal + systems map, then confirm.
+- **User stories** — propose from goal + systems map, then confirm. If the task is a cut from a plan issue (`/skill:project-plan`), start from that cut's stories instead of proposing fresh ones. Give each a "Done when" line — "\<user\> can \<do X\> and observes \<Y\>" — which becomes the name and shape of that story's scenario test (see `.pi/skills/task/testing.md`).
 - **Out of scope** — propose explicit boundaries from what the goal does and doesn't claim. Over-specify.
 - **Seam assessment, systems updates, modified surface, new surface** — derive from targeted reading of files the systems map flags. If the map doesn't cover the area, read just enough actual code to answer.
 
@@ -60,11 +60,9 @@ Write the brief with these H2 sections, in order:
 
 ## File handling
 
-- Derive a unique filename from the open draft PR. Pattern: `tmp/BRIEF-<PR-number>-<slug>.md` at the worktree root.
-  - **PR number**: `gh pr view --json number -q '.number'` (or the host's equivalent — GitLab MR IID, etc.). Fall back to the branch name's PR/issue reference if the CLI isn't available; fall back to a sanitized branch slug as last resort.
-  - **Slug**: short kebab-case from the PR title or branch name, ~30 chars max. If neither yields a clean string, drop the slug and use `tmp/BRIEF-<PR-number>.md`.
+- Derive the filename from the branch: `tmp/BRIEF-<branch-slug>.md` at the worktree root (short kebab-case slug, ~30 chars max). If a PR already exists for this branch (in-flight follow-up), prefer `tmp/BRIEF-<PR-number>-<slug>.md`, with the number from `gh pr view --json number -q '.number'` (or the host's equivalent — GitLab MR IID, etc.).
 - Create `tmp/` if it doesn't exist.
-- Never committed — working context for this task's worktree, not part of the codebase. Content gets archived into a PR comment at task end, after which the worktree (and the file) is removed.
+- Never committed — working context for this task's worktree, not part of the codebase. The draft PR's body carries the brief; if the tmp copy diverges during the task, update the PR body before closeout, after which the worktree (and the file) is removed.
 - Gitignore the whole `tmp/` directory. If `.gitignore` doesn't already exclude it, add it. Don't duplicate existing entries.
 
 ## If the brief file already exists

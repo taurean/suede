@@ -1,7 +1,5 @@
 ---
-name: archaeology
-description: Transform narratives into a queryable decision graph
-compatibility: opencode
+description: Reconstruct the decision graph from narratives and git/PR history — backdated nodes for decisions made before the graph existed.
 ---
 
 # Archaeology

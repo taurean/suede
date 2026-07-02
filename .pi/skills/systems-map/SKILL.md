@@ -10,12 +10,13 @@ RFC 2119 applies. MUST/MUST NOT are absolute; SHOULD/SHOULD NOT are strong defau
 ## File mechanics
 
 - `SYSTEMS_MAP.md` MUST be a single flat markdown file at the project root.
+- The file MUST open with one short paragraph stating the promise (a reader can decide which small part of the project is relevant without opening anything else) and how the areas are divided, followed by an `## Areas` section holding the entries.
 - Unlike a Slice Brief, it MUST be committed to the repository — project-level documentation, not per-task working context.
 - MUST NOT split the file into multiple files preemptively. MAY propose a split once the file is hard to browse, but MUST NOT split without explicit human approval.
 
 ## Modes
 
-Triggered by `/systems-map`.
+Pick the mode from the file's existence, not from how the request was phrased.
 
 **Create** — file does not exist:
 
@@ -57,8 +58,8 @@ Field requirements:
 - **For** — MUST be present. Single sentence. Domain/experience terms. MUST NOT be implementation-only (naming a class or table instead of what the area is for).
 - **Lives at** — MUST be present. Entry points, not exhaustive file inventory. MUST NOT enumerate every file in the area.
 - **Why this shape** — MAY be omitted. If present, MUST describe a genuinely non-obvious reason. If the honest answer is "it's a standard form," MUST omit rather than manufacture a rationale.
-- **Seams** — SHOULD be present when real extension/swap points exist. MAY be omitted, but only after actively checking — MUST NOT default to empty without checking.
-- **Fragile** — MAY be empty. MUST NOT be skipped without an active check; the field MAY end up empty, but only after looking.
+- **Seams** — MUST be present. If no real extension/swap points exist after actively checking, write that ("none found") rather than omitting — absence reads as "not yet considered."
+- **Fragile** — MUST be present, same rule: an honest "none found" after looking, never a silently missing field.
 
 ## Validation before writing
 

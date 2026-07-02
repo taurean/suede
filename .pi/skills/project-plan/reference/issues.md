@@ -1,9 +1,6 @@
----
-name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
----
+# Reference: per-slice issues
 
-# To Issues
+> Preserved ceremony — the compressed live process is [../SKILL.md](../SKILL.md), which publishes one plan issue instead of an issue per slice and prices granularity in review cycles, not demoability. Reach for this only when a project needs per-issue tracking.
 
 Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
 

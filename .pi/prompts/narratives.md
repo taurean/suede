@@ -1,7 +1,5 @@
 ---
-name: narratives
-description: Understand how a system evolved - narratives are the source of truth
-compatibility: opencode
+description: Maintain .deciduous/narratives.md — the prose record of goals and turning points that /archaeology later compiles into graph nodes.
 ---
 
 # Narrative Tracking

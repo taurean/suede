@@ -1,9 +1,8 @@
----
-name: to-prd
-description: Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context.
----
+# Reference: full PRD
 
-This skill takes the current conversation context and codebase understanding and produces a PRD. Do NOT interview the user — just synthesize what you already know.
+> Preserved ceremony — the compressed live process is [../SKILL.md](../SKILL.md). Reach for this only when a project needs the formality.
+
+Take the current conversation context and codebase understanding and produce a PRD. Do NOT interview the user — just synthesize what you already know.
 
 The issue tracker is **GitHub Issues** (suede default). Triage labels are the conventional ones: `needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`, with `needs-info` as a detour and `bug` / `enhancement` as category labels. See `AGENTS.md` "Constant process pipeline" for the canonical vocabulary.
 
@@ -29,15 +28,15 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of user stories. Each user story should be in the format of:
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+1. As an <actor>, I want a <feature>, so that <benefit> — Done when: <user> can <do X> and observes <Y>
 
 <user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
+1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending — Done when: a signed-in customer opens the accounts page and sees the current balance of each account
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Keep the list as short as the feature's distinct capabilities allow — the story list is the test list (`.pi/skills/task/testing.md`), so every extra story is an extra test the suite carries and the human reviews.
 
 ## Implementation Decisions
 
@@ -59,8 +58,7 @@ Exception: if a prototype produced a snippet that encodes a decision more precis
 
 A list of testing decisions that were made. Include:
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
+- The seams the scenario tests will run through (test shape and quality are owned by `.pi/skills/task/testing.md` — don't restate it here)
 - Prior art for the tests (i.e. similar types of tests in the codebase)
 
 ## Out of Scope
