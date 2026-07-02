@@ -12,7 +12,7 @@ Suede is two layers in one repo:
 
 You don't build _in_ suede so much as you fork it: copy the repo, run the kickoff skill, and the new project inherits both layers with the details tailored to it.
 
-[`AGENTS.md`](AGENTS.md) is the canonical rulebook — it's always in the agent's context (wired up via [`opencode.json`](opencode.json)) and is the source of truth wherever this README summarizes. When the two disagree, AGENTS.md wins.
+[`AGENTS.md`](AGENTS.md) is the canonical rulebook — agent harnesses load it as the project instruction file, and it is the source of truth wherever this README summarizes. When the two disagree, AGENTS.md wins.
 
 ## Stack
 
@@ -58,12 +58,12 @@ Suede is a template you duplicate, not a dependency you install. The flow:
 
 1. **Copy the repo.** Clone suede (or copy the working tree) to a new directory. The working tree _is_ the new project — don't work on a side copy.
 2. **Install and verify.** `pnpm install`, confirm `git status` is clean.
-3. **Run the kickoff skill.** Tell the agent something like _"start a new project from this template"_ or _"fork suede"_. That triggers [`suede-kickoff`](.opencode/skills/suede-kickoff/SKILL.md), which walks through:
+3. **Run the kickoff skill.** Tell the agent something like _"start a new project from this template"_ or _"fork suede"_. That triggers [`suede-kickoff`](.pi/skills/suede-kickoff/SKILL.md), which walks through:
    - **Capture lineage** — record the suede chronver tag and commit hash _before_ anything destructive. The tag lands in the new `package.json` as `"suede": { "from": "<tag>" }`.
    - **Reset history** — delete `.git`, init a fresh repo on `main`.
    - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which skills apply.
    - **Bootstrap commit** — update `package.json` (name, version, `suede.from`), reset the `.deciduous/` graph, commit.
-   - **Branch the follow-up task** — `chore/suede-kickoff`, where the Thread B answers are turned into actual edits to `AGENTS.md`, `.opencode/`, configs, and this README. The kickoff skill deletes itself at the end of that task — it's consumed once.
+   - **Branch the follow-up task** — `chore/suede-kickoff`, where the Thread B answers are turned into actual edits to `AGENTS.md`, `.pi/`, configs, and this README. The kickoff skill deletes itself at the end of that task — it's consumed once.
 
 The grill produces a plan; the follow-up branch produces the diff. No code is written during the interview.
 
@@ -71,9 +71,9 @@ Downstream forks can always trace their lineage: `package.json#suede.from` holds
 
 ## Working with the coding agent
 
-Suede is built to be driven through a coding agent (OpenCode, Claude Code, or similar). The contract:
+Suede is built to be driven through a coding agent (Pi, Claude Code, or similar). The contract:
 
-- **AGENTS.md is always loaded.** It defines the stack, the git workflow, the pipeline, and the guardrails. Agent-facing integration files live in `.opencode/` (skills, commands, plugins).
+- **AGENTS.md is always loaded.** It defines the stack, the git workflow, the pipeline, and the guardrails. Agent-facing integration files live in `.pi/` (skills, prompts).
 - **Authoring boundaries.** Humans own the presentation layer: Svelte component markup, `<style>` blocks, `src/lib/styles/`, design tokens. Agents own the TypeScript: `<script lang="ts">` blocks, `*.ts` in `src/lib/` and `src/routes/`, Drizzle schemas, server routes, Workers. An agent never edits markup or scoped CSS.
 - **Storybook discipline.** A change to a UI primitive in `src/lib/components/` is incomplete without a story update in the same commit — stories are the agent-owned record of the human-owned visual contract.
 - **The human merges.** Agents may branch, commit (with a co-author trailer crediting assistance), push branches, and apply tags — but never merge to `main` or push to it directly. Every task lands through a PR the human reviews.
@@ -83,24 +83,20 @@ Suede is built to be driven through a coding agent (OpenCode, Claude Code, or si
 
 Every task moves through a happy-path pipeline. The _process_ is constant across all suede forks; the _details_ (branch convention, version scheme) are tailored at kickoff. Stages compress for small tasks — a prototype might skip the PRD file and tracker labels — but the shape stays.
 
-The happy path is the eight stages that fire for almost every unit of work:
+The happy path is the six stages that fire for almost every unit of work:
 
-1. **Concept** — a problem exists: in conversation, an issue, or a QA bug report.
-2. **Grill** (`grill-me` / `grill-with-docs`) — stress-test the idea, one question at a time, until understanding is shared.
-3. **PRD** (`to-prd`) — synthesize the conversation into a PRD: problem, stories, decisions, scope.
-4. **Issues** (`to-issues`) — break the PRD into tracer-bullet vertical slices, each independently demoable.
-5. **Triage** (`triage`) — label and queue: `needs-triage` → `ready-for-agent` / `ready-for-human` / `wontfix`.
-6. **Build** (`tdd`) — RED → GREEN per slice; one test, one implementation, repeat; public-interface behaviour only. Also covers the prune pass and Storybook discipline.
-7. **Review** (`review`) — two-axis PR review (Standards + Spec) in parallel sub-agents, before merge.
-8. **Release** (AGENTS.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
+1. **Concept** — a problem exists: in conversation, an issue, or a bug report.
+2. **Align** (`task` step 0) — a short back-and-forth, one question at a time, until understanding is shared.
+3. **Cut plan** (`project-plan`) — only for work too big for one PR: agree on the few independently-mergeable cuts, publish one plan issue with the cut checklist. Single-PR tasks skip straight to build.
+4. **Build** (`task`) — prep (worktree, systems map, slice-brief, draft PR), then the bug / refactor / feature / meta path; vertical slices, one scenario test per user story (`task/testing.md`), Storybook discipline for UI primitives.
+5. **Review** (`review`) — two-axis PR review (Standards + Spec) in parallel sub-agents, before merge.
+6. **Release** (AGENTS.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
 
-A few skills are loaded only when the situation matches: `diagnose` for hard bugs, `qa` for conversational bug filing, `handoff` when context runs out, plus `prototype`, `improve-codebase-architecture`, `write-a-skill`, `find-skills`, and `caveman` as wraparound tools.
-
-Stage skills all live in `.opencode/skills/`. No global plugin is required.
+Stage skills all live in `.pi/skills/`. No global plugin is required.
 
 ### The shape of a single task
 
-1. **Start** — pull `main`, branch `<type>/<slug>` (always from `main`, never from an in-flight branch), log a goal node with the verbatim prompt. If requirements are fuzzy, grill before touching code.
+1. **Start** — create a worktree and branch `<type>/<slug>` from the latest `origin/main` (never from an in-flight branch), log a goal node with the verbatim prompt. If requirements are fuzzy, align on the goal before touching code.
 2. **During** — log action nodes before major edits, honour authoring boundaries, commit as `<type>(<scope>): <subject>` in present-tense imperative, link each commit to the graph.
 3. **End** — run the quality gate, bump the version (`chore(release): cut <version>` as the final commit), hand back. The human reviews the PR, merges, and the merge commit gets tagged on `main`.
 
@@ -113,26 +109,32 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 Suede tracks project decisions as a graph: `goal → options → decision → actions → outcomes`, with observations attached anywhere. Logging is real-time, not retroactive — log what you're about to do, then log how it went, and link every commit to a node. The graph records the _project's_ decisions (what the user is building and choosing), never the agent's internal process.
 
 - Rules and the node-flow model: AGENTS.md "Decision Graph Workflow"
-- Full CLI reference and workflows: [`.opencode/commands/decision.md`](.opencode/commands/decision.md)
-- Session-start context recovery: [`.opencode/commands/recover.md`](.opencode/commands/recover.md)
-- Web viewer: [`.opencode/commands/serve-ui.md`](.opencode/commands/serve-ui.md) · multi-user sync: [`.opencode/commands/sync.md`](.opencode/commands/sync.md)
-- Two OpenCode plugins enforce the habit: `require-action-node` (no file edits without a recent action/goal node) and `post-commit-reminder` (link commits after the fact).
+- CLI mechanics, connection audit, and multi-user sync: [`.pi/skills/decision-graph/SKILL.md`](.pi/skills/decision-graph/SKILL.md)
+- Web viewer: `deciduous serve`
+- Nothing enforces the habit mechanically — real-time logging is carried by the AGENTS.md contract, and each release PR records whether the graph earned its keep that cycle.
 
-### In-repo skills (`.opencode/skills/`)
+### In-repo skills (`.pi/skills/`)
 
-| Skill           | Purpose                                                                                                     |
-| --------------- | ----------------------------------------------------------------------------------------------------------- |
-| `suede-kickoff` | One-shot bootstrap of a new project from a fresh suede clone (see above)                                    |
-| `tdd`           | RED → GREEN workflow, vertical slicing, mocking at boundaries, plus the prune pass and Storybook discipline |
-| `pulse`         | Map the system's _current_ state as decision nodes — no history, just now                                   |
-| `narratives`    | Reconstruct how the system evolved, as prose narratives                                                     |
-| `archaeology`   | Turn those narratives into a backdated, queryable decision graph                                            |
+| Skill                  | Purpose                                                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `task`                 | The task-process spine: goal alignment, prep, per-type execution paths, testing discipline, closeout     |
+| `slice-brief`          | Per-PR brief that hands a vertical slice to a fresh agent session                                        |
+| `systems-map`          | Create and maintain `SYSTEMS_MAP.md`                                                                     |
+| `project-plan`         | Cut plan for multi-PR work; the fuller PRD / per-issue / triage ceremony preserved under `reference/`    |
+| `review`               | Two-axis PR review (Standards + Spec)                                                                    |
+| `decision-graph`       | Deciduous mechanics: node/edge commands, verbatim prompt capture, commit linking, audit, sync            |
+| `suede-kickoff`        | One-shot bootstrap of a new project from a fresh suede clone (see above)                                 |
 
-Cross-cutting process skills (grill-me, to-prd, tdd, review, qa, …) all ship in `.opencode/skills/`.
+### Prompts (`.pi/prompts/`)
 
-### Commands (`.opencode/commands/`)
+User-invoked, loaded only when called:
 
-`/build-test` (typecheck + test gate), `/decision` (graph management), `/decision-graph` (build a graph from commit history), `/recover` (session-start context recovery), `/serve-ui`, `/sync`.
+| Prompt                   | Purpose                                                                  |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `/pulse`                 | Map the system's _current_ state as decision nodes — no history, just now |
+| `/narratives`            | Reconstruct how the system evolved, as prose narratives                   |
+| `/archaeology`           | Turn those narratives into a backdated, queryable decision graph          |
+| `/request-refactor-plan` | Short interview → deferred-refactor plan filed as a GitHub issue          |
 
 ## Git workflow and releases
 

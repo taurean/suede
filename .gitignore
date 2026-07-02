@@ -29,8 +29,11 @@ worker-configuration.d.ts
 *storybook.log
 storybook-static
 
-# Deciduous database (local)
-.deciduous/
+# Deciduous database (local). The sync/ event log is the shared record in
+# multi-user setups (.pi/skills/decision-graph/SKILL.md, "Sync") and is the
+# one thing under .deciduous/ that gets committed.
+.deciduous/*
+!.deciduous/sync/
 
 # Deciduous exported web viewer (regenerated per machine via `deciduous sync`)
 docs/
@@ -41,12 +44,12 @@ docs/
 # tool for resuming work across machines.
 agent-notes/
 
-# Claude-Code-specific artifacts (not part of this OpenCode-primary project)
+# Per-task working context (slice-briefs, kickoff follow-up notes). The
+# draft PR body carries the durable copy; the worktree copy dies with the
+# worktree (.pi/skills/slice-brief/SKILL.md, "File handling").
+tmp/
+
+# Harness-specific instruction files (AGENTS.md is the project instruction
+# file; other harnesses' artifacts stay local)
 CLAUDE.md
 .claude/
-
-# .opencode workspace (pnpm-managed; its own internal .gitignore handles
-# workspace-level rules but git only reads the root .gitignore)
-.opencode/node_modules
-.opencode/package.json
-.opencode/package-lock.json
