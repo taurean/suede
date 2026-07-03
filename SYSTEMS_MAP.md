@@ -29,7 +29,7 @@ suede/
 │   ├── routes/                # SvelteKit pages — the placeholder a fork replaces
 │   └── stories/               # Storybook stories + demo scaffolding
 ├── static/                    # files served as-is
-├── .github/workflows/         # CI: Pages deploy, graph cleanup, on-demand Claude review
+├── .github/workflows/         # CI: Pages deploy, graph cleanup, on-demand Pi review
 ├── .storybook/                # Storybook config
 ├── .pi/
 │   ├── skills/                # the process layer; task/ is the spine
@@ -83,5 +83,5 @@ Fragile: `eslint.config.js` builds its ignore list from `.gitignore` (`includeIg
 
 For: How work happens in this repo and its forks — the rulebook, the task-process skills and prompts, the decision graph, and release conventions; independent of what the app does.
 Lives at: `AGENTS.md`, `.pi/skills/` (`task` is the spine; `slice-brief`, `systems-map`, `project-plan`, `review`, `decision-graph`, `suede-kickoff` support it), `.pi/prompts/`, `.deciduous/`
-Seams: Forks tailor the layer through `suede-kickoff` Step 3 Thread B — issue tracker, version scheme, commit types, which skills apply. Global skills and prompts ride in from the user's environment without repo changes. The review skill is also invocable from GitHub itself via `.github/workflows/claude-review.yml` (a `/review` PR comment or a workflow dispatch).
+Seams: Forks tailor the layer through `suede-kickoff` Step 3 Thread B — issue tracker, version scheme, commit types, which skills apply. Global skills and prompts ride in from the user's environment without repo changes. The review skill is also invocable from GitHub itself via `.github/workflows/pi-review.yml` (a `/review` PR comment or a workflow dispatch), run by Pi in CI.
 Fragile: `suede-kickoff` is consumed once — it deletes itself at the end of a fork's bootstrap. `.deciduous/` is per-machine (only `sync/` is committable), so the graph does not travel with a clone. `docs/` is the regenerated graph viewer — gitignored; never edit it by hand.
