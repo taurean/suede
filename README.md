@@ -107,7 +107,7 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 
 Suede tracks project decisions as a graph: `goal → options → decision → actions → outcomes`, with observations attached anywhere. Logging is real-time, not retroactive — log what you're about to do, then log how it went, and link every commit to a node. The graph records the _project's_ decisions (what the user is building and choosing), never the agent's internal process.
 
-- Rules and the node-flow model: AGENTS.md "Decision Graph Workflow"
+- Rules and the node-flow model: AGENTS.md "Decision graph workflow"
 - CLI mechanics, connection audit, and multi-user sync: [`.pi/skills/decision-graph/SKILL.md`](.pi/skills/decision-graph/SKILL.md)
 - Web viewer: `deciduous serve`
 - Nothing enforces the habit mechanically — real-time logging is carried by the AGENTS.md contract, and each release PR records whether the graph earned its keep that cycle.

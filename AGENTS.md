@@ -4,7 +4,7 @@ Cross-agent rulebook. Read at task start. This is the project-specific AGENTS.md
 
 ## Suede overview
 
-Suede is an opinionated SvelteKit starter template for shipping full-stack apps on Cloudflare. It exists to give every project forked from it a consistent process pipeline — from concept through release — with defined git conventions, authoring boundaries, and decision tracking baked in from day one. Forks inherit the mechanics and tailor the details (version scheme, label vocabulary, tracker setup) during their own kickoff.
+Suede is an opinionated SvelteKit starter template for shipping full-stack apps on Cloudflare. It exists to give every project forked from it a consistent process pipeline — from concept through release — with defined git conventions, authoring boundaries, and decision tracking baked in from day one. Forks inherit the mechanics and tailor the details (version scheme, commit types, tracker setup) during their own kickoff.
 
 ## Stack
 
@@ -35,11 +35,12 @@ The branch name and the commit-message type share a vocabulary. **Branch names**
 - `perf` — performance improvement
 - `style` — formatting, whitespace, missing semicolons, etc. (no logic change)
 
-A fork that needs to extend the list (e.g. add `i18n` for a content-heavy project) or trim it (e.g. drop `perf` for a backend MCP that doesn't have a measurable perf budget) records the override in `suede-kickoff` Step 3 Thread B Q9. The full [conventional-commits 1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/) is the upstream reference; AGENTS.md inherits the type list from it and re-states it here so the agent doesn't have to fetch the spec on first use.
+A fork that needs to extend the list (e.g. add `i18n` for a content-heavy project) or trim it (e.g. drop `perf` for a backend MCP that doesn't have a measurable perf budget) records the override in `suede-kickoff` Step 3 Thread B Q8. The full [conventional-commits 1.0.0 spec](https://www.conventionalcommits.org/en/v1.0.0/) is the upstream reference; AGENTS.md inherits the type list from it and re-states it here so the agent doesn't have to fetch the spec on first use.
 
 ## Layout
 
 - `AGENTS.md` — this file
+- `SYSTEMS_MAP.md` — where things live and what changes together. Its Layout tree is the canonical repo map; this file doesn't duplicate it.
 - `.pi/skills/` — in-repo skills. The process layer (`task`, `slice-brief`, `systems-map`, `project-plan`, `review`, plus supporting skills) ships with the repo. Skill directories are `kebab-case` and contain a `SKILL.md` (and optionally per-topic companion files like `task/testing.md`). `.pi/prompts/` holds user-invoked prompt templates.
 
 Durable records of work: the `deciduous` decision graph (real-time, in `.deciduous/`), the project's tracker (GitHub Issues), and the merged PR history. There is no per-task markdown note.
@@ -48,18 +49,18 @@ Durable records of work: the `deciduous` decision graph (real-time, in `.deciduo
 
 The workflow below ships to every project forked from suede. The _process_ is constant; the _details_ (branch convention, version policy, which in-repo skills apply) are tailored per fork via `suede-kickoff` Step 3 Thread B. Don't invent a new pipeline; if a stage doesn't fit a particular task, compress it but keep the shape.
 
-| Stage                                                                            | Home                                                                   | When                                                                                                                                                                     |
-| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1. **Concept / problem** exists in conversation, in an issue, or as a bug report | —                                                                      | Always; this is the input to the pipeline                                                                                                                                |
-| 2. **Align** on the goal                                                         | `.pi/skills/task` step 0                                               | Every task; short back-and-forth, one question at a time. For a substantial design or requirements in tension, escalate to the `/poke-holes` prompt first                |
-| 3. **Cut plan**                                                                  | `.pi/skills/project-plan`                                              | Only when the work cannot land as one PR — a rewrite or feature spanning several independently-mergeable cuts. One plan issue with a cut checklist, not an issue per cut |
-| 4. **Build**                                                                     | `.pi/skills/task` (per-type paths; `task/testing.md` for test quality) | Every task: prep (worktree, systems map, slice-brief, draft PR), then the bug / refactor / feature / meta / follow-up path                                               |
-| 5. **Review**                                                                    | `.pi/skills/review`                                                    | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents                                                                                |
-| 6. **Release**                                                                   | (in-repo, this section "Releases")                                     | chronver bump as final commit on the release branch; human tags the merge commit on `main` and pushes with `--follow-tags`                                               |
+| Stage                                                                            | Home                                                                   | When                                                                                                                                                                                                              |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. **Concept / problem** exists in conversation, in an issue, or as a bug report | —                                                                      | Always; this is the input to the pipeline                                                                                                                                                                         |
+| 2. **Align** on the goal                                                         | `.pi/skills/task` step 0                                               | Every task; short back-and-forth, one question at a time. For a substantial design or requirements in tension, escalate to the `/poke-holes` prompt first                                                         |
+| 3. **Cut plan**                                                                  | `.pi/skills/project-plan`                                              | Only when the work cannot land as one PR — a rewrite or feature spanning several independently-mergeable cuts. One plan issue with a cut checklist, not an issue per cut                                          |
+| 4. **Build**                                                                     | `.pi/skills/task` (per-type paths; `task/testing.md` for test quality) | Every task: prep (worktree, systems map, slice-brief, draft PR), then the bug / refactor / feature / meta / follow-up path                                                                                        |
+| 5. **Review**                                                                    | `.pi/skills/review`                                                    | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents. Also invocable on an open PR from CI — a `/review` comment or workflow dispatch runs `.github/workflows/pi-review.yml` |
+| 6. **Release**                                                                   | (in-repo, this section "Releases")                                     | chronver bump as final commit on the release branch; human tags the merge commit on `main` and pushes with `--follow-tags`                                                                                        |
 
 **Always-on supporting layer** (not a stage — runs throughout):
 
-- **Decision graph** (`deciduous` CLI + this file's "Decision Graph Workflow" section) — every commit linked to a node, goal → options → decision → actions → outcomes, real-time logging
+- **Decision graph** (`deciduous` CLI + this file's "Decision graph workflow" section) — every commit linked to a node, goal → options → decision → actions → outcomes, real-time logging
 - **Git workflow** (this file's "Git workflow" section) — branch from `main`, PR review, agent never pushes/merges, `Co-authored-by:` harness trailer on agent-made commits
 - **Authoring boundaries** (this file's "Authoring boundaries" section) — humans own Svelte markup / scoped CSS / design tokens; agents own `<script lang="ts">` and `*.ts`
 
@@ -132,7 +133,7 @@ Suede uses [chronver](https://chronver.org) by default. Version lives in `packag
 ### Cutting a release
 
 1. Before cutting, note in the release PR description whether the decision graph answered a question this cycle (a `/pulse` consulted, a past decision that prevented re-litigating). Several releases of "no" in a row is the evidence for demoting the graph to fork-optional — the record is the point of this line.
-2. Final commit on the release branch, before merge, is `chore(release): cut <version>`. Bump with `pnpm version <version> --no-git-tag-version` (or hand-edit), commit only the `version` field.
+2. Final commit on the release branch, before merge, is `chore(release): cut <version>`. Bump with `pnpm version <version> --no-git-tag-version`, commit only the `version` field (in both `package.json` and `package-lock.json` — the command updates both). Known gotcha: `pnpm version` rejects the four-segment `.N` changeset form as invalid semver — hand-edit both manifests for a same-day second cut.
 3. Tag the merge commit on `main` with the bare chronver string, annotated. Push with `git push origin main --follow-tags`.
 4. `git log <prev>..<new>` is the changelog. No `CHANGELOG.md`.
 
@@ -144,7 +145,7 @@ When a project duplicates suede, it adds `"suede": { "from": "<tag>" }` to its o
 
 chronver for apps and templates (temporal releases, no API contract to break); semver for packages consumed by dependents (persistent breaking-change signals).
 
-## Decision Graph Workflow
+## Decision graph workflow
 
 Suede tracks project decisions through the `deciduous` decision-graph tool. This section is the cross-agent view: when to log and what belongs in the graph. The operational mechanics — commands, flags, connection audit, sync — live in `.pi/skills/decision-graph/` and are not duplicated here.
 
