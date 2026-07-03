@@ -126,7 +126,17 @@ Human is commit author. A brand-new repo's first commit is `main` — the docume
 git checkout -b chore/suede-kickoff
 ```
 
-The follow-up PR's description is the audit trail. Step 4 created no remote, so ask the human: if they want one now, create it (`gh repo create`, confirming visibility with them) and open the draft PR (with a placeholder diff — a `chore: open PR for follow-up` commit on the new branch is fine). If not, write the same content to `tmp/KICKOFF-FOLLOWUP.md` (gitignored) and open the PR from it when a remote lands. Either way, capture:
+The follow-up PR's description is the audit trail. Step 4 created no remote, so ask the human: if they want one now, create it (`gh repo create`, confirming visibility with them) and open the draft PR (with a placeholder diff — a `chore: open PR for follow-up` commit on the new branch is fine). If not, write the same content to `tmp/KICKOFF-FOLLOWUP.md` (gitignored) and open the PR from it when a remote lands.
+
+Immediately after the remote exists, wire the review workflow's secret — `.github/workflows/pi-review.yml` is inert without it:
+
+```bash
+op read "op://Private/Minimax Subscription Key/key" --account family-passvault.1password.com | gh secret set MINIMAX_API_KEY
+```
+
+If `op` isn't available or the human deferred the remote, list the secret as an unchecked item in the follow-up PR description (or `tmp/KICKOFF-FOLLOWUP.md`) instead — don't let it silently drop.
+
+Either way, capture:
 
 - The human's answers verbatim from Step 3 (both Thread A and Thread B).
 - The commit hash from Step 1 (audit trail).
@@ -156,4 +166,5 @@ The follow-up PR's description is the audit trail. Step 4 created no remote, so 
 - `cat package.json` shows `suede.from` set to the tag from Step 1.
 - `.deciduous/` does not exist.
 - The follow-up PR is open on `chore/suede-kickoff` with the process-layer edits list in the description (or `tmp/KICKOFF-FOLLOWUP.md` holds it, if the human deferred the remote).
+- `gh secret list` shows `MINIMAX_API_KEY` (or the secret is an unchecked item in the follow-up description, if the remote was deferred).
 - `pnpm install` succeeds (the bootstrap is mechanical; if it broke something, the follow-up task will surface it).
