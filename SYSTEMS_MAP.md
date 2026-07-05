@@ -7,6 +7,7 @@ This file exists so a reader can decide which small part of suede is relevant to
 ```
 suede/
 ├── AGENTS.md                  # cross-agent rulebook; read at task start
+├── HARNESS.md                 # harness operational reference; long-form parent of .pi/skills/session-onboarding/
 ├── README.md                  # human-facing orientation doc
 ├── SYSTEMS_MAP.md             # this file
 ├── package.json               # scripts + deps; version field is the chronver release
@@ -82,6 +83,6 @@ Fragile: `eslint.config.js` builds its ignore list from `.gitignore` (`includeIg
 ### Process layer
 
 For: How work happens in this repo and its forks — the rulebook, the task-process skills and prompts, the decision graph, and release conventions; independent of what the app does.
-Lives at: `AGENTS.md`, `.pi/skills/` (`task` is the spine; `slice-brief`, `systems-map`, `project-plan`, `review`, `decision-graph`, `suede-kickoff` support it), `.pi/prompts/`, `.deciduous/`
+Lives at: `AGENTS.md`, `HARNESS.md`, `.pi/skills/` (`task` is the spine; `session-onboarding`, `slice-brief`, `systems-map`, `project-plan`, `review`, `decision-graph`, `suede-kickoff` support it), `.pi/prompts/`, `.deciduous/`
 Seams: Forks tailor the layer through `suede-kickoff` Step 3 Thread B — issue tracker, version scheme, commit types, which skills apply. Global skills and prompts ride in from the user's environment without repo changes. The review skill is also invocable from GitHub itself via `.github/workflows/pi-review.yml` (a `/review` PR comment or a workflow dispatch), run by Pi in CI.
 Fragile: `suede-kickoff` is consumed once — it deletes itself at the end of a fork's bootstrap. `.deciduous/` is per-machine (only `sync/` is committable), so the graph does not travel with a clone. `docs/` is the regenerated graph viewer — gitignored; never edit it by hand.

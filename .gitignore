@@ -49,6 +49,12 @@ agent-notes/
 # worktree (.pi/skills/slice-brief/SKILL.md, "File handling").
 tmp/
 
+# Local git worktrees (mirrors of branches for parallel work, AGENTS.md
+# "Git workflow"). Each worktree has its own .git pointer; committing
+# the directory would add the pointer file to the repo. The branch and
+# its commits are what travel.
+.worktrees/
+
 # Harness-specific instruction files (AGENTS.md is the project instruction
 # file; other harnesses' artifacts stay local)
 CLAUDE.md
