@@ -12,7 +12,8 @@ SvelteKit · Cloudflare Pages + Workers · D1 + Drizzle · Vitest + Playwright �
 
 ## Git workflow
 
-- Always branch from `main`, and always from the **latest** `main` (not a stale local view). The branch-from-`main` rule is only meaningful if the base commit is current — otherwise the new branch silently forks from a commit that has since been superseded, and the PR base vanishes the same way an in-flight branch does. Before creating the branch (`git worktree add` or `git checkout -b`), fetch `origin` and base on `origin/main`, and verify the tree is clean.
+- **All multi-commit work runs in a git worktree.** Branch the worktree off the latest `origin/main` with `git worktree add .worktrees/<type>-<slug> -b <type>/<slug> origin/main`. Branching in the main repo (`git checkout -b`) is allowed only for one-line state changes — single commits where parallel work isn't at risk. The point: `main` and any in-flight worktrees stay undisturbed while this task runs. For the harness invariants that make worktrees safe (`git -C`, `GIT_EDITOR=true`) and the operational snags that come up while using one, see `.pi/skills/session-onboarding/SKILL.md` and `HARNESS.md`.
+- Always branch from `main`, and always from the **latest** `main` (not a stale local view). The branch-from-`main` rule is only meaningful if the base commit is current — otherwise the new branch silently forks from a commit that has since been superseded, and the PR base vanishes the same way an in-flight branch does. Before creating the worktree, fetch `origin` and base on `origin/main`, and verify the tree is clean.
 - **Never branch off an in-flight branch.** The only base for a new branch is `main`. While a PR is open (not yet merged), new work either becomes a follow-up commit on the _same_ branch (new goal node, same PR) or waits. A branch-of-branch creates a PR whose base vanishes the moment the first PR merges.
 - All tasks are reviewed in a pull request.
 - **The agent may push branches and may apply tags, but never merges to `main` and never pushes directly to `main`.** The human reviews the PR and merges. (Pushing the release branch to the remote and tagging the human's merge commit on `main` are both agent-OK; the act of merging the PR into `main` is human-only.)
@@ -40,8 +41,9 @@ A fork that needs to extend the list (e.g. add `i18n` for a content-heavy projec
 ## Layout
 
 - `AGENTS.md` — this file
+- `HARNESS.md` — operational reference for the harness invariants and snags (long-form parent of `.pi/skills/session-onboarding/`).
 - `SYSTEMS_MAP.md` — where things live and what changes together. Its Layout tree is the canonical repo map; this file doesn't duplicate it.
-- `.pi/skills/` — in-repo skills. The process layer (`task`, `slice-brief`, `systems-map`, `project-plan`, `review`, plus supporting skills) ships with the repo. Skill directories are `kebab-case` and contain a `SKILL.md` (and optionally per-topic companion files like `task/testing.md`). `.pi/prompts/` holds user-invoked prompt templates.
+- `.pi/skills/` — in-repo skills. The process layer (`task`, `slice-brief`, `systems-map`, `project-plan`, `review`, `session-onboarding`, plus supporting skills) ships with the repo. Skill directories are `kebab-case` and contain a `SKILL.md` (and optionally per-topic companion files like `task/testing.md`). `.pi/prompts/` holds user-invoked prompt templates.
 
 Durable records of work: the `deciduous` decision graph (real-time, in `.deciduous/`), the project's tracker (GitHub Issues), and the merged PR history. There is no per-task markdown note.
 
