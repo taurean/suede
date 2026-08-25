@@ -72,7 +72,7 @@ Downstream forks can always trace their lineage: `package.json#suede.from` holds
 
 Suede is built to be driven through a coding agent (Pi, Claude Code, or similar). The contract:
 
-- **AGENTS.md is always loaded.** It defines the stack, the git workflow, the pipeline, and the guardrails. Agent-facing integration files live in `.pi/` (skills, prompts).
+- **AGENTS.md is always loaded.** It defines the stack, the git workflow, the pipeline, and the guardrails. Agent-facing integration files live in `.pi/` (skills, prompts); `.claude/skills/` and `.claude/commands/` mirror the same content into Claude Code's own directories via symlinks, and `CLAUDE.md` (`@AGENTS.md`) makes sure Claude Code loads AGENTS.md too — Claude Code doesn't read it natively the way Pi does.
 - **Authoring boundaries.** Humans own the presentation layer: Svelte component markup, `<style>` blocks, `src/lib/styles/`, design tokens. Agents own the TypeScript: `<script lang="ts">` blocks, `*.ts` in `src/lib/` and `src/routes/`, Drizzle schemas, server routes, Workers. An agent never edits markup or scoped CSS.
 - **Storybook discipline.** A change to a UI primitive in `src/lib/components/` is incomplete without a story update in the same commit — stories are the agent-owned record of the human-owned visual contract.
 - **The human merges.** Agents may branch, commit (with a co-author trailer crediting assistance), push branches, and apply tags — but never merge to `main` or push to it directly. Every task lands through a PR the human reviews.
@@ -91,7 +91,7 @@ The happy path is the six stages that fire for almost every unit of work:
 5. **Review** (`review`) — two-axis PR review (Standards + Spec) in parallel sub-agents, before merge.
 6. **Release** (AGENTS.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
 
-Stage skills all live in `.pi/skills/`. No global plugin is required.
+Stage skills all live in `.pi/skills/`, mirrored into `.claude/skills/` for Claude Code. No global plugin is required.
 
 ### The shape of a single task
 
@@ -112,7 +112,7 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 - Web viewer: `deciduous serve`
 - Nothing enforces the habit mechanically — real-time logging is carried by the AGENTS.md contract, and each release PR records whether the graph earned its keep that cycle.
 
-### In-repo skills (`.pi/skills/`)
+### In-repo skills (`.pi/skills/`, mirrored at `.claude/skills/`)
 
 | Skill            | Purpose                                                                                               |
 | ---------------- | ----------------------------------------------------------------------------------------------------- |
@@ -124,9 +124,9 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 | `decision-graph` | Deciduous mechanics: node/edge commands, verbatim prompt capture, commit linking, audit, sync         |
 | `suede-kickoff`  | One-shot bootstrap of a new project from a fresh suede clone (see above)                              |
 
-### Prompts (`.pi/prompts/`)
+### Prompts (`.pi/prompts/`, mirrored at `.claude/commands/`)
 
-User-invoked, loaded only when called:
+User-invoked, loaded only when called. Under Pi these run as `/pulse` etc.; under Claude Code they're the same `/pulse` etc., since `.claude/commands/` presents them without Pi's `skill:` namespace:
 
 | Prompt                   | Purpose                                                                   |
 | ------------------------ | ------------------------------------------------------------------------- |

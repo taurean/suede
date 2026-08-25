@@ -10,10 +10,9 @@ description: >
 # Decision graph operations
 
 AGENTS.md owns when and what to log (real-time, the node-flow rule, what not
-to log). This file owns the mechanics. Under Pi there is no plugin
-enforcement — no nag if an edit lands without a node — so the real-time
-discipline is carried by habit alone; treat "log before you code" as if it
-were enforced.
+to log). This file owns the mechanics. No harness plugin enforces this —
+no nag if an edit lands without a node — so the real-time discipline is
+carried by habit alone; treat "log before you code" as if it were enforced.
 
 ## Commands
 

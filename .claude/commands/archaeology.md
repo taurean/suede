@@ -1,0 +1,1 @@
+../../.pi/prompts/archaeology.md

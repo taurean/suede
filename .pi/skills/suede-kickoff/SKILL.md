@@ -79,7 +79,7 @@ The process itself is constant across every suede fork — the workflow from con
    - **Which skills apply** — the pipeline's Working style section lists the canonical set. A backend project might lean on the global `deepen` skill; a CLI has no use for Storybook discipline. You can subtract.
    - **Anything else that the human knows about this project that the agent can't infer.**
 
-The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.pi/skills/`, and `.pi/prompts/` to edit, add, or remove.
+The follow-up task (Step 8) reads the answers to Thread B and decides which files in `AGENTS.md`, `.pi/skills/`, and `.pi/prompts/` to edit, add, or remove. `.claude/skills/` and `.claude/commands/` symlink into those two directories one entry at a time — editing a skill's content needs no separate `.claude/` edit, but adding or removing a skill/prompt means adding or removing its symlink too.
 
 **Do not write any code in this step.** The grill produces a _plan_, not a diff. Step 8 turns the plan into a diff.
 
@@ -128,13 +128,14 @@ git checkout -b chore/suede-kickoff
 
 The follow-up PR's description is the audit trail. Step 4 created no remote, so ask the human: if they want one now, create it (`gh repo create`, confirming visibility with them) and open the draft PR (with a placeholder diff — a `chore: open PR for follow-up` commit on the new branch is fine). If not, write the same content to `tmp/KICKOFF-FOLLOWUP.md` (gitignored) and open the PR from it when a remote lands.
 
-Immediately after the remote exists, wire the review workflow's secret — `.github/workflows/pi-review.yml` is inert without it:
+Immediately after the remote exists, wire the review workflows' secrets — `.github/workflows/pi-review.yml` is inert without `MINIMAX_API_KEY`, and `.github/workflows/claude-review.yml` is inert without `ANTHROPIC_API_KEY`:
 
 ```bash
 op read "op://Private/Minimax Subscription Key/key" --account family-passvault.1password.com | gh secret set MINIMAX_API_KEY
+gh secret set ANTHROPIC_API_KEY   # paste the key, or pipe it in from wherever it's stored
 ```
 
-If `op` isn't available or the human deferred the remote, list the secret as an unchecked item in the follow-up PR description (or `tmp/KICKOFF-FOLLOWUP.md`) instead — don't let it silently drop.
+If `op` isn't available, the key isn't at hand, or the human deferred the remote, list the missing secret(s) as unchecked items in the follow-up PR description (or `tmp/KICKOFF-FOLLOWUP.md`) instead — don't let them silently drop.
 
 Either way, capture:
 
@@ -166,5 +167,5 @@ Either way, capture:
 - `cat package.json` shows `suede.from` set to the tag from Step 1.
 - `.deciduous/` does not exist.
 - The follow-up PR is open on `chore/suede-kickoff` with the process-layer edits list in the description (or `tmp/KICKOFF-FOLLOWUP.md` holds it, if the human deferred the remote).
-- `gh secret list` shows `MINIMAX_API_KEY` (or the secret is an unchecked item in the follow-up description, if the remote was deferred).
+- `gh secret list` shows `MINIMAX_API_KEY` and `ANTHROPIC_API_KEY` (or the missing ones are unchecked items in the follow-up description, if the remote was deferred).
 - `pnpm install` succeeds (the bootstrap is mechanical; if it broke something, the follow-up task will surface it).
