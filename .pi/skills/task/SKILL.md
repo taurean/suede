@@ -9,7 +9,16 @@ disable-model-invocation: true
 
 # Task process
 
-## 0. Align on the goal
+## 0. Name the conversation
+
+If the task tracks a GitHub issue, run `/name <project>--ticket-<issue-number>`
+as the first action, where `<project>` is the repo directory name
+(e.g. issue #140 in squire → `/name squire--ticket-140`). Skip when no issue
+exists. The name is the durable handle tying this session to its tracker
+entry — keep it findable for when the human asks "what's in flight on
+squire--ticket-140?".
+
+## 1. Align on the goal
 
 Reach shared understanding through a short back-and-forth: short sentences,
 one question per message, each with a one-line recommended answer. Stop as
@@ -20,7 +29,7 @@ for a substantial design with real unknowns, suggest the user run
 a rewrite, or several sizeable cuts that could merge independently —
 suggest `/skill:project-plan` before any prep.
 
-## 1. Prep
+## 2. Prep
 
 1. Create a new git worktree for the task.
 2. Fetch `origin` and branch from the latest `origin/main`, named
@@ -29,7 +38,7 @@ suggest `/skill:project-plan` before any prep.
 4. Produce a slice-brief (`/skill:slice-brief`).
 5. Open a draft PR titled for the task, with the slice-brief as its body.
 
-## 2. Execute by task type
+## 3. Execute by task type
 
 Pick the matching path: bug, refactor, new feature, meta (docs or tooling),
 or follow-up on an in-flight PR.
@@ -67,7 +76,7 @@ or follow-up on an in-flight PR.
    way.
 3. A change to a UI primitive is incomplete without a story update in the
    same commit (AGENTS.md, "Storybook discipline").
-4. Verify after each slice; repeat until the goal from step 0 is met.
+4. Verify after each slice; repeat until the goal from step 1 is met.
 
 ### Meta (documentation, tooling)
 
@@ -82,7 +91,7 @@ or follow-up on an in-flight PR.
 2. Create a worktree for the PR's existing branch.
 3. Continue under whichever path above fits the follow-up.
 
-## 3. Share
+## 4. Share
 
 1. Invoke the `review` skill against the branch and resolve what it finds.
 2. If the work moved an area boundary, changed a seam, or shifted what's

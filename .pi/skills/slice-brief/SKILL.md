@@ -13,7 +13,7 @@ Runs during task prep (`/skill:task`), after the worktree exists and the systems
 
 Spend each fact once. Don't re-derive what earlier steps already paid for:
 
-- **Goal from the alignment conversation** (task step 0) — seed for problem, opportunity, goal. Don't re-interview from zero.
+- **Goal from the alignment conversation** (task step 1) — seed for problem, opportunity, goal. Don't re-interview from zero.
 - **Systems map from prep** — read it. Use it to identify the relevant code area before reading anything further. Do not re-scan the whole repository.
 - **Current branch name** — confirm scope from it; don't invent new context.
 

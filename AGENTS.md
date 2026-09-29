@@ -52,7 +52,7 @@ The workflow below ships to every project forked from suede. The _process_ is co
 | Stage                                                                            | Home                                                                   | When                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. **Concept / problem** exists in conversation, in an issue, or as a bug report | —                                                                      | Always; this is the input to the pipeline                                                                                                                                                                         |
-| 2. **Align** on the goal                                                         | `.pi/skills/task` step 0                                               | Every task; short back-and-forth, one question at a time. For a substantial design or requirements in tension, escalate to the `/poke-holes` prompt first                                                         |
+| 2. **Align** on the goal                                                         | `.pi/skills/task` step 1                                               | Every task; short back-and-forth, one question at a time. For a substantial design or requirements in tension, escalate to the `/poke-holes` prompt first                                                         |
 | 3. **Cut plan**                                                                  | `.pi/skills/project-plan`                                              | Only when the work cannot land as one PR — a rewrite or feature spanning several independently-mergeable cuts. One plan issue with a cut checklist, not an issue per cut                                          |
 | 4. **Build**                                                                     | `.pi/skills/task` (per-type paths; `task/testing.md` for test quality) | Every task: prep (worktree, systems map, slice-brief, draft PR), then the bug / refactor / feature / meta / follow-up path                                                                                        |
 | 5. **Review**                                                                    | `.pi/skills/review`                                                    | Two-axis PR review (Standards + Spec) before merge. Runs both axes in parallel sub-agents. Also invocable on an open PR from CI — a `/review` comment or workflow dispatch runs `.github/workflows/pi-review.yml` |
@@ -62,7 +62,7 @@ The workflow below ships to every project forked from suede. The _process_ is co
 
 - **Decision graph** (`deciduous` CLI + this file's "Decision graph workflow" section) — every commit linked to a node, goal → options → decision → actions → outcomes, real-time logging
 - **Git workflow** (this file's "Git workflow" section) — branch from `main`, PR review, agent never pushes/merges, `Co-authored-by:` harness trailer on agent-made commits
-- **Authoring boundaries** (this file's "Authoring boundaries" section) — humans own Svelte markup / scoped CSS / design tokens; agents own `<script lang="ts">` and `*.ts`
+- **Authoring boundaries** (this file's "Authoring boundaries" section) — humans own design-token values, new primitive creation, and the visual contract; agents author Svelte markup and scoped CSS through stylebase tokens and Bits UI primitives
 
 The pipeline is the same regardless of project shape (full-stack, content, backend, other) and regardless of project formality. Stage 3 fires only for multi-PR work; single-PR tasks go straight from alignment to build. A project with real inbound issue flow can additionally adopt the fuller PRD / per-issue / triage ceremony preserved under `.pi/skills/project-plan/reference/`.
 
@@ -70,19 +70,24 @@ The pipeline is the same regardless of project shape (full-stack, content, backe
 
 ## Authoring boundaries
 
-Humans own:
+**Humans own the design contract:**
 
-- Svelte component markup
-- Svelte `<style>` blocks
-- CSS files in `src/lib/styles/`
-- Layout, spacing, typography, design tokens
+- Design-token values — the actual `--hue-*`, `--space-*`, `--ff-*` definitions that live in stylebase
+- The visual contract — what the design is supposed to feel like
+- Architectural primitive decisions — which Bits UI primitives get wrapped into project components, and whether a new primitive exists at all
 
-Agents own (TypeScript only):
+**Agents own implementation within that contract:**
 
-- `<script lang="ts">` blocks within `.svelte` files
-- `*.ts` files in `src/lib/`, `src/routes/`
-- Drizzle schemas and queries
-- Server routes, API integrations, Workers
+- Svelte component markup, using Bits UI primitives (`Button.Root`, `Dialog.Root`, etc.) for any interactive element rather than reaching for raw HTML
+- Svelte `<style>` blocks and CSS files in `src/lib/styles/`, drawing colour, spacing, and typography from stylebase custom properties and `u:` utility classes
+- Layout, spacing, and typography — within the stylebase vocabulary
+- All TypeScript: `<script lang="ts">` blocks within `.svelte` files, `*.ts` in `src/lib/` and `src/routes/`, Drizzle schemas and queries, server routes, API integrations, Workers
+
+**Hard constraints** — non-negotiable without the human in the loop:
+
+- Don't redefine design tokens locally. If a stylebase custom property doesn't fit, flag it for the human to add at the source.
+- Don't introduce a new UI primitive (a new wrapper around a Bits UI headless component) without explicit human approval. Primitives shape the visual contract and ship with stories — see Storybook discipline below.
+- Don't reach for raw HTML where a Bits UI primitive exists. The accessibility behaviour is the point of wrapping it.
 
 ### Storybook discipline (UI forks)
 
@@ -213,7 +218,7 @@ Always:
 
 Never:
 
-- Modify the presentation layer (Svelte markup, scoped CSS, `src/lib/styles/`).
+- Edit markup or styles in a way the authoring boundaries forbid — redefining design tokens, introducing a new UI primitive without human approval, or reaching for raw HTML where a Bits UI primitive exists. See "Authoring boundaries" above for the full model; this is the negative form.
 - Skip the PR description.
 - Commit secrets.
 
