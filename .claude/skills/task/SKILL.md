@@ -56,15 +56,22 @@ could merge independently — say so and suggest `/project-plan` before any prep
 
 ## 2. Prep
 
-1. Create a git worktree for the task.
-2. Fetch `origin` and branch from the latest `origin/main`, named
-   `<type>/<slug>` per `CLAUDE.md`. Put the issue number in the slug when the
-   task tracks one — the branch name is the handle tying this work to its
-   tracker entry.
-3. Read `SYSTEMS_MAP.md`. Use it to find the relevant area. Do not scan the
-   repository; that is what the map exists to prevent.
-4. Write the brief ([brief.md](brief.md)).
-5. Open a draft PR titled for the task, with the brief as its body.
+1. Fetch `origin` and create the task's worktree and branch from the latest
+   `origin/main`. The branch is `<type>/<slug>` per `CLAUDE.md`; put the issue
+   number in the slug when the task tracks one — the branch name is the handle
+   tying this work to its tracker entry. The worktree is a sibling of the main
+   checkout, named after the branch with `/` replaced by `-`:
+
+   ```bash
+   git fetch origin
+   git worktree add ../<type>-<slug> -b <type>/<slug> origin/main
+   ```
+
+2. Read `SYSTEMS_MAP.md`. Use it to find the relevant area. Do not scan the
+   repository; that is what the map exists to prevent. If the file doesn't
+   exist (suede itself ships none), skip this step.
+3. Write the brief ([brief.md](brief.md)).
+4. Open a draft PR titled for the task, with the brief as its body.
 
 The draft PR exists from here on, so the work is inspectable while it happens
 rather than only at the end.
@@ -86,6 +93,10 @@ cuts through every layer the story touches and leaves the app shippable
 3. A slice that only plumbs toward a story adds no tests. One story, one test.
 4. Run the tier that applies ([testing.md](testing.md), "What runs when").
 5. Delete what this slice made dead ([DEAD-1]).
+
+If the project has no `testing.md` (suede itself ships none), take shape and
+seam from the existing test the dispatch already names as its style reference,
+and run the checks in `CLAUDE.md`, "Verification before completion".
 
 **When a story test fails against the real code**, reconcile against the story
 before touching either side ([VERIFY-3]). If the failure suggests the story is
