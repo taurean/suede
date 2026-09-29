@@ -222,7 +222,7 @@ Either way, capture:
   `.storybook/`), and a post-fork `pnpm lint` / `pnpm check` / `pnpm test`
   re-verification.
 - **`/run-skill-generator`**, as an unchecked item. It records how to build and
-  launch this app so `/verify` stops guessing — but run it *after* the runtime
+  launch this app so `/verify` stops guessing — but run it _after_ the runtime
   edits land, not now. A recipe recorded against suede's demo app describes an
   app this fork is about to replace.
 - **Final action of the follow-up:** delete `.claude/skills/suede-kickoff/`.
@@ -258,14 +258,14 @@ State three things:
 
 ## What this skill refuses to do
 
-| Shortcut | Why not |
-| --- | --- |
-| Capture the tag after `rm -rf .git` | The history is gone. Step 1 precedes Step 2 for this reason alone. |
-| Treat `package.json#version` as the tag | They can differ. `suede.from` is the tag. |
-| Decide the tooling for the human | A wrong Cloudflare/D1/Drizzle call costs them days to undo. Q7 is theirs. |
-| Skip the `.deciduous/` reset | Suede's graph carries into the new project and every narrative becomes a lie. |
-| Decide the process tweaks for the human | The process is theirs. You don't pick the issue tracker, the version scheme, or which skills load. |
-| `git add .` because the tree looks clean | Staging rules. `.env` and friends are always candidates. |
-| Work on a copy to be safe | The working tree IS the project. A copy delays the same operations. |
-| Start editing files during Step 3 | The grill produces a plan, not a diff. Step 9 turns it into one. |
-| Fold the follow-up into the bootstrap commit | Deep tooling decisions are a separate concern, branch, and PR. |
+| Shortcut                                     | Why not                                                                                            |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Capture the tag after `rm -rf .git`          | The history is gone. Step 1 precedes Step 2 for this reason alone.                                 |
+| Treat `package.json#version` as the tag      | They can differ. `suede.from` is the tag.                                                          |
+| Decide the tooling for the human             | A wrong Cloudflare/D1/Drizzle call costs them days to undo. Q7 is theirs.                          |
+| Skip the `.deciduous/` reset                 | Suede's graph carries into the new project and every narrative becomes a lie.                      |
+| Decide the process tweaks for the human      | The process is theirs. You don't pick the issue tracker, the version scheme, or which skills load. |
+| `git add .` because the tree looks clean     | Staging rules. `.env` and friends are always candidates.                                           |
+| Work on a copy to be safe                    | The working tree IS the project. A copy delays the same operations.                                |
+| Start editing files during Step 3            | The grill produces a plan, not a diff. Step 9 turns it into one.                                   |
+| Fold the follow-up into the bootstrap commit | Deep tooling decisions are a separate concern, branch, and PR.                                     |

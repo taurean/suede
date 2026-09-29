@@ -9,9 +9,9 @@ description: >
   `src/lib/styles/`, classes, data attributes, or any task involving styling,
   layout, or component composition in a stylebase-based project.
 paths:
-  - "**/*.svelte"
-  - "src/lib/styles/**"
-  - "**/*.css"
+  - '**/*.svelte'
+  - 'src/lib/styles/**'
+  - '**/*.css'
 ---
 
 # Writing CSS in a stylebase + Bits UI project
@@ -156,9 +156,10 @@ most of the work before the block ever loads.
   **Dividers and borders** use `--hue-z0-divider`, which is `color-mix` against
   `currentColor` — always correct against whatever text colour is in play, in
   either theme. Reaching for a gray primitive instead is more work and worse.
+
 - **Spacing.** `--space-5xs` through `--space-5xl`, with `sm` and `medium`
   slotted between `xs` and `lg` (the stops are `5xs, 4xs, 3xs, 2xs, xs, sm,
-  medium, lg, xl, 2xl, 3xl, 4xl, 5xl`). Fluid via `clamp()` — viewport-aware
+medium, lg, xl, 2xl, 3xl, 4xl, 5xl`). Fluid via `clamp()` — viewport-aware
   without media queries. Apply via `padding`, `margin`, or `gap`; never via
   width/height where it would clip the fluid scaling.
 - **Typography.** `--fs-0..10` for size,

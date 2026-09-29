@@ -65,6 +65,12 @@ restated here so the agent doesn't fetch it on first use.
   tree is the canonical repo map; this file doesn't duplicate it.
 - `.claude/skills/` — in-repo skills. Directories are kebab-case, each with a
   `SKILL.md` and optional companion files (`task/brief.md`, `task/testing.md`).
+
+`CONTEXT.md`, `SYSTEMS_MAP.md`, and `task/testing.md` describe a specific
+project, so suede itself ships none of them. `/suede-kickoff` generates all
+three for a fork, and the fork commits them. Skills that read them skip any
+that are missing.
+
 - `.claude/commands/` and `.claude/hooks/` — generated and maintained by
   `deciduous update`. Don't hand-edit.
 
@@ -77,15 +83,15 @@ The workflow below ships to every fork. The _process_ is constant; the _details_
 are tailored per fork during `/suede-kickoff`. Don't invent a new pipeline; if a
 stage doesn't fit a task, compress it but keep the shape.
 
-| Stage | Home | When |
-| --- | --- | --- |
-| 1. **Concept** — in conversation, an issue, or a bug report | — | Always; the input to the pipeline |
-| 2. **Align** on goal, boundary, reversibility, and review posture | `/task` step 1 | Every task. Short back-and-forth per `/poke-holes` |
-| 3. **Cut plan** | `/project-plan` | Only when the work cannot land as one PR. One plan issue with a cut checklist, never an issue per cut |
-| 4. **Build** | `/task` | Every task: prep (worktree, systems map, brief, draft PR), then vertical slices with story-derived tests |
-| 5. **Verify** | `/verify` | Every task, before review. The app observed doing the thing, not a green suite |
-| 6. **Review** | `/review` | Three-axis review — Standards, Spec, Discipline — in parallel subagents, before merge |
-| 7. **Release** | This file, "Releases" | Version bump as the final commit on the release branch; human tags the merge commit on `main` |
+| Stage                                                             | Home                  | When                                                                                                     |
+| ----------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1. **Concept** — in conversation, an issue, or a bug report       | —                     | Always; the input to the pipeline                                                                        |
+| 2. **Align** on goal, boundary, reversibility, and review posture | `/task` step 1        | Every task. Short back-and-forth per `/poke-holes`                                                       |
+| 3. **Cut plan**                                                   | `/project-plan`       | Only when the work cannot land as one PR. One plan issue with a cut checklist, never an issue per cut    |
+| 4. **Build**                                                      | `/task`               | Every task: prep (worktree, systems map, brief, draft PR), then vertical slices with story-derived tests |
+| 5. **Verify**                                                     | `/verify`             | Every task, before review. The app observed doing the thing, not a green suite                           |
+| 6. **Review**                                                     | `/review`             | Three-axis review — Standards, Spec, Discipline — in parallel subagents, before merge                    |
+| 7. **Release**                                                    | This file, "Releases" | Version bump as the final commit on the release branch; human tags the merge commit on `main`            |
 
 **Always-on supporting layer** — not stages, they run throughout:
 
@@ -138,8 +144,8 @@ not a substitute for the tracker.
   behaviour is the point of wrapping it.
 
 Mechanics — which layer a rule goes in, which token, which primitive — are in
-the `writing-css` skill. This section owns *who decides*; that skill owns *where
-it goes*.
+the `writing-css` skill. This section owns _who decides_; that skill owns _where
+it goes_.
 
 **Prototypes are the exception.** Throwaway variant components and prototype
 routes may be agent-authored, provided they're clearly marked and deleted when

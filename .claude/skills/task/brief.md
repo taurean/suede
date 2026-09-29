@@ -4,7 +4,7 @@ The brief is the PR body. It is also the handoff to a fresh session that has no
 memory of the alignment conversation.
 
 **Success bar:** a fresh agent session, given only this file and
-`SYSTEMS_MAP.md`, should start building the first slice without asking what the
+`SYSTEMS_MAP.md` (when the project has one), should start building the first slice without asking what the
 goal is or where the boundary sits. If it couldn't, the brief isn't done.
 
 ## Where it lives
@@ -27,7 +27,7 @@ Spend each fact once.
 
 - **The alignment conversation** gave you goal, boundary, reversibility, and
   review posture. Don't re-interview.
-- **`SYSTEMS_MAP.md`** gave you the relevant area. Read files it flags; don't
+- **`SYSTEMS_MAP.md`**, when the project has one, gave you the relevant area. Read files it flags; don't
   re-derive the map.
 - **The branch name** confirms scope.
 - **A plan issue**, if this task is a cut from `/project-plan`, gave you this
