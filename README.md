@@ -9,7 +9,7 @@ Suede is two layers in one repo:
 1. **A runtime stack** — SvelteKit on Cloudflare Pages + Workers, D1 + Drizzle for data, Vitest + Playwright for tests, Storybook for component states, stylebase + Bits UI for the design layer.
 2. **A process layer** — a constant concept-to-merge pipeline, a decision graph (`deciduous`), in-repo skills and commands, and clear boundaries between what humans author and what agents author.
 
-You don't build _in_ suede so much as you fork it: copy the repo, run the kickoff skill, and the new project inherits both layers with the details tailored to it.
+You don't build _in_ suede so much as you fork it: `pnpm create suede <name>` creates the project, `/suede-kickoff` tailors it, and the new project inherits both layers with the details tailored to it.
 
 [`CLAUDE.md`](CLAUDE.md) is the canonical rulebook. Claude Code loads it as the project instruction file, and it is the source of truth wherever this README summarizes. When the two disagree, CLAUDE.md wins.
 
@@ -55,18 +55,16 @@ The quality gate before any task is called done: `pnpm check`, `pnpm lint`, `pnp
 
 Suede is a template you duplicate, not a dependency you install. The flow:
 
-1. **Copy the repo.** Clone suede (or copy the working tree) to a new directory. The working tree _is_ the new project — don't work on a side copy.
-2. **Install and verify.** `pnpm install`, confirm `git status` is clean.
-3. **Run `/suede-kickoff`** in Claude Code. The [skill](.claude/skills/suede-kickoff/SKILL.md) walks through:
-   - **Capture lineage** — record the suede chronver tag and commit hash _before_ anything destructive. The tag lands in the new `package.json` as `"suede": { "from": "<tag>" }`.
-   - **Reset history** — delete `.git`, init a fresh repo on `main`.
-   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures the project itself (name, purpose, primary user, project shape, first version). **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which skills apply.
-   - **Bootstrap commit** — update `package.json` (name, version, `suede.from`), reset `.deciduous/` and run `deciduous init`, commit.
-   - **Branch the follow-up task** — `chore/suede-kickoff`, where the Thread B answers are turned into actual edits to `CLAUDE.md`, `.claude/skills/`, configs, and this README. The kickoff skill deletes itself at the end of that task — it's consumed once.
+1. **Run [`pnpm create suede <name>`](https://github.com/taurean/create-suede).** It asks for a one-line purpose and a first version, then creates `~/Developer/<name>/main` from the latest suede release: template files only (no suede history, `node_modules`, or decision graph), a fresh git repo on `main`, `package.json` carrying the name, version, description, and `"suede": { "from": "<tag>" }`, dependencies installed, `deciduous init` run, one bootstrap commit, and the `chore/suede-kickoff` branch checked out. It can also create the GitHub repo.
+2. **Run `/suede-kickoff`** in Claude Code, inside the new directory. The [skill](.claude/skills/suede-kickoff/SKILL.md) walks through:
+   - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures what the CLI didn't ask about the project: primary user, project shape, anything load-bearing. **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which skills apply.
+   - **Capture the follow-up** — a draft PR on `chore/suede-kickoff` listing the edits to `CLAUDE.md`, `.claude/skills/`, configs, and this README, plus the project records to generate once those land. The kickoff skill deletes itself at the end of that task — it's consumed once.
+
+`~/Developer/<name>/` holds the project's checkouts: `main/` is the primary one, and task worktrees go beside it (`../<type>-<slug>`).
 
 The grill produces a plan; the follow-up branch produces the diff. No code is written during the interview.
 
-Suede ships no `SYSTEMS_MAP.md`, `CONTEXT.md`, or `.claude/skills/task/testing.md` — those describe a specific project, so each fork generates its own and commits them.
+Suede ships no `SYSTEMS_MAP.md`, `CONTEXT.md`, or `.claude/skills/task/testing.md` — those describe a specific project, so each fork generates its own during the kickoff follow-up and commits them.
 
 Downstream forks can always trace their lineage: `package.json#suede.from` holds the suede tag they branched from.
 
@@ -122,7 +120,7 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 | `review`        | Three-axis review (Standards, Spec, Discipline) in parallel subagents                              |
 | `design`        | Visual judgment for new UI in a stylebase + Bits UI project                                        |
 | `writing-css`   | CSS and component markup in stylebase + Bits UI; loads on `.svelte` and CSS files                  |
-| `suede-kickoff` | One-shot bootstrap of a new project from a fresh suede clone (see above)                           |
+| `suede-kickoff` | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
 
 ## Git workflow and releases
 

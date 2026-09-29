@@ -178,7 +178,7 @@ In-repo skills (`.claude/skills/`):
 - `review` — three-axis review, dispatching to global reviewer agents.
 - `writing-css` — CSS and component markup in stylebase + Bits UI. Loads
   automatically on `.svelte` and CSS files.
-- `suede-kickoff` — reset a fresh suede clone into a standalone project. Deletes
+- `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 
 Global skills ride in from the user's environment and are not enumerated here.
