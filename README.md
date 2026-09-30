@@ -126,7 +126,7 @@ Suede tracks project decisions as a graph: `goal → options → decision → ac
 
 - Branch from `main`, always. Every task is reviewed in a PR; the human is the only one who merges.
 - The human is commit author; agent-made commits carry a co-author trailer.
-- **chronver** by default (`YYYY.M.D[.N]`, no leading zeros): every release branch ships its own version bump as its final commit, the merge commit on `main` is tagged with the bare version string and pushed with `--follow-tags`, and `git log <prev>..<new>` is the changelog — no `CHANGELOG.md`. Libraries with dependents switch to semver at kickoff.
+- **chronver** by default (`YYYY.M.D[.N]`, no leading zeros): every release branch ships its own version bump as its final commit, the merge commit on `main` is tagged with the bare version string and pushed with `--follow-tags`, and `git log <prev>..<new>` is the changelog — no `CHANGELOG.md`. Libraries with dependents pick semver when the project is created.
 - Default tracker is GitHub Issues.
 
 Full details: CLAUDE.md "Git workflow", "Task flow", and "Releases".
