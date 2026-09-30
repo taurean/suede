@@ -86,9 +86,10 @@ cuts through every layer the story touches and leaves the app shippable
 
 1. Build the slice. One concern at a time — behavior or structure, never both
    ([SLICE-1], [SLICE-2]).
-2. For each user story the slice completes, dispatch `story-test-writer` with
-   the story's "Done when" line, the seam surface, the destination path, and one
-   existing test file as a style reference. Nothing else — never the diff, never
+2. For each user story the slice completes, dispatch `story-test-writer`
+   (`.claude/agents/story-test-writer.md`) with the story's "Done when" line,
+   the seam surface, the destination path, and one existing test file as a style
+   reference. Nothing else — never the diff, never
    the implementation. Shape and seam per [testing.md](testing.md).
 3. A slice that only plumbs toward a story adds no tests. One story, one test.
 4. Run the tier that applies ([testing.md](testing.md), "What runs when").

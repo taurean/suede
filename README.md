@@ -90,7 +90,7 @@ Every task moves through the same pipeline. The _process_ is constant across all
 6. **Review** (`/review`) — three-axis review (Standards, Spec, Discipline) in parallel subagents, before merge.
 7. **Release** (CLAUDE.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
 
-`engineering-discipline`, `poke-holes`, and `systems-map` are global skills the pipeline depends on; they come from the user's environment, not this repo.
+`engineering-discipline`, `poke-holes`, and `systems-map` are personal skills the pipeline depends on; they are not in this repo. Install each from [selvage](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills) by copying its folder into `~/.claude/skills/<name>/`. The subagents the pipeline dispatches (`standards-reviewer`, `spec-reviewer`, `discipline-reviewer`, `story-test-writer`) ship in `.claude/agents/`.
 
 ### The shape of a single task
 

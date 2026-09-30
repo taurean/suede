@@ -15,8 +15,12 @@ stops.
 This skill runs once and deletes itself at the end of the follow-up it
 captures.
 
-**Preconditions:** Selvage is installed — `engineering-discipline` and
-`poke-holes` are assumed available.
+**Preconditions:** `engineering-discipline`, `poke-holes`, and `systems-map`
+are installed as personal skills (`~/.claude/skills/<name>/`). Copy each folder
+from the public selvage repo:
+[`engineering-discipline`](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills/engineering-discipline),
+[`poke-holes`](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills/poke-holes),
+[`systems-map`](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills/systems-map).
 
 ## Step 0: Confirm the CLI bootstrapped this repo
 
@@ -97,9 +101,9 @@ What varies is the details. Grill on each axis that might differ here.
    stages still happen; the artifacts don't.
 
 8. **Which skills apply** — a backend has no use for Storybook discipline; a
-   CLI has no use for `stylebase`. You may subtract. Selvage skills
-   (`engineering-discipline`, `poke-holes`) apply everywhere and aren't up for
-   subtraction.
+   CLI has no use for `stylebase`. You may subtract. The personal
+   skills (`engineering-discipline`, `poke-holes`) apply everywhere and aren't
+   up for subtraction.
 
 9. **Anything else the human knows about this project that you can't infer.**
 
