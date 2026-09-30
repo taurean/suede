@@ -37,6 +37,8 @@ Read, don't ask, what the CLI already captured:
 - `name`, `description`, `version` from `package.json` — the project name, the
   one-line purpose, the first version.
 - `suede.from` from `package.json` — the suede tag.
+- `suede.versioning` from `package.json` — `chronver` or `semver`, chosen in the
+  CLI. Projects from `create-suede` 0.1.0 lack it; Q5 covers that case.
 - The suede commit hash from the bootstrap commit body — the audit trail.
 
 ## Step 1: Grill
@@ -77,10 +79,13 @@ What varies is the details. Grill on each axis that might differ here.
    - Ripping SvelteKit also means `stylebase` and `bits-ui` go; they're
      stack-bound.
 
-5. **Version scheme** — **chronver** by default, suede's apps-and-templates
-   convention. Override to **semver** if this fork is a library with
-   dependents. A fork that picks semver rewrites the `CLAUDE.md` Releases
-   section in the follow-up, and resets `package.json#version`.
+5. **Version scheme** — read `suede.versioning`; don't re-ask when it's set.
+   Only when it's missing, ask: **chronver** by default, suede's
+   apps-and-templates convention, or **semver** if this fork is a library with
+   dependents. Either way, a semver fork rewrites the `CLAUDE.md` Releases
+   section in the follow-up; if the scheme came from this question rather than
+   the CLI, the follow-up also resets `package.json#version` and records
+   `suede.versioning`.
 
 6. **Branch and commit naming** — the canonical conventional-commits types are
    in `CLAUDE.md`. Most forks inherit them as-is. Capture an override if this

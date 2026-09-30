@@ -206,9 +206,9 @@ normalizes leading zeros — `2026.6.4`, not `2026.06.04`.
 Mechanics: every release branch ships as its own version bump; the bump is the
 final commit before merge; the merge commit on `main` is tagged with the bare
 version string, annotated, and pushed with `--follow-tags`; the changelog is
-`git log <prev>..<new>`, with no `CHANGELOG.md`. The scheme is a kickoff
-question — chronver for apps and templates, semver for libraries consumed by
-dependents.
+`git log <prev>..<new>`, with no `CHANGELOG.md`. The scheme is chosen when the
+project is created (`pnpm create suede` records it as `suede.versioning`) —
+chronver for apps and templates, semver for libraries consumed by dependents.
 
 **No versionless merges.** Every branch ready to merge to `main` ships as its
 own version.
@@ -229,9 +229,10 @@ own version.
 
 ### Downstream lineage
 
-A project forked from suede adds `"suede": { "from": "<tag>" }` to its own
-`package.json`, carrying the chronver tag of the commit it branched from.
-Suede's own `package.json` has no such field.
+A project forked from suede carries `"suede": { "from": "<tag>", "versioning":
+"<scheme>" }` in its own `package.json`: the chronver tag of the suede commit it
+branched from, and the version scheme chosen at creation. `pnpm create suede`
+writes both. Suede's own `package.json` has no such field.
 
 ## Decision graph
 
