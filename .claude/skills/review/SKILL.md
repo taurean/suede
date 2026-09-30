@@ -72,7 +72,8 @@ Collect paths, don't read them. The Standards subagent reads its own sources.
 ## 4. Dispatch
 
 Issue all three Task calls **in a single message** so they run concurrently.
-Each agent carries its own brief, so pass inputs only.
+Each agent carries its own brief in `.claude/agents/<name>.md`, so pass inputs
+only.
 
 | Agent                 | Inputs                                                   |
 | --------------------- | -------------------------------------------------------- |

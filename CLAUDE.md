@@ -65,6 +65,8 @@ restated here so the agent doesn't fetch it on first use.
   tree is the canonical repo map; this file doesn't duplicate it.
 - `.claude/skills/` — in-repo skills. Directories are kebab-case, each with a
   `SKILL.md` and optional companion files (`task/brief.md`, `task/testing.md`).
+- `.claude/agents/` — in-repo subagents dispatched by `review` and `task`, one
+  `<name>.md` each.
 
 `CONTEXT.md`, `SYSTEMS_MAP.md`, and `task/testing.md` describe a specific
 project, so suede itself ships none of them. `/suede-kickoff` generates all
@@ -96,8 +98,8 @@ stage doesn't fit a task, compress it but keep the shape.
 **Always-on supporting layer** — not stages, they run throughout:
 
 - **Engineering discipline** — the standing rules for fallbacks, slice hygiene,
-  reversibility, dead code, failure messages, and when to stop and ask. Global,
-  loaded automatically. Cited by rule ID in reviews.
+  reversibility, dead code, failure messages, and when to stop and ask. A
+  personal skill (see "Working style"), loaded automatically. Cited by rule ID in reviews.
 - **Decision graph** — real-time logging, every commit linked to a node. See
   "Decision graph" below.
 - **Git workflow** — this file's section above.
@@ -175,16 +177,23 @@ In-repo skills (`.claude/skills/`):
 - `task` — the task spine, user-invoked. `brief.md` owns the brief format;
   `testing.md` owns test quality and the prune pass.
 - `project-plan` — cut plan for work too big for one PR. User-invoked.
-- `review` — three-axis review, dispatching to global reviewer agents.
+- `review` — three-axis review, dispatching to the in-repo reviewer agents.
 - `writing-css` — CSS and component markup in stylebase + Bits UI. Loads
   automatically on `.svelte` and CSS files.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 
-Global skills ride in from the user's environment and are not enumerated here.
+In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`, and
+`discipline-reviewer` (dispatched by `review`), and `story-test-writer`
+(dispatched by `task`).
+
+Personal skills live in `~/.claude/skills/` and are not enumerated here.
 `engineering-discipline`, `poke-holes`, and `systems-map` are the ones this
-pipeline depends on — `systems-map` is global rather than in-repo, since a
-personal skill shadows a project skill of the same name.
+pipeline depends on. Install each by copying its folder from
+[selvage](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills)
+into `~/.claude/skills/<name>/`. They stay personal rather than in-repo, since a
+personal skill shadows a project skill of the same name and an in-repo copy
+would never run for anyone who has the personal one.
 
 `deciduous update` maintains its own commands and hooks under `.claude/`.
 
