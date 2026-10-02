@@ -1,6 +1,6 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import SuedeButton from '$lib/components/ui/SuedeButton.svelte';
+	import SuedeButton from '#lib/components/ui/SuedeButton.svelte';
 	import { fn } from 'storybook/test';
 
 	const { Story } = defineMeta({
