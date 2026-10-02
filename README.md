@@ -107,7 +107,8 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 Suede tracks project decisions as a graph: `goal → options → decision → actions → outcomes`, with observations attached anywhere. Logging is real-time, not retroactive — log what you're about to do, then log how it went, and link every commit to a node. The graph records the _project's_ decisions (what the user is building and choosing), never the agent's internal process.
 
 - `deciduous init` / `deciduous update` write the Claude Code integration: the commands in `.claude/commands/`, the hooks in `.claude/hooks/`, and a Decision Graph Workflow section in `CLAUDE.md`. Don't hand-edit the generated parts.
-- A pre-edit hook enforces real-time logging: an edit is blocked unless a goal or action node was logged recently.
+- The graph lives on a deciduous graph server, one workspace per repository. `deciduous remote setup --local` runs one on this machine against PostgreSQL on `localhost:5432`; run it once per machine and once per new worktree.
+- Nothing blocks an unlogged edit any more — deciduous 1.x removed that hook. Real-time logging is a rule the agent follows, restated by the server's MCP instructions.
 - House rules for what belongs in the graph: CLAUDE.md "Decision graph".
 - Web viewer: `deciduous serve`.
 
