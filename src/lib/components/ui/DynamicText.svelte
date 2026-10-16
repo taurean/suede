@@ -1,3 +1,10 @@
+<!--
+@component
+Animates its text letter by letter whenever the `text` prop changes. Wrap it
+in an element that carries the styles; see the UI/DynamicText docs in
+Storybook for what styling applies.
+-->
+
 <script lang="ts">
 	import { tick, untrack } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
