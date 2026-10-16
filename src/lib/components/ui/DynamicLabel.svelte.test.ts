@@ -1,20 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import DynamicLabel from './DynamicLabel.svelte';
-import { DEFAULT_TIMING, scheduleLetters, splitGraphemes } from './dynamic-label';
+import { scheduleLetters, splitGraphemes } from './dynamic-label';
 
-// Shrinks every duration so a full transition takes a few milliseconds.
-const FAST_MOTION = '--dynamic-label-speed: 20';
+const exitOf = (text: string) => scheduleLetters(splitGraphemes(text).length);
 
-function renderLabel(props: { text: string; announce?: boolean; style?: string }) {
-	const screen = render(DynamicLabel, { style: FAST_MOTION, ...props });
+function renderLabel(props: { text: string; announce?: boolean }) {
+	const screen = render(DynamicLabel, props);
 	const label = screen.container.querySelector<HTMLElement>('.dynamic-label')!;
 	const visibleText = () =>
 		Array.from(label.querySelectorAll('.dynamic-label-letters .dynamic-label-letter'))
 			.map((letter) => letter.textContent)
 			.join('');
-	const accessibleText = () => label.querySelector('.dynamic-label-accessible')!.textContent;
-	return { ...screen, label, visibleText, accessibleText };
+	const accessibleRegion = () => label.querySelector('.dynamic-label-accessible')!;
+	return { ...screen, label, visibleText, accessibleRegion };
 }
 
 function emulateReducedMotion() {
@@ -27,14 +26,15 @@ function emulateReducedMotion() {
 }
 
 afterEach(() => {
+	vi.useRealTimers();
 	vi.restoreAllMocks();
 });
 
 describe('DynamicLabel', () => {
 	it('exposes the full text as one string and hides the per-letter spans', () => {
-		const { label, accessibleText } = renderLabel({ text: 'New chat' });
+		const { label, accessibleRegion } = renderLabel({ text: 'New chat' });
 
-		expect(accessibleText()).toBe('New chat');
+		expect(accessibleRegion().textContent).toBe('New chat');
 		expect(label.querySelector('.dynamic-label-letters')!.getAttribute('aria-hidden')).toBe('true');
 	});
 
@@ -43,32 +43,27 @@ describe('DynamicLabel', () => {
 
 		await screen.rerender({ text: 'Suede design system principles' });
 
-		expect(screen.accessibleText()).toBe('Suede design system principles');
+		expect(screen.accessibleRegion().textContent).toBe('Suede design system principles');
 	});
 
-	it('animates to the new text and releases the width lock when done', async () => {
+	it('animates to the new text when the prop changes, then releases the width lock', async () => {
+		vi.useFakeTimers();
 		const screen = renderLabel({ text: 'New chat' });
 
 		await screen.rerender({ text: 'Suede design system principles' });
 		expect(screen.label.dataset.letterPhase).toBe('exiting');
+		expect(screen.visibleText()).toBe('New chat');
 
-		await vi.waitFor(() => {
-			expect(screen.visibleText()).toBe('Suede design system principles');
-			expect(screen.label.style.width).toBe('');
-		});
+		await vi.advanceTimersByTimeAsync(2000);
+		expect(screen.visibleText()).toBe('Suede design system principles');
 		expect(screen.label.dataset.letterPhase).toBe('settled');
+		expect(screen.label.style.width).toBe('');
 	});
 
 	describe('when the text changes mid-transition', () => {
-		const exitOf = (text: string) => scheduleLetters(splitGraphemes(text).length, DEFAULT_TIMING);
-
-		afterEach(() => {
-			vi.useRealTimers();
-		});
-
 		it('never shows the superseded text when interrupted while exiting', async () => {
 			vi.useFakeTimers();
-			const screen = renderLabel({ text: 'New chat', style: '' });
+			const screen = renderLabel({ text: 'New chat' });
 
 			await screen.rerender({ text: 'Suede design system principles' });
 			await vi.advanceTimersByTimeAsync(50);
@@ -86,7 +81,7 @@ describe('DynamicLabel', () => {
 
 		it('keeps the width locked when interrupted while entering', async () => {
 			vi.useFakeTimers();
-			const screen = renderLabel({ text: 'New chat', style: '' });
+			const screen = renderLabel({ text: 'New chat' });
 
 			await screen.rerender({ text: 'Suede design system principles' });
 			await vi.advanceTimersByTimeAsync(exitOf('New chat').totalMs + 1);
@@ -116,15 +111,16 @@ describe('DynamicLabel', () => {
 		expect(screen.label.style.width).toBe('');
 	});
 
-	it('only announces changes when opted in', () => {
-		const quiet = renderLabel({ text: 'New chat' });
-		expect(quiet.label.querySelector('.dynamic-label-accessible')!.hasAttribute('aria-live')).toBe(
-			false
-		);
+	it('announces changes politely by default', () => {
+		const { accessibleRegion } = renderLabel({ text: 'New chat' });
 
-		const announcing = renderLabel({ text: 'New chat', announce: true });
-		expect(
-			announcing.label.querySelector('.dynamic-label-accessible')!.getAttribute('aria-live')
-		).toBe('polite');
+		expect(accessibleRegion().getAttribute('aria-live')).toBe('polite');
+		expect(accessibleRegion().getAttribute('aria-atomic')).toBe('true');
+	});
+
+	it('does not announce when opted out', () => {
+		const { accessibleRegion } = renderLabel({ text: 'New chat', announce: false });
+
+		expect(accessibleRegion().hasAttribute('aria-live')).toBe(false);
 	});
 });

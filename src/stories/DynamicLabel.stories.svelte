@@ -9,7 +9,7 @@
 		tags: ['autodocs'],
 		args: {
 			text: 'New chat',
-			announce: false
+			announce: true
 		},
 		argTypes: {
 			text: { control: 'text' },
@@ -36,16 +36,16 @@
 	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
 </Story>
 
-<Story name="Swap, announced" asChild>
+<Story name="Swap, not announced" asChild>
 	<p class="u:fs-3">
-		<DynamicLabel text={labels[labelIndex]} announce />
+		<DynamicLabel text={labels[labelIndex]} announce={false} />
 	</p>
 	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
 </Story>
 
-<Story name="Slow, large type" asChild>
+<Story name="Large type" asChild>
 	<p class="u:fs-8">
-		<DynamicLabel text={labels[labelIndex]} style="--dynamic-label-speed: 0.25" />
+		<DynamicLabel text={labels[labelIndex]} />
 	</p>
 	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
 </Story>

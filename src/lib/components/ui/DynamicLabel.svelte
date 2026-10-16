@@ -2,20 +2,19 @@
 	import { tick, untrack } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import {
-		readTiming,
+		WIDTH_TRANSITION_MS,
 		scheduleLetters,
 		splitGraphemes,
-		widthTransitionMs,
 		type LetterSchedule
 	} from './dynamic-label';
 
 	interface Props extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
 		text: string;
-		/** Announce each change through a polite live region. Off by default. */
+		/** Announce each change through a polite live region. On by default. */
 		announce?: boolean;
 	}
 
-	let { text, announce = false, class: className, ...rest }: Props = $props();
+	const { text, announce = true, class: className, ...rest }: Props = $props();
 
 	/**
 	 * `exiting` and `settled` transition each letter with its staggered delay.
@@ -32,7 +31,6 @@
 	let letterPhase = $state<LetterPhase>('settled');
 	let schedule = $state<LetterSchedule>({ staggerMs: 0, letterDurationMs: 0, totalMs: 0 });
 	let lockedWidthPx = $state<number>();
-	let widthDurationMs = $state(0);
 
 	const shownLetters = $derived(splitGraphemes(shownText));
 	const targetLetters = $derived(splitGraphemes(text));
@@ -66,9 +64,7 @@
 		}
 
 		isTransitioning = true;
-		const timing = readTiming(getComputedStyle(container));
-		const outgoing = scheduleLetters(shownLetters.length, timing);
-		widthDurationMs = widthTransitionMs(timing);
+		const outgoing = scheduleLetters(shownLetters.length);
 
 		// Mid-transition the width is already locked and animating; retargeting
 		// it lets the transition continue from wherever it currently is.
@@ -81,13 +77,13 @@
 		if (run !== transitionRun) return;
 
 		lockedWidthPx = measurer.getBoundingClientRect().width;
-		widthSettlesAt = performance.now() + widthDurationMs;
-		pendingTimer = setTimeout(() => enter(nextText, timing, run), outgoing.totalMs);
+		widthSettlesAt = performance.now() + WIDTH_TRANSITION_MS;
+		pendingTimer = setTimeout(() => enter(nextText, run), outgoing.totalMs);
 	}
 
-	async function enter(nextText: string, timing: ReturnType<typeof readTiming>, run: number) {
+	async function enter(nextText: string, run: number) {
 		shownText = nextText;
-		schedule = scheduleLetters(shownLetters.length, timing);
+		schedule = scheduleLetters(shownLetters.length);
 		letterPhase = 'entering';
 
 		await tick();
@@ -128,7 +124,7 @@
 	class={['dynamic-label', className]}
 	data-letter-phase={letterPhase}
 	style:width={lockedWidthPx === undefined ? undefined : `${lockedWidthPx}px`}
-	style:--dynamic-label-width-transition={`${widthDurationMs}ms`}
+	style:transition-duration={`${WIDTH_TRANSITION_MS}ms`}
 >
 	<span bind:this={lettersElement} class="dynamic-label-letters" aria-hidden="true"
 		>{#each shownLetters as letter, index (index)}<span
@@ -157,9 +153,10 @@
 			position: relative;
 			box-sizing: content-box;
 			white-space: pre;
-			padding: var(--dynamic-label-bleed, 0.5em);
-			margin: calc(-1 * var(--dynamic-label-bleed, 0.5em));
-			transition: width var(--dynamic-label-width-transition) ease;
+			padding: 0.5em;
+			margin: -0.5em;
+			transition-property: width;
+			transition-timing-function: ease;
 		}
 
 		.dynamic-label-letter {
@@ -169,15 +166,15 @@
 		}
 
 		[data-letter-phase='exiting'] .dynamic-label-letters .dynamic-label-letter {
-			filter: blur(var(--dynamic-label-blur, 0.22em));
-			opacity: var(--dynamic-label-peak-blur-opacity, 0);
-			transform: translateY(var(--dynamic-label-travel, 0.25em));
+			filter: blur(0.22em);
+			opacity: 0;
+			transform: translateY(0.25em);
 		}
 
 		[data-letter-phase='entering'] .dynamic-label-letters .dynamic-label-letter {
-			filter: blur(var(--dynamic-label-blur, 0.22em));
-			opacity: var(--dynamic-label-peak-blur-opacity, 0);
-			transform: translateY(calc(-1 * var(--dynamic-label-travel, 0.25em)));
+			filter: blur(0.22em);
+			opacity: 0;
+			transform: translateY(-0.25em);
 			transition-property: none;
 		}
 
