@@ -5,7 +5,7 @@ import {
 	perLetterDelayMs,
 	scheduleLetters,
 	splitGraphemes
-} from './dynamic-label';
+} from './dynamic-text';
 
 describe('splitGraphemes', () => {
 	it('splits plain text into one entry per character, keeping spaces', () => {

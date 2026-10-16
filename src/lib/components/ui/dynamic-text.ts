@@ -1,4 +1,4 @@
-/** Fixed motion for DynamicLabel, tuned in a prototype. */
+/** Fixed motion for DynamicText, tuned in a prototype. */
 export const TIMING = {
 	/** Every duration and delay is divided by this. */
 	speed: 0.8,

@@ -1,11 +1,11 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import DynamicLabel from '#lib/components/ui/DynamicLabel.svelte';
+	import DynamicText from '#lib/components/ui/DynamicText.svelte';
 	import SuedeButton from '#lib/components/ui/SuedeButton.svelte';
 
 	const { Story } = defineMeta({
-		title: 'UI/DynamicLabel',
-		component: DynamicLabel,
+		title: 'UI/DynamicText',
+		component: DynamicText,
 		tags: ['autodocs'],
 		args: {
 			text: 'New chat',
@@ -19,11 +19,11 @@
 </script>
 
 <script lang="ts">
-	const labels = ['New chat', 'Suede design system principles'];
-	let labelIndex = $state(0);
+	const samples = ['New chat', 'Suede design system principles'];
+	let sampleIndex = $state(0);
 
-	function swapLabel() {
-		labelIndex = (labelIndex + 1) % labels.length;
+	function swapText() {
+		sampleIndex = (sampleIndex + 1) % samples.length;
 	}
 </script>
 
@@ -31,21 +31,21 @@
 
 <Story name="Swap" asChild>
 	<p class="u:fs-3">
-		<DynamicLabel text={labels[labelIndex]} />
+		<DynamicText text={samples[sampleIndex]} />
 	</p>
-	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
+	<SuedeButton onclick={swapText}>Swap text</SuedeButton>
 </Story>
 
 <Story name="Swap, not announced" asChild>
 	<p class="u:fs-3">
-		<DynamicLabel text={labels[labelIndex]} announce={false} />
+		<DynamicText text={samples[sampleIndex]} announce={false} />
 	</p>
-	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
+	<SuedeButton onclick={swapText}>Swap text</SuedeButton>
 </Story>
 
 <Story name="Large type" asChild>
 	<p class="u:fs-8">
-		<DynamicLabel text={labels[labelIndex]} />
+		<DynamicText text={samples[sampleIndex]} />
 	</p>
-	<SuedeButton onclick={swapLabel}>Swap label</SuedeButton>
+	<SuedeButton onclick={swapText}>Swap text</SuedeButton>
 </Story>

@@ -6,7 +6,7 @@
 		scheduleLetters,
 		splitGraphemes,
 		type LetterSchedule
-	} from './dynamic-label';
+	} from './dynamic-text';
 
 	interface Props extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
 		text: string;
@@ -121,24 +121,24 @@
 <span
 	{...rest}
 	bind:this={container}
-	class={['dynamic-label', className]}
+	class={['dynamic-text', className]}
 	data-letter-phase={letterPhase}
 	style:width={lockedWidthPx === undefined ? undefined : `${lockedWidthPx}px`}
 	style:transition-duration={`${WIDTH_TRANSITION_MS}ms`}
 >
-	<span bind:this={lettersElement} class="dynamic-label-letters" aria-hidden="true"
+	<span bind:this={lettersElement} class="dynamic-text-letters" aria-hidden="true"
 		>{#each shownLetters as letter, index (index)}<span
-				class="dynamic-label-letter"
+				class="dynamic-text-letter"
 				style:transition-duration={`${schedule.letterDurationMs}ms`}
 				style:transition-delay={`${index * schedule.staggerMs}ms`}>{letter}</span
 			>{/each}</span
 	>
-	<span bind:this={measurer} class="dynamic-label-measurer" aria-hidden="true"
-		>{#each targetLetters as letter, index (index)}<span class="dynamic-label-letter">{letter}</span
+	<span bind:this={measurer} class="dynamic-text-measurer" aria-hidden="true"
+		>{#each targetLetters as letter, index (index)}<span class="dynamic-text-letter">{letter}</span
 			>{/each}</span
 	>
 	<span
-		class="dynamic-label-accessible"
+		class="dynamic-text-accessible"
 		aria-live={announce ? 'polite' : undefined}
 		aria-atomic={announce ? 'true' : undefined}>{text}</span
 	>
@@ -148,7 +148,7 @@
 	@layer layout {
 		/* Inline-flex drops the whitespace-only text between children, which
 		   white-space: pre would otherwise render as width. */
-		.dynamic-label {
+		.dynamic-text {
 			display: inline-flex;
 			position: relative;
 			box-sizing: content-box;
@@ -159,26 +159,26 @@
 			transition-timing-function: ease;
 		}
 
-		.dynamic-label-letter {
+		.dynamic-text-letter {
 			display: inline-block;
 			transition-property: filter, opacity, transform;
 			transition-timing-function: ease;
 		}
 
-		[data-letter-phase='exiting'] .dynamic-label-letters .dynamic-label-letter {
+		[data-letter-phase='exiting'] .dynamic-text-letters .dynamic-text-letter {
 			filter: blur(0.22em);
 			opacity: 0;
 			transform: translateY(0.25em);
 		}
 
-		[data-letter-phase='entering'] .dynamic-label-letters .dynamic-label-letter {
+		[data-letter-phase='entering'] .dynamic-text-letters .dynamic-text-letter {
 			filter: blur(0.22em);
 			opacity: 0;
 			transform: translateY(-0.25em);
 			transition-property: none;
 		}
 
-		.dynamic-label-measurer {
+		.dynamic-text-measurer {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
@@ -187,7 +187,7 @@
 			pointer-events: none;
 		}
 
-		.dynamic-label-accessible {
+		.dynamic-text-accessible {
 			position: absolute;
 			width: 1px;
 			height: 1px;
@@ -197,8 +197,8 @@
 		}
 
 		@media (prefers-reduced-motion: reduce) {
-			.dynamic-label,
-			.dynamic-label-letter {
+			.dynamic-text,
+			.dynamic-text-letter {
 				transition: none;
 			}
 		}
