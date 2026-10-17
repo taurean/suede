@@ -90,6 +90,8 @@ retrievable via `getUser`, not visible in a raw `db.query`.
 ## Red flags
 
 - Test maps to no user story and guards no bug reproduction
+- Test outcome nothing outside the unit can influence — a constant, internal
+  state, an internal helper's math
 - Mocking internal collaborators
 - Testing private methods
 - Asserting on call counts or call order (unless the order _is_ the contract)
@@ -119,6 +121,8 @@ confidence), and **brittle** tests that fail on harmless refactors (internal
 selectors, mock-heavy collaborator contracts — the team stops trusting the
 suite). Run a prune pass:
 
+- as the last change on every task branch, before pushing it for review
+  (`/task` step 6),
 - at the end of any slice whose cleanup changed a public interface,
 - at the end of a release branch, before merge,
 - when a flaky test is reported (flaky = insensitive or brittle; the pass
