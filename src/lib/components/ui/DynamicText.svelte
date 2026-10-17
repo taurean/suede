@@ -152,62 +152,60 @@ Storybook for what styling applies.
 </span>
 
 <style>
-	@layer layout {
-		/* Inline-flex drops the whitespace-only text between children, which
-		   white-space: pre would otherwise render as width. */
-		.dynamic-text {
-			display: inline-flex;
-			position: relative;
-			box-sizing: content-box;
-			white-space: pre;
-			padding: 0.5em;
-			margin: -0.5em;
-			transition-property: width;
-			transition-timing-function: ease;
-		}
+	/* Inline-flex drops the whitespace-only text between children, which
+	   white-space: pre would otherwise render as width. */
+	.dynamic-text {
+		display: inline-flex;
+		position: relative;
+		box-sizing: content-box;
+		white-space: pre;
+		padding: 0.5em;
+		margin: -0.5em;
+		transition-property: width;
+		transition-timing-function: ease;
+	}
 
+	.dynamic-text-letter {
+		display: inline-block;
+		transition-property: filter, opacity, transform;
+		transition-timing-function: ease;
+	}
+
+	[data-letter-phase='exiting'] .dynamic-text-letters .dynamic-text-letter {
+		filter: blur(0.22em);
+		opacity: 0;
+		transform: translateY(0.25em);
+	}
+
+	[data-letter-phase='entering'] .dynamic-text-letters .dynamic-text-letter {
+		filter: blur(0.22em);
+		opacity: 0;
+		transform: translateY(-0.25em);
+		transition-property: none;
+	}
+
+	.dynamic-text-measurer {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		width: max-content;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.dynamic-text-accessible {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.dynamic-text,
 		.dynamic-text-letter {
-			display: inline-block;
-			transition-property: filter, opacity, transform;
-			transition-timing-function: ease;
-		}
-
-		[data-letter-phase='exiting'] .dynamic-text-letters .dynamic-text-letter {
-			filter: blur(0.22em);
-			opacity: 0;
-			transform: translateY(0.25em);
-		}
-
-		[data-letter-phase='entering'] .dynamic-text-letters .dynamic-text-letter {
-			filter: blur(0.22em);
-			opacity: 0;
-			transform: translateY(-0.25em);
-			transition-property: none;
-		}
-
-		.dynamic-text-measurer {
-			position: absolute;
-			inset-block-start: 0;
-			inset-inline-start: 0;
-			width: max-content;
-			visibility: hidden;
-			pointer-events: none;
-		}
-
-		.dynamic-text-accessible {
-			position: absolute;
-			width: 1px;
-			height: 1px;
-			overflow: hidden;
-			clip-path: inset(50%);
-			white-space: nowrap;
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			.dynamic-text,
-			.dynamic-text-letter {
-				transition: none;
-			}
+			transition: none;
 		}
 	}
 </style>
