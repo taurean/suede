@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import DynamicText from './DynamicText.svelte';
-import { scheduleLetters, splitGraphemes } from './dynamic-text';
 
-const exitOf = (text: string) => scheduleLetters(splitGraphemes(text).length);
+// Longer than any transition, so every pending step has run.
+const SETTLE_MS = 5000;
 
 function renderText(props: { text: string; announce?: boolean }) {
 	const screen = render(DynamicText, props);
 	const root = screen.container.querySelector<HTMLElement>('.dynamic-text')!;
-	const visibleText = () =>
-		Array.from(root.querySelectorAll('.dynamic-text-letters .dynamic-text-letter'))
-			.map((letter) => letter.textContent)
-			.join('');
+	const visibleLetters = () =>
+		Array.from(root.querySelectorAll('.dynamic-text-letters .dynamic-text-letter'), (letter) =>
+			String(letter.textContent)
+		);
 	const accessibleRegion = () => root.querySelector('.dynamic-text-accessible')!;
-	return { ...screen, root, visibleText, accessibleRegion };
+	return { ...screen, root, visibleLetters, accessibleRegion };
 }
 
 function emulateReducedMotion() {
@@ -31,14 +31,14 @@ afterEach(() => {
 });
 
 describe('DynamicText', () => {
-	it('exposes the full text as one string and hides the per-letter spans', () => {
+	it('exposes the text as one string and hides the per-letter spans', () => {
 		const { root, accessibleRegion } = renderText({ text: 'New chat' });
 
 		expect(accessibleRegion().textContent).toBe('New chat');
 		expect(root.querySelector('.dynamic-text-letters')!.getAttribute('aria-hidden')).toBe('true');
 	});
 
-	it('updates the accessible text to the new prop immediately', async () => {
+	it('updates the accessible text as soon as the prop changes', async () => {
 		const screen = renderText({ text: 'New chat' });
 
 		await screen.rerender({ text: 'Suede design system principles' });
@@ -46,68 +46,45 @@ describe('DynamicText', () => {
 		expect(screen.accessibleRegion().textContent).toBe('Suede design system principles');
 	});
 
-	it('animates to the new text when the prop changes, then releases the width lock', async () => {
+	it('shows the new text and releases its width once the change settles', async () => {
 		vi.useFakeTimers();
 		const screen = renderText({ text: 'New chat' });
 
 		await screen.rerender({ text: 'Suede design system principles' });
-		expect(screen.root.dataset.letterPhase).toBe('exiting');
-		expect(screen.visibleText()).toBe('New chat');
+		await vi.advanceTimersByTimeAsync(SETTLE_MS);
 
-		await vi.advanceTimersByTimeAsync(2000);
-		expect(screen.visibleText()).toBe('Suede design system principles');
-		expect(screen.root.dataset.letterPhase).toBe('settled');
+		expect(screen.visibleLetters().join('')).toBe('Suede design system principles');
 		expect(screen.root.style.width).toBe('');
 	});
 
-	describe('when the text changes mid-transition', () => {
-		it('never shows the superseded text when interrupted while exiting', async () => {
-			vi.useFakeTimers();
-			const screen = renderText({ text: 'New chat' });
+	it('settles on the newest text when it changes several times in a row', async () => {
+		vi.useFakeTimers();
+		const screen = renderText({ text: 'New chat' });
 
-			await screen.rerender({ text: 'Suede design system principles' });
-			await vi.advanceTimersByTimeAsync(50);
-			await screen.rerender({ text: 'Settings' });
+		await screen.rerender({ text: 'Suede design system principles' });
+		await vi.advanceTimersByTimeAsync(50);
+		await screen.rerender({ text: 'Settings' });
+		await vi.advanceTimersByTimeAsync(SETTLE_MS);
 
-			// The superseded transition's enter would have fired here.
-			await vi.advanceTimersByTimeAsync(exitOf('New chat').totalMs - 50 + 1);
-			expect(screen.visibleText()).not.toBe('Suede design system principles');
-
-			await vi.advanceTimersByTimeAsync(2000);
-			expect(screen.visibleText()).toBe('Settings');
-			expect(screen.root.dataset.letterPhase).toBe('settled');
-			expect(screen.root.style.width).toBe('');
-		});
-
-		it('keeps the width locked when interrupted while entering', async () => {
-			vi.useFakeTimers();
-			const screen = renderText({ text: 'New chat' });
-
-			await screen.rerender({ text: 'Suede design system principles' });
-			await vi.advanceTimersByTimeAsync(exitOf('New chat').totalMs + 1);
-			expect(screen.visibleText()).toBe('Suede design system principles');
-
-			await screen.rerender({ text: 'Settings' });
-			expect(screen.root.dataset.letterPhase).toBe('exiting');
-
-			// The superseded transition's finish would have released the width here.
-			await vi.advanceTimersByTimeAsync(exitOf('Suede design system principles').totalMs - 1);
-			expect(screen.root.style.width).not.toBe('');
-
-			await vi.advanceTimersByTimeAsync(2000);
-			expect(screen.visibleText()).toBe('Settings');
-			expect(screen.root.style.width).toBe('');
-		});
+		expect(screen.visibleLetters().join('')).toBe('Settings');
+		expect(screen.root.style.width).toBe('');
 	});
 
-	it('swaps immediately with no blur, travel, or width lock under reduced motion', async () => {
+	it('keeps emoji and accented letters whole', () => {
+		const family = '👩‍👩‍👧';
+		const decomposedE = 'é';
+		const { visibleLetters } = renderText({ text: `caf${decomposedE} ${family}` });
+
+		expect(visibleLetters()).toEqual(['c', 'a', 'f', decomposedE, ' ', family]);
+	});
+
+	it('swaps immediately when the user prefers reduced motion', async () => {
 		emulateReducedMotion();
 		const screen = renderText({ text: 'New chat' });
 
 		await screen.rerender({ text: 'Suede design system principles' });
 
-		expect(screen.visibleText()).toBe('Suede design system principles');
-		expect(screen.root.dataset.letterPhase).toBe('settled');
+		expect(screen.visibleLetters().join('')).toBe('Suede design system principles');
 		expect(screen.root.style.width).toBe('');
 	});
 

@@ -1,5 +1,5 @@
 /** Fixed motion for DynamicText, tuned in a prototype. */
-export const TIMING = {
+const TIMING = {
 	/** Every duration and delay is divided by this. */
 	speed: 0.8,
 	/** Total stagger spread across all letters. */
@@ -27,7 +27,7 @@ export function splitGraphemes(text: string): string[] {
  * don't crawl and long strings don't blur into one motion. A single letter has
  * no gaps, so it has no stagger.
  */
-export function perLetterDelayMs(letterCount: number): number {
+function perLetterDelayMs(letterCount: number): number {
 	if (letterCount < 2) return 0;
 	const spread = TIMING.staggerWindowMs / (letterCount - 1);
 	return Math.min(TIMING.staggerMaxMs, Math.max(TIMING.staggerMinMs, spread));
