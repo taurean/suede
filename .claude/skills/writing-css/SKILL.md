@@ -63,9 +63,12 @@ a font stack. The exception is shorthand that resolves through tokens
 immediately: `color: white` on a saturated `--hue-blue-500` background is fine
 because the contrast is what's being captured, not a colour value.
 
-Custom CSS goes in the project's `layout` cascade layer (or higher) so it
-overrides stylebase. If you find yourself adding `!important`, you're either in
-the wrong layer or fighting the cascade — stop and check.
+Global CSS — files in `src/lib/styles/` — goes in the project's `layout`
+cascade layer (or higher) so it overrides stylebase. Scoped `<style>` blocks
+stay unlayered: Svelte's hash class already confines them to the component, and
+unlayered rules outrank every layer, so a page-level reset can't override the
+rules a component depends on. If you find yourself adding `!important`, you're
+either in the wrong layer or fighting the cascade — stop and check.
 
 **Exception (data attributes).** Variations of a block — `reversed`,
 `inactive`, `expanded` — use **data attributes, not modifier classes**. The
@@ -187,7 +190,7 @@ When a block needs scoped CSS — colours, sizing, a hover state — the recipe 
    `u:lh-*`).
 3. In the scoped `<style>`, use `:global(.your-block)` because the wrapper class
    lives on a child component's rendered element. Reference tokens by name. Stay
-   under ~80 lines.
+   under ~80 lines. Don't wrap the block in `@layer`.
 
 A working example is `src/lib/components/ui/SuedeButton.svelte` in any
 suede-family project. The `:global` wrapper, the `--hue-blue-500` →
@@ -217,9 +220,12 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
 - **Wrapping content with `l:grid` and then writing grid-column CSS.** The grid
   spans are data attributes: `[data-grid-columns="third"]`. The grid utility
   handles the rest.
-- **Skipping the cascade layer declaration.** Custom CSS that doesn't declare
-  `@layer layout { … }` (or whatever layer) lands unlayered and wins by
-  accident, not by intent. Declare the layer.
+- **Skipping the cascade layer declaration in a global stylesheet.** A file in
+  `src/lib/styles/` that doesn't declare `@layer layout { … }` (or whatever
+  layer) lands unlayered and wins by accident, not by intent. Declare the
+  layer.
+- **Layering a scoped `<style>` block.** Inside a layer, a component's own
+  rules lose to any unlayered CSS on the page. Leave scoped blocks unlayered.
 
 ## What this skill doesn't cover
 
