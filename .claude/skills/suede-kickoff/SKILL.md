@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Tailor a freshly created suede fork to its project. `pnpm create suede` has
 already done everything mechanical: downloaded the template, initialized git,
-written `package.json`, run `pnpm install` and `deciduous init`, committed the
+written `package.json`, run `pnpm install`, committed the
 bootstrap, and branched `chore/suede-kickoff`. This skill starts where the CLI
 stops.
 
