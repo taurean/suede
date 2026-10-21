@@ -1,10 +1,10 @@
 import { ColorItem, ColorPalette, Meta, Typeset } from '@storybook/addon-docs/blocks';
-import stylebaseCss from '@taurean/stylebase/css?raw';
+import suedeCss from '@taurean/suede-css/css?raw';
 import { groupTokens } from './tokens';
 
 <Meta title="Foundations/Tokens" />
 
-export const tokens = groupTokens(stylebaseCss);
+export const tokens = groupTokens(suedeCss);
 
 export const cssVar = (name) => `var(--${name})`;
 
@@ -62,12 +62,26 @@ export const LineHeightSample = ({ name }) => (
 	</p>
 );
 
+export const splitLightDark = (value) => {
+	// Splits light-dark(<light>, <dark>) at its top-level comma. Branches can hold nested
+	// functions with their own commas, e.g. color-mix(in oklch, a, b).
+	const args = value.match(/^light-dark\((.*)\)$/)?.[1];
+	if (args === undefined) return undefined;
+	let depth = 0;
+	for (let i = 0; i < args.length; i++) {
+		if (args[i] === '(') depth++;
+		else if (args[i] === ')') depth--;
+		else if (args[i] === ',' && depth === 0) {
+			return { light: args.slice(0, i).trim(), dark: args.slice(i + 1).trim() };
+		}
+	}
+	return undefined;
+};
+
 export const swatches = (token) =>
 	token.value === ''
 		? { unset: 'transparent' }
-		: token.dark
-			? { light: token.value, dark: token.dark }
-			: { all: token.value };
+		: (splitLightDark(token.value) ?? { all: token.value });
 
 export const hueRow = (hue) => (
 	<ColorItem key={hue.name} title={hue.name} subtitle={`--hue-${hue.name}-*`} colors={hue.shades} />
@@ -75,16 +89,16 @@ export const hueRow = (hue) => (
 
 # Design tokens
 
-Every custom property [stylebase](https://github.com/taurean/stylebase) declares on `:root`, read
-from the installed package at build time, so this page follows a stylebase upgrade without edits.
-Token values are human-owned: change them in stylebase, not here.
+Every custom property [suede-css](https://github.com/taurean/suede-css) declares on `:root`, read
+from the installed package at build time, so this page follows a suede-css upgrade without edits.
+Token values are human-owned: change them in suede-css, not here.
 
 ## Colour
 
 ### Surfaces
 
-Semantic tokens. Components use these before reaching for a palette shade, because dark mode works
-by remapping them.
+Semantic tokens. Components use these before reaching for a palette shade, because each one is a
+`light-dark()` pair that follows the active colour scheme.
 
 <ColorPalette>
 	{tokens.surfaces.map((token) => (
@@ -107,7 +121,7 @@ Each hue has 11 OKLCH shades, `50` (lightest) to `950` (darkest), referenced as
 	   and overlap. The swatch keeps the value as its title tooltip, so hide the printed copy. */
 	.token-palette [title] > div > span { display: none; }
 
-	/* Storybook's docs sheet stays light, but under a dark OS scheme stylebase sets body text to
+	/* Storybook's docs sheet stays light, but under a dark OS scheme suede-css sets body text to
 	   a light colour, so anything inheriting it disappears. Pin this page's inheriting elements. */
 	.token-palette > summary, .token-typeset { color: var(--hue-neutral-950); }
 `}</style>

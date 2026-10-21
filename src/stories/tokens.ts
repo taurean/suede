@@ -9,7 +9,7 @@ export interface Hue {
 }
 
 export interface TokenGroups {
-	surfaces: (Token & { dark?: string })[];
+	surfaces: Token[];
 	chromaticHues: Hue[];
 	neutralHues: Hue[];
 	fontRoles: Token[];
@@ -26,7 +26,6 @@ export interface TokenGroups {
 const NEUTRAL_MAX_CHROMA = 0.05;
 
 const ROOT_BLOCK = /(?<=^|[{}])\s*:root\s*\{([^{}]*)\}/g;
-const DARK_ROOT_BLOCK = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([^{}]*)\}/g;
 const DECLARATION = /--([\w-]+)\s*:([^;]*)/g;
 const PALETTE_SHADE = /^hue-([a-zA-Z]+)-(\d+)$/;
 const SURFACE = /^hue-z\d+-/;
@@ -49,14 +48,6 @@ export function parseRootTokens(css: string): Token[] {
 	return [...tokens].map(([name, value]) => ({ name, value }));
 }
 
-function parseDarkOverrides(css: string): Map<string, string> {
-	const overrides = new Map<string, string>();
-	for (const [, block] of css.matchAll(DARK_ROOT_BLOCK)) {
-		for (const { name, value } of declarations(block)) overrides.set(name, value);
-	}
-	return overrides;
-}
-
 function oklchChroma(value: string): number | undefined {
 	const match = value.match(/oklch\(\s*[\d.]+%?\s+([\d.]+)/);
 	return match ? Number(match[1]) : undefined;
@@ -70,7 +61,6 @@ function isNeutral(hue: Hue): boolean {
 }
 
 export function groupTokens(css: string): TokenGroups {
-	const dark = parseDarkOverrides(css);
 	const groups: TokenGroups = {
 		surfaces: [],
 		chromaticHues: [],
@@ -88,7 +78,7 @@ export function groupTokens(css: string): TokenGroups {
 	for (const token of parseRootTokens(css)) {
 		const shade = token.name.match(PALETTE_SHADE);
 		if (SURFACE.test(token.name)) {
-			groups.surfaces.push({ ...token, dark: dark.get(token.name) });
+			groups.surfaces.push(token);
 		} else if (shade) {
 			const [, hueName, step] = shade;
 			const hue = hues.get(hueName) ?? { name: hueName, shades: {} };
