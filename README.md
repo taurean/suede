@@ -6,7 +6,7 @@ A SvelteKit starter template with an agentic development process baked in.
 
 Suede is two layers in one repo:
 
-1. **A runtime stack** — SvelteKit on Cloudflare Pages + Workers, D1 + Drizzle for data, Vitest + Playwright for tests, Storybook for component states, stylebase + Bits UI for the design layer.
+1. **A runtime stack** — SvelteKit on Cloudflare Pages + Workers, D1 + Drizzle for data, Vitest + Playwright for tests, Storybook for component states, suede-css + Bits UI for the design layer.
 2. **A process layer** — a constant concept-to-merge pipeline, in-repo skills and subagents, and clear boundaries between what humans author and what agents author.
 
 You don't build _in_ suede so much as you fork it: `pnpm create suede <name>` creates the project, `/suede-kickoff` tailors it, and the new project inherits both layers with the details tailored to it.
@@ -22,7 +22,7 @@ You don't build _in_ suede so much as you fork it: `pnpm create suede <name>` cr
 | Database        | Cloudflare D1 via Drizzle ORM                                                    |
 | Tests           | Vitest (+ Playwright browser tests)                                              |
 | Component dev   | Storybook                                                                        |
-| UI primitives   | Bits UI + [@taurean/stylebase](https://www.npmjs.com/package/@taurean/stylebase) |
+| UI primitives   | Bits UI + [@taurean/suede-css](https://www.npmjs.com/package/@taurean/suede-css) |
 | Package manager | pnpm                                                                             |
 
 Every piece is a default, not a mandate — keep/rip decisions are made per fork during kickoff (see below).
@@ -73,7 +73,7 @@ Downstream forks can always trace their lineage: `package.json#suede.from` holds
 Suede is built to be driven through Claude Code. The contract:
 
 - **CLAUDE.md is always loaded.** It defines the stack, the git workflow, the pipeline, and the guardrails. Skills live in `.claude/skills/`.
-- **Authoring boundaries.** Humans own the design contract: design-token values, the visual contract, and whether a new UI primitive exists at all. Agents author markup, scoped CSS, and all TypeScript within that contract — through stylebase tokens and Bits UI primitives, never by redefining tokens locally.
+- **Authoring boundaries.** Humans own the design contract: design-token values, the visual contract, and whether a new UI primitive exists at all. Agents author markup, scoped CSS, and all TypeScript within that contract — through suede-css tokens and Bits UI primitives, never by redefining tokens locally.
 - **Storybook discipline.** A change to a UI primitive in `src/lib/components/` is incomplete without a story update in the same commit — stories are the agent-owned record of the human-owned visual contract.
 - **The human merges.** Agents may branch, commit (with a co-author trailer crediting assistance), push branches, and apply tags — but never merge to `main` or push to it directly. Every task lands through a PR the human reviews.
 - **Everything is recorded.** Closed issues and merged PRs are the durable record of what shipped.
@@ -109,8 +109,8 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 | `task`          | The task spine: alignment, prep, build, verify, review, closeout. `brief.md` owns the brief format |
 | `project-plan`  | Cut plan for multi-PR work, published as one plan issue                                            |
 | `review`        | Three-axis review (Standards, Spec, Discipline) in parallel subagents                              |
-| `design`        | Visual judgment for new UI in a stylebase + Bits UI project                                        |
-| `writing-css`   | CSS and component markup in stylebase + Bits UI; loads on `.svelte` and CSS files                  |
+| `design`        | Visual judgment for new UI in a suede-css + Bits UI project                                        |
+| `writing-css`   | CSS and component markup in suede-css + Bits UI; loads on `.svelte` and CSS files                  |
 | `suede-kickoff` | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
 
 ## Git workflow and releases

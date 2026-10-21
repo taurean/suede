@@ -1,70 +1,74 @@
 ---
 name: writing-css
 description: >
-  Write CSS and component markup for projects built on stylebase + Bits UI
+  Write CSS and component markup for projects built on suede-css + Bits UI
   using the CUBE CSS methodology. Reach for layout utilities for rhythm,
   token-backed utility classes for typography, scoped `<style>` blocks for
   block-level visuals, and Bits UI primitives for any interactive element.
   Use when writing or editing `.svelte` markup, `<style>` blocks, files in
   `src/lib/styles/`, classes, data attributes, or any task involving styling,
-  layout, or component composition in a stylebase-based project.
+  layout, or component composition in a suede-css-based project.
 paths:
   - '**/*.svelte'
   - 'src/lib/styles/**'
   - '**/*.css'
 ---
 
-# Writing CSS in a stylebase + Bits UI project
+# Writing CSS in a suede-css + Bits UI project
 
-stylebase is a CUBE CSS implementation. The cascade layers are declared in the
+suede-css is a CUBE CSS implementation. The cascade layers are declared in the
 order CUBE expects — `token → default → utility → layout` — so the methodology
 is enforced by the cascade, not by convention. Lean into that. Every line of CSS
 in this stack should fall into one of the four CUBE layers, and most lines
-should land in the layers stylebase already provides.
+should land in the layers suede-css already provides.
 
 ## The four layers
 
-**Composition (stylebase `layout` layer).** Page-level layout, rhythm, and flow.
+**Composition (suede-css `layout` layer).** Page-level layout, rhythm, and flow.
 Reach for these utilities before writing any layout CSS of your own:
 
 - `l:grid` — 12-column responsive grid. Pair with
-  `[data-grid-columns="quarter|third|half|full"]` on children for span variants
-  (this is the Exception pattern, see below).
+  `[data-grid-columns="quarter|third|half|full"]` on direct children for span
+  variants (this is the Exception pattern, see below). The attribute does
+  nothing on a grandchild.
 - `l:root` — single centred container with max-width and gutter.
 - `l:waterfall > *` — vertical rhythm; every direct child gets
   `margin-block-start: var(--waterfall-gap, 2em)`.
 - `l:river > *` — horizontal flow; every direct child gets
   `margin-inline-start: var(--river-gap, 1em)`.
-- `l:repel` — flexbox row with `justify-content: space-between` for the "logo on
-  the left, actions on the right" pattern.
+- `l:repel` — wrapping flexbox row with `justify-content: space-between` for the
+  "logo on the left, actions on the right" pattern. Gap comes from
+  `--repel-gap`.
 - `l:ui-list` — inline horizontal list with bullets removed.
 
 Override the `--river-gap` and `--waterfall-gap` custom properties on the parent
 when the default rhythm is wrong; don't reach for a new utility.
 
-**Utility (stylebase `utility` layer).** One job, one class. Currently exposed:
-`u:fs-0` through `u:fs-10` (fluid font sizes, mapped to `--fs-*`) and
-`u:lh-ui|...|loose` (line heights, mapped to `--lh-*`). Use these for typography
+**Utility (suede-css `utility` layer).** One job, one class. Currently exposed:
+`u:fs-0` through `u:fs-10` (fluid font sizes, mapped to `--fs-*`),
+`u:lh-ui|...|loose` (line heights, mapped to `--lh-*`),
+`u:ff-content|heading|sans|serif|ui|mono` (font families, mapped to `--ff-*`),
+and `u:visually-hidden`. Use these for typography
 that varies per element rather than per block — e.g. `<h1 class="u:fs-7">`. If a
-property needs a utility and stylebase doesn't ship one, add it to a
+property needs a utility and suede-css doesn't ship one, add it to a
 project-local CSS file in `src/lib/styles/` rather than hardcoding it. The
 utility layer's job is to extend tokens, never to redefine them.
 
 **Block (project's `<style>` block + scoped styles in `src/lib/styles/`).** This
-is the layer stylebase deliberately hands off to the project. By the time you
+is the layer suede-css deliberately hands off to the project. By the time you
 reach a block, composition, utilities, and globals have done most of the work —
 the block CSS should be **a handful of rules** that only apply in that context.
 Hard cap at around 80 lines of CSS per block; if it's growing, the block is
 solving more than one contextual problem and should split.
 
-Block CSS draws from stylebase custom properties (`--hue-*`, `--space-*`,
+Block CSS draws from suede-css custom properties (`--hue-*`, `--space-*`,
 `--ff-*`, `--fs-*`, `--lh-*`). It never hardcodes a colour, a spacing value, or
 a font stack. The exception is shorthand that resolves through tokens
 immediately: `color: white` on a saturated `--hue-blue-500` background is fine
 because the contrast is what's being captured, not a colour value.
 
 Global CSS — files in `src/lib/styles/` — goes in the project's `layout`
-cascade layer (or higher) so it overrides stylebase. Scoped `<style>` blocks
+cascade layer (or higher) so it overrides suede-css. Scoped `<style>` blocks
 stay unlayered: Svelte's hash class already confines them to the component, and
 unlayered rules outrank every layer, so a page-level reset can't override the
 rules a component depends on. If you find yourself adding `!important`, you're
@@ -142,8 +146,9 @@ most of the work before the block ever loads.
 
   **Semantic surface tokens first** — `--hue-z0-bg`, `--hue-z0-fg`,
   `--hue-z0-divider`, `--hue-z1-bg` and the rest of the z-layer set. Dark mode
-  works by remapping these under `prefers-color-scheme: dark`, so a component
-  built on them adapts for free. A component that reaches past them to a
+  works because each one is a `light-dark()` pair resolved by `color-scheme`, so
+  a component built on them adapts for free. `data-theme="light|dark"` forces a
+  scheme on any subtree. A component that reaches past them to a
   primitive renders identically in both themes — that's the bug, and it won't
   show up until someone switches.
 
@@ -175,7 +180,7 @@ medium, lg, xl, 2xl, 3xl, 4xl, 5xl`). Fluid via `clamp()` — viewport-aware
 - **Flow gaps.** `--waterfall-gap`, `--river-gap`. Defaulted on the utility;
   override per-instance rather than redefining the utility.
 
-If a token doesn't fit, flag it for the human to add at the source — stylebase,
+If a token doesn't fit, flag it for the human to add at the source — suede-css,
 or a project-local `--token-name` in the `token` cascade layer. Adding a token
 changes a shared surface every other component reads, so it is boundary
 movement: [STOP-2] applies. Don't redefine locally; the next reader will assume
@@ -215,11 +220,11 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
 - **Block CSS growing past ~80 lines.** The block is solving two problems;
   split it.
 - **Defining a design token in a scoped `<style>` block.** Tokens live in
-  stylebase or in the `token` cascade layer. A `--my-color` declared inside a
+  suede-css or in the `token` cascade layer. A `--my-color` declared inside a
   component is invisible to every other component.
 - **Wrapping content with `l:grid` and then writing grid-column CSS.** The grid
-  spans are data attributes: `[data-grid-columns="third"]`. The grid utility
-  handles the rest.
+  spans are data attributes on direct children: `[data-grid-columns="third"]`.
+  The grid utility handles the rest.
 - **Skipping the cascade layer declaration in a global stylesheet.** A file in
   `src/lib/styles/` that doesn't declare `@layer layout { … }` (or whatever
   layer) lands unlayered and wins by accident, not by intent. Declare the

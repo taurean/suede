@@ -1,7 +1,7 @@
 ---
 name: design
 description: >
-  Visual judgment for new UI in a stylebase + Bits UI project — hierarchy,
+  Visual judgment for new UI in a suede-css + Bits UI project — hierarchy,
   spacing, colour meaning, elevation, and the defaults that make an interface
   read as generated rather than designed. Use when designing or building a
   screen, a component's appearance, or any UI where the question is what it
@@ -37,7 +37,7 @@ the meaning. Accent colours, status colours, and brand surfaces are the usual
 legitimate cases.
 
 **[TOKEN-3]** A new token or utility MUST be modelled on an existing one — its
-naming, its scale position, its layer. If stylebase has a fluid spacing scale, a
+naming, its scale position, its layer. If suede-css has a fluid spacing scale, a
 new spacing value is a new stop on that scale, not a one-off `1.375rem`. New
 tokens are the human's call ([STOP-2]); propose the shape, don't add it.
 
@@ -45,7 +45,7 @@ tokens are the human's call ([STOP-2]); propose the shape, don't add it.
 `l:grid`, `l:root`, `l:waterfall`, `l:river`, `l:repel`, `l:ui-list`. Most
 layout problems are one of these with a different gap value.
 
-**[TOKEN-5]** Semantic HTML MUST come before any class. stylebase styles raw
+**[TOKEN-5]** Semantic HTML MUST come before any class. suede-css styles raw
 elements, so an unclassed `<article>`, `<h2>`, or `<table>` already looks
 right. Reaching for a class to restate what the element already says is work
 that produces nothing.

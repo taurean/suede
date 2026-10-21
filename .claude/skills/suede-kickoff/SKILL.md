@@ -73,14 +73,14 @@ The pipeline is constant across every fork: goal alignment → cut plan
 What varies is the details. Grill on each axis that might differ here.
 
 4. **Tooling keep/rip** — Cloudflare, D1 + Drizzle, Storybook, bits-ui,
-   stylebase, Vitest, Playwright, SvelteKit. **Default: keep all.**
+   suede-css, Vitest, Playwright, SvelteKit. **Default: keep all.**
    - Ripping Storybook triggers the Storybook-discipline override: the
      follow-up rewrites `CLAUDE.md` and `.claude/skills/task/` to match.
    - Ripping SvelteKit means the project is a backend, a CLI, or another
      non-web shape. Capture which, and the follow-up rewrites the parts of
      `CLAUDE.md` that assume a SvelteKit context — notably the Stack section
      and verification.
-   - Ripping SvelteKit also means `stylebase` and `bits-ui` go; they're
+   - Ripping SvelteKit also means `suede-css` and `bits-ui` go; they're
      stack-bound.
 
 5. **Version scheme** — read `suede.versioning`; don't re-ask when it's set.
@@ -101,7 +101,7 @@ What varies is the details. Grill on each axis that might differ here.
    stages still happen; the artifacts don't.
 
 8. **Which skills apply** — a backend has no use for Storybook discipline; a
-   CLI has no use for `stylebase`. You may subtract. The personal
+   CLI has no use for `suede-css`. You may subtract. The personal
    skills (`engineering-discipline`, `poke-holes`) apply everywhere and aren't
    up for subtraction.
 
