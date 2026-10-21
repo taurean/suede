@@ -10,5 +10,5 @@
 		"strict": true,
 		"types": ["./worker-configuration.d.ts", "$app/types"]
 	},
-	"include": ["src", "vite.config.ts", "drizzle.config.ts"]
+	"include": ["src", "test", "tests", "vite.config.ts", "drizzle.config.ts"]
 }
