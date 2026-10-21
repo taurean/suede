@@ -7,7 +7,7 @@ A SvelteKit starter template with an agentic development process baked in.
 Suede is two layers in one repo:
 
 1. **A runtime stack** — SvelteKit on Cloudflare Pages + Workers, D1 + Drizzle for data, Vitest + Playwright for tests, Storybook for component states, stylebase + Bits UI for the design layer.
-2. **A process layer** — a constant concept-to-merge pipeline, a decision graph (`deciduous`), in-repo skills and commands, and clear boundaries between what humans author and what agents author.
+2. **A process layer** — a constant concept-to-merge pipeline, in-repo skills and subagents, and clear boundaries between what humans author and what agents author.
 
 You don't build _in_ suede so much as you fork it: `pnpm create suede <name>` creates the project, `/suede-kickoff` tailors it, and the new project inherits both layers with the details tailored to it.
 
@@ -55,7 +55,7 @@ The quality gate before any task is called done: `pnpm check`, `pnpm lint`, `pnp
 
 Suede is a template you duplicate, not a dependency you install. The flow:
 
-1. **Run [`pnpm create suede <name>`](https://github.com/taurean/create-suede).** It asks for a one-line purpose and a first version, then creates `~/Developer/<name>/main` from the latest suede release: template files only (no suede history, `node_modules`, or decision graph), a fresh git repo on `main`, `package.json` carrying the name, version, description, and `"suede": { "from": "<tag>" }`, dependencies installed, `deciduous init` run, one bootstrap commit, and the `chore/suede-kickoff` branch checked out. It can also create the GitHub repo.
+1. **Run [`pnpm create suede <name>`](https://github.com/taurean/create-suede).** It asks for a one-line purpose and a first version, then creates `~/Developer/<name>/main` from the latest suede release: template files only (no suede history or `node_modules`), a fresh git repo on `main`, `package.json` carrying the name, version, description, and `"suede": { "from": "<tag>" }`, dependencies installed, one bootstrap commit, and the `chore/suede-kickoff` branch checked out. It can also create the GitHub repo.
 2. **Run `/suede-kickoff`** in Claude Code, inside the new directory. The [skill](.claude/skills/suede-kickoff/SKILL.md) walks through:
    - **Grilling session** — a one-question-at-a-time interview in two threads. **Thread A** captures what the CLI didn't ask about the project: primary user, project shape, anything load-bearing. **Thread B** captures process-layer tailoring: which stack pieces to keep or rip (Cloudflare, D1, Storybook, SvelteKit itself, …), version scheme (chronver vs semver), commit-type vocabulary, pipeline compression, and which skills apply.
    - **Capture the follow-up** — a draft PR on `chore/suede-kickoff` listing the edits to `CLAUDE.md`, `.claude/skills/`, configs, and this README, plus the project records to generate once those land. The kickoff skill deletes itself at the end of that task — it's consumed once.
@@ -76,7 +76,7 @@ Suede is built to be driven through Claude Code. The contract:
 - **Authoring boundaries.** Humans own the design contract: design-token values, the visual contract, and whether a new UI primitive exists at all. Agents author markup, scoped CSS, and all TypeScript within that contract — through stylebase tokens and Bits UI primitives, never by redefining tokens locally.
 - **Storybook discipline.** A change to a UI primitive in `src/lib/components/` is incomplete without a story update in the same commit — stories are the agent-owned record of the human-owned visual contract.
 - **The human merges.** Agents may branch, commit (with a co-author trailer crediting assistance), push branches, and apply tags — but never merge to `main` or push to it directly. Every task lands through a PR the human reviews.
-- **Everything is recorded.** Decisions go in the decision graph in real time. Closed issues and merged PRs are the durable record of what shipped.
+- **Everything is recorded.** Closed issues and merged PRs are the durable record of what shipped.
 
 ## From concept to merge
 
@@ -94,23 +94,13 @@ Every task moves through the same pipeline. The _process_ is constant across all
 
 ### The shape of a single task
 
-1. **Start** — branch `<type>/<slug>` from the latest `origin/main` (never from an in-flight branch) in a sibling worktree (`git worktree add ../<type>-<slug> -b <type>/<slug> origin/main`), log a goal node with the verbatim prompt. If requirements are fuzzy, align on the goal before touching code.
-2. **During** — log action nodes before major edits, honour authoring boundaries, commit as `<type>(<scope>): <subject>` in present-tense imperative, link each commit to the graph.
+1. **Start** — branch `<type>/<slug>` from the latest `origin/main` (never from an in-flight branch) in a sibling worktree (`git worktree add ../<type>-<slug> -b <type>/<slug> origin/main`). If requirements are fuzzy, align on the goal before touching code.
+2. **During** — honour authoring boundaries, commit as `<type>(<scope>): <subject>` in present-tense imperative.
 3. **End** — run the quality gate, bump the version (`chore(release): cut <version>` as the final commit), hand back. The human reviews the PR, merges, and the merge commit gets tagged on `main`.
 
 Branch types and commit types share one vocabulary — the conventional-commits 1.0.0 list (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, `perf`, `style`), enumerated in CLAUDE.md.
 
 ## Tools
-
-### Decision graph (`deciduous`)
-
-Suede tracks project decisions as a graph: `goal → options → decision → actions → outcomes`, with observations attached anywhere. Logging is real-time, not retroactive — log what you're about to do, then log how it went, and link every commit to a node. The graph records the _project's_ decisions (what the user is building and choosing), never the agent's internal process.
-
-- `deciduous init` / `deciduous update` write the Claude Code integration: the commands in `.claude/commands/`, the hooks in `.claude/hooks/`, and a Decision Graph Workflow section in `CLAUDE.md`. Don't hand-edit the generated parts.
-- The graph lives on a deciduous graph server, one workspace per repository. `deciduous remote setup --local` runs one on this machine against PostgreSQL on `localhost:5432`; run it once per machine and once per new worktree.
-- Nothing blocks an unlogged edit any more — deciduous 1.x removed that hook. Real-time logging is a rule the agent follows, restated by the server's MCP instructions.
-- House rules for what belongs in the graph: CLAUDE.md "Decision graph".
-- Web viewer: `deciduous serve`.
 
 ### In-repo skills (`.claude/skills/`)
 
