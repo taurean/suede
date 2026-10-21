@@ -1,0 +1,171 @@
+import { ColorItem, ColorPalette, Meta, Typeset } from '@storybook/addon-docs/blocks';
+import stylebaseCss from '@taurean/stylebase/css?raw';
+import { groupTokens } from './tokens';
+
+<Meta title="Foundations/Tokens" />
+
+export const tokens = groupTokens(stylebaseCss);
+
+export const cssVar = (name) => `var(--${name})`;
+
+export const TokenName = ({ name }) => <code>--{name}</code>;
+
+export const TokenTable = ({ rows, sample }) => (
+	<table style={{ width: '100%' }}>
+		<thead>
+			<tr>
+				<th>Token</th>
+				<th>Sample</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			{rows.map((token) => (
+				<tr key={token.name}>
+					<td style={{ whiteSpace: 'nowrap' }}>
+						<TokenName name={token.name} />
+					</td>
+					<td>{sample(token)}</td>
+					<td style={{ fontSize: '12px', opacity: 0.7 }}>{token.value}</td>
+				</tr>
+			))}
+		</tbody>
+	</table>
+);
+
+export const FontSample = ({ name }) => (
+	<span style={{ fontFamily: cssVar(name), fontSize: '18px' }}>Sphinx of black quartz</span>
+);
+
+export const SpacingBar = ({ name }) => (
+	<div
+		style={{
+			width: cssVar(name),
+			height: '12px',
+			background: 'var(--hue-blue-500)',
+			borderRadius: '2px'
+		}}
+	/>
+);
+
+export const LineHeightSample = ({ name }) => (
+	<p
+		style={{
+			margin: 0,
+			maxWidth: '24ch',
+			lineHeight: cssVar(name),
+			fontSize: '14px',
+			background: 'var(--hue-blue-100)'
+		}}
+	>
+		Two lines of text show the leading between them.
+	</p>
+);
+
+export const swatches = (token) =>
+	token.value === ''
+		? { unset: 'transparent' }
+		: token.dark
+			? { light: token.value, dark: token.dark }
+			: { all: token.value };
+
+export const hueRow = (hue) => (
+	<ColorItem key={hue.name} title={hue.name} subtitle={`--hue-${hue.name}-*`} colors={hue.shades} />
+);
+
+# Design tokens
+
+Every custom property [stylebase](https://github.com/taurean/stylebase) declares on `:root`, read
+from the installed package at build time, so this page follows a stylebase upgrade without edits.
+Token values are human-owned: change them in stylebase, not here.
+
+## Colour
+
+### Surfaces
+
+Semantic tokens. Components use these before reaching for a palette shade, because dark mode works
+by remapping them.
+
+<ColorPalette>
+	{tokens.surfaces.map((token) => (
+		<ColorItem
+			key={token.name}
+			title={`--${token.name}`}
+			subtitle={token.value || 'declared empty'}
+			colors={swatches(token)}
+		/>
+	))}
+</ColorPalette>
+
+### Palette
+
+Each hue has 11 OKLCH shades, `50` (lightest) to `950` (darkest), referenced as
+`--hue-<name>-<shade>`. Hover a swatch for its value.
+
+<style>{`
+	/* ColorItem prints each value under its swatch. OKLCH strings are too long for 11 columns
+	   and overlap. The swatch keeps the value as its title tooltip, so hide the printed copy. */
+	.token-palette [title] > div > span { display: none; }
+
+	/* Storybook's docs sheet stays light, but under a dark OS scheme stylebase sets body text to
+	   a light colour, so anything inheriting it disappears. Pin this page's inheriting elements. */
+	.token-palette > summary, .token-typeset { color: var(--hue-neutral-950); }
+`}</style>
+
+<details open className="token-palette">
+	<summary>Chromatic ({tokens.chromaticHues.length} hues)</summary>
+	<ColorPalette>{tokens.chromaticHues.map(hueRow)}</ColorPalette>
+</details>
+
+<details className="token-palette">
+	<summary>Neutrals ({tokens.neutralHues.length} hues)</summary>
+	<ColorPalette>{tokens.neutralHues.map(hueRow)}</ColorPalette>
+</details>
+
+## Typography
+
+### Font sizes
+
+A fluid scale: each step grows with the viewport between its `clamp()` bounds.
+
+<div className="token-typeset">
+	<Typeset
+		fontSizes={tokens.fontSizes.map((token) => cssVar(token.name))}
+		fontFamily="var(--ff-ui)"
+		sampleText="Judge my vow"
+	/>
+</div>
+
+### Font roles
+
+What markup uses. Each role points at one of the stacks below.
+
+<TokenTable rows={tokens.fontRoles} sample={(token) => <FontSample name={token.name} />} />
+
+<details>
+	<summary>Font stacks ({tokens.fontStacks.length})</summary>
+	<TokenTable rows={tokens.fontStacks} sample={(token) => <FontSample name={token.name} />} />
+</details>
+
+### Line heights
+
+<TokenTable rows={tokens.lineHeights} sample={(token) => <LineHeightSample name={token.name} />} />
+
+## Spacing
+
+A fluid scale, smallest to largest.
+
+<TokenTable rows={tokens.spacing} sample={(token) => <SpacingBar name={token.name} />} />
+
+## Layout grid
+
+<TokenTable rows={tokens.grid} sample={() => null} />
+
+{tokens.other.length > 0 && (
+
+<>
+<h2>Other</h2>
+<p>Tokens this page doesn't have a group for yet.</p>
+<TokenTable rows={tokens.other} sample={() => null} />
+</>
+)}
