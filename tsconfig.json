@@ -1,10 +1,14 @@
 {
 	"extends": "$app/tsconfig",
 	"compilerOptions": {
+		// Once a build exists, `wrangler types` points GlobalProps.mainModule at the
+		// built .svelte-kit/cloudflare/_worker.js, pulling build output into the
+		// program. Suede is TypeScript-only, so JS is parsed for types, not checked.
+		"checkJs": false,
 		"rewriteRelativeImportExtensions": true,
 		"sourceMap": true,
 		"strict": true,
 		"types": ["./worker-configuration.d.ts", "$app/types"]
 	},
-	"include": ["src", "vite.config.ts", "drizzle.config.ts"]
+	"include": ["src", "test", "tests", "vite.config.ts", "drizzle.config.ts"]
 }

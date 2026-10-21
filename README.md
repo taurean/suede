@@ -40,7 +40,7 @@ Day-to-day scripts:
 | Command                                                     | What it does                                                                        |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `pnpm dev`                                                  | Vite dev server                                                                     |
-| `pnpm build`                                                | Production build (checks wrangler types first)                                      |
+| `pnpm build`                                                | Production build (regenerates wrangler types first)                                 |
 | `pnpm preview`                                              | Run the built Worker locally via wrangler                                           |
 | `pnpm check`                                                | Type-check (svelte-check + wrangler types)                                          |
 | `pnpm lint`                                                 | Prettier check + ESLint                                                             |

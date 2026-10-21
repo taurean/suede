@@ -11,7 +11,18 @@ import globals from 'globals';
 import ts from 'typescript-eslint';
 import { loadConfig } from '@sveltejs/load-config';
 
-const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
+const loaded = await loadConfig('./', { traverse: false });
+if (!loaded) {
+	throw new Error(
+		`ESLint found no vite.config or svelte.config in ${process.cwd()}; run it from the repository root`
+	);
+}
+if ('error' in loaded) {
+	throw new Error(`ESLint could not load the Svelte config from ${loaded.configFilePath}`, {
+		cause: loaded.error
+	});
+}
+const svelteConfig = loaded.config;
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
