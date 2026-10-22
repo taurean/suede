@@ -78,10 +78,7 @@ export const splitLightDark = (value) => {
 	return undefined;
 };
 
-export const swatches = (token) =>
-	token.value === ''
-		? { unset: 'transparent' }
-		: (splitLightDark(token.value) ?? { all: token.value });
+export const swatches = (token) => splitLightDark(token.value) ?? { all: token.value };
 
 export const hueRow = (hue) => (
 	<ColorItem key={hue.name} title={hue.name} subtitle={`--hue-${hue.name}-*`} colors={hue.shades} />
@@ -105,7 +102,7 @@ Semantic tokens. Components use these before reaching for a palette shade, becau
 		<ColorItem
 			key={token.name}
 			title={`--${token.name}`}
-			subtitle={token.value || 'declared empty'}
+			subtitle={token.value}
 			colors={swatches(token)}
 		/>
 	))}
