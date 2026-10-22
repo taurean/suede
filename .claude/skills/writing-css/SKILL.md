@@ -18,13 +18,16 @@ paths:
 
 suede-css is a CUBE CSS implementation. The cascade layers are declared in the
 order CUBE expects — `token → default → utility → layout` — so the methodology
-is enforced by the cascade, not by convention. Lean into that. Every line of CSS
+is enforced by the cascade, not by convention. Each step is a pair: suede-css's
+own layer (`suede-token`, `suede-default`, `suede-utility`, `suede-layout`)
+followed by a bare project layer of the same role, so project CSS in `layout`
+overrides `suede-layout` and nothing above it. Lean into that. Every line of CSS
 in this stack should fall into one of the four CUBE layers, and most lines
 should land in the layers suede-css already provides.
 
 ## The four layers
 
-**Composition (suede-css `layout` layer).** Page-level layout, rhythm, and flow.
+**Composition (suede-css `suede-layout` layer).** Page-level layout, rhythm, and flow.
 Reach for these utilities before writing any layout CSS of your own:
 
 - `l:grid` — 12-column responsive grid. Pair with
@@ -44,7 +47,7 @@ Reach for these utilities before writing any layout CSS of your own:
 Override the `--river-gap` and `--waterfall-gap` custom properties on the parent
 when the default rhythm is wrong; don't reach for a new utility.
 
-**Utility (suede-css `utility` layer).** One job, one class. Currently exposed:
+**Utility (suede-css `suede-utility` layer).** One job, one class. Currently exposed:
 `u:fs-0` through `u:fs-10` (fluid font sizes, mapped to `--fs-*`),
 `u:lh-ui|...|loose` (line heights, mapped to `--lh-*`),
 `u:ff-content|heading|sans|serif|ui|mono` (font families, mapped to `--ff-*`),
