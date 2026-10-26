@@ -151,7 +151,9 @@ most of the work before the block ever loads.
   `--hue-z0-divider`, `--hue-z1-bg` and the rest of the z-layer set. Dark mode
   works because each one is a `light-dark()` pair resolved by `color-scheme`, so
   a component built on them adapts for free. `data-theme="light|dark"` forces a
-  scheme on any subtree. A component that reaches past them to a
+  scheme on `<html>` or any subtree. On a subtree it only switches the tokens, so
+  the themed element must paint its own background and text colour with the
+  surface tokens (`--hue-z1-bg` / `--hue-z1-fg`). A component that reaches past them to a
   primitive renders identically in both themes — that's the bug, and it won't
   show up until someone switches.
 
