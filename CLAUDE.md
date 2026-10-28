@@ -234,11 +234,11 @@ The brief, full reports, reasoning, evidence.
 The blank lines inside the block are required; GitHub doesn't render markdown
 without them.
 
-| Surface                  | Summary                                                                     | Collapsed                    |
-| ------------------------ | --------------------------------------------------------------------------- | ---------------------------- |
-| PR body                  | What changed, why, where the human's judgement is needed, verification line | The brief                    |
-| `/review` report         | Verdict, then one line per blocking finding                                 | Each axis's report, separate |
-| `/task` closeout comment | Merge verdict, where to focus, one line per open question                   | Reasoning behind each        |
+| Surface                  | Summary                                                                     | Collapsed                  |
+| ------------------------ | --------------------------------------------------------------------------- | -------------------------- |
+| PR body                  | What changed, why, where the human's judgement is needed, verification line | The brief                  |
+| `/review` report         | Verdict, then one line per blocking finding, synthesized across reviewers   | Each reviewer's raw report |
+| `/task` closeout comment | Merge verdict, where to focus, one line per open question                   | Reasoning behind each      |
 
 **Agent comments start with a marker** on their first line —
 `<!-- suede:review -->` or `<!-- suede:closeout -->`. `/review` reads PR comments

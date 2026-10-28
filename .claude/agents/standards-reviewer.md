@@ -20,7 +20,7 @@ file paths.
 Report every violation you find, in two parts.
 
 **Findings** — one line each, in the format from `CLAUDE.md`, "Agent-authored
-output", so the review skill can lift them unchanged:
+output", so the review skill can build its summary from them:
 
 ```
 - What's wrong, in plain words. Fix: what to do. In `file.ts:42`. (hard)
