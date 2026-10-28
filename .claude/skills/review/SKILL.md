@@ -99,13 +99,13 @@ to know what was found.
 
 **A finding blocks merge if it is any of:**
 
-- a `MUST` violation from Discipline;
-- a **Wrong** or **Missing** finding from Spec;
-- a hard violation from Standards.
+- labelled `MUST` by Discipline;
+- labelled `wrong` or `missing` by Spec;
+- labelled `hard` by Standards.
 
-Everything else — SHOULD violations with no stated reason, judgement calls,
-Unasked behavior, story/test mismatches, open questions — is worth reading and
-does not block.
+Everything else — `SHOULD` violations with no stated reason, `judgement` calls,
+`unasked` behavior, story/test `mismatch` findings, open questions — is worth
+reading and does not block.
 
 The report follows `CLAUDE.md`, "Agent-authored output": one synthesized review
 for the human, and the reviewers' raw reports collapsed for agents.
