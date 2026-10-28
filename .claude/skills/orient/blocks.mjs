@@ -64,9 +64,9 @@ function renderTree(node) {
 		return `<li class="dir"><span class="name">${esc(name)}/</span><ul>${renderTree(child)}</ul></li>`;
 	});
 	const files = node.files.map(
-		(file) => `<li class="file ${file.change}">
+		(file) => `<li class="file ${esc(file.change)}">
 	<span class="name">${esc(file.name)}</span>
-	<span class="change">${file.change}</span>
+	<span class="change">${esc(file.change)}</span>
 	${file.lines ? `<span class="lines">${esc(file.lines)}</span>` : ''}
 	${file.note ? `<span class="note">${inline(file.note)}</span>` : ''}
 </li>`
@@ -201,8 +201,8 @@ const endpoints = {
 							)
 							.join('')}</table>`
 					: '';
-				return `<details class="endpoint ${item.change ?? ''}">
-	<summary><span class="method m-${item.method.toLowerCase()}">${item.method}</span><code class="path">${esc(item.path)}</code><span class="sum">${inline(item.summary)}</span>${item.change ? `<span class="change">${item.change}</span>` : ''}</summary>
+				return `<details class="endpoint ${esc(item.change ?? '')}">
+	<summary><span class="method m-${esc(item.method.toLowerCase())}">${esc(item.method)}</span><code class="path">${esc(item.path)}</code><span class="sum">${inline(item.summary)}</span>${item.change ? `<span class="change">${esc(item.change)}</span>` : ''}</summary>
 	<div class="endpoint-body">
 		${item.auth ? `<p><span class="k">Auth</span> ${inline(item.auth)}</p>` : ''}
 		${params}
@@ -242,17 +242,21 @@ const model = {
 			if (!Array.isArray(t.fields) || !t.fields.length)
 				errors.push(`tables[${i}] needs \`fields\``);
 			if (t.change) oneOf(t.change, CHANGES, `tables[${i}].change`, errors);
+			(t.fields ?? []).forEach((f, j) => {
+				if (typeof f.name !== 'string') errors.push(`tables[${i}].fields[${j}] needs \`name\``);
+				if (f.change) oneOf(f.change, CHANGES, `tables[${i}].fields[${j}].change`, errors);
+			});
 		});
 	},
 	render(block) {
 		const tables = block.tables
 			.map(
-				(t) => `<div class="table-card ${t.change ?? ''}">
-	<div class="table-head"><strong>${esc(t.name)}</strong>${t.change ? `<span class="change">${t.change}</span>` : ''}${t.source ? `<span class="src-path">${esc(t.source)}</span>` : ''}</div>
+				(t) => `<div class="table-card ${esc(t.change ?? '')}">
+	<div class="table-head"><strong>${esc(t.name)}</strong>${t.change ? `<span class="change">${esc(t.change)}</span>` : ''}${t.source ? `<span class="src-path">${esc(t.source)}</span>` : ''}</div>
 	<table>${t.fields
 		.map(
 			(f) =>
-				`<tr class="${f.change ?? ''}"><td>${f.key ? `<span class="key">${esc(f.key)}</span>` : ''}<code>${esc(f.name)}</code></td><td class="type">${esc(f.type ?? '')}</td><td>${inline(f.note ?? '')}${f.change ? ` <span class="change">${f.change}</span>` : ''}</td></tr>`
+				`<tr class="${esc(f.change ?? '')}"><td>${f.key ? `<span class="key">${esc(f.key)}</span>` : ''}<code>${esc(f.name)}</code></td><td class="type">${esc(f.type ?? '')}</td><td>${inline(f.note ?? '')}${f.change ? ` <span class="change">${esc(f.change)}</span>` : ''}</td></tr>`
 		)
 		.join('')}</table>
 </div>`
@@ -352,7 +356,7 @@ const flow = {
 			const pinMark = pin
 				? `<circle class="pin" cx="${x + NODE_W}" cy="${y}" r="9" /><text class="pin-t" x="${x + NODE_W}" y="${y + 4}" text-anchor="middle">${pin}</text>`
 				: '';
-			return `<g class="node ${state}"><rect x="${x}" y="${y}" width="${NODE_W}" height="${NODE_H}" rx="7" />
+			return `<g class="node ${esc(state)}"><rect x="${x}" y="${y}" width="${NODE_W}" height="${NODE_H}" rx="7" />
 <text class="label" x="${x + 12}" y="${y + (n.sub ? 22 : 31)}">${esc(n.label)}</text>
 ${n.sub ? `<text class="sub" x="${x + 12}" y="${y + 39}">${esc(n.sub)}</text>` : ''}${struck}${pinMark}</g>`;
 		});
