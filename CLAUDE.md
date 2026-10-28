@@ -89,7 +89,7 @@ stage doesn't fit a task, compress it but keep the shape.
 | 3. **Cut plan**                                                   | `/project-plan`       | Only when the work cannot land as one PR. One plan issue with a cut checklist, never an issue per cut    |
 | 4. **Build**                                                      | `/task`               | Every task: prep (worktree, systems map, brief, draft PR), then vertical slices with story-derived tests |
 | 5. **Verify**                                                     | `/verify`             | Every task, before review. The app observed doing the thing, not a green suite                           |
-| 6. **Review**                                                     | `/review`             | Three-axis review — Standards, Spec, Discipline — in parallel subagents, before merge                    |
+| 6. **Review**                                                     | `/review`             | Four-axis review — Standards, Spec, Discipline, Legibility — in parallel subagents, before merge         |
 | 7. **Release**                                                    | This file, "Releases" | Version bump as the final commit on the release branch; human tags the merge commit on `main`            |
 
 **Always-on supporting layer** — not stages, they run throughout:
@@ -238,14 +238,14 @@ In-repo skills (`.claude/skills/`):
 - `task` — the task spine, user-invoked. `brief.md` owns the brief format;
   `testing.md` owns test quality and the prune pass.
 - `project-plan` — cut plan for work too big for one PR. User-invoked.
-- `review` — three-axis review, dispatching to the in-repo reviewer agents.
+- `review` — four-axis review, dispatching to the in-repo reviewer agents.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 
-In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`, and
-`discipline-reviewer` (dispatched by `review`), and `story-test-writer`
+In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
+`discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and `story-test-writer`
 (dispatched by `task`).
 
 Personal skills live in `~/.claude/skills/` and are not enumerated here.
