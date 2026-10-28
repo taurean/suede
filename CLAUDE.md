@@ -197,6 +197,54 @@ closeout. Alongside it, the supporting layer applies throughout: authoring
 boundaries and the co-authorship trailer. Verification and release mechanics
 have their own sections below. The merge to `main` is human-only.
 
+## Agent-authored output
+
+Everything an agent writes on GitHub — PR bodies, `/review` reports, closeout
+comments — has two readers: the human deciding what to do, and the next agent
+picking up the work. They need different things, so each gets its own part.
+
+**The human summary comes first**, at most about ten lines. Lead with the
+verdict: whether anything blocks, or what the human needs to decide. Then one
+line per item they act on:
+
+```
+- What's wrong, in plain words. Fix: what to do. In `file.ts:42`.
+```
+
+The problem comes first, because it's what the reader needs to decide whether
+to keep reading. Location comes last: a bare file name when it's unambiguous, a
+path when it isn't, and every file named on its own — never a `{a,b}` set.
+Labels a reader can skip, like a category or severity, go after the location in
+parentheses.
+
+Nothing goes in the summary that the human doesn't act on. If it runs past ten
+lines and not every line is an action, detail has leaked in; move it down.
+
+**Everything for agents goes below, collapsed:**
+
+```
+<details>
+<summary>For agents</summary>
+
+The brief, full reports, reasoning, evidence.
+
+</details>
+```
+
+The blank lines inside the block are required; GitHub doesn't render markdown
+without them.
+
+| Surface                  | Summary                                                                     | Collapsed                  |
+| ------------------------ | --------------------------------------------------------------------------- | -------------------------- |
+| PR body                  | What changed, why, where the human's judgement is needed, verification line | The brief                  |
+| `/review` report         | Verdict, then one line per blocking finding, synthesized across reviewers   | Each reviewer's raw report |
+| `/task` closeout comment | Merge verdict, where to focus, one line per open question                   | Reasoning behind each      |
+
+**Agent comments start with a marker** on their first line —
+`<!-- suede:review -->` or `<!-- suede:closeout -->`. `/review` reads PR comments
+as spec and skips any whose first line is a `suede:` marker, so a past review
+never gets read as a requirement.
+
 ## Releases
 
 Suede uses [chronver](https://chronver.org) by default. Version lives in

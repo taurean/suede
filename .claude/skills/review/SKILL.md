@@ -1,8 +1,8 @@
 ---
 name: review
-description: Review the changes since a fixed point along three axes — Standards (does it follow this project's documented conventions?), Spec (does it do what was asked?), and Discipline (does it follow the standing engineering rules?). Runs all three in parallel subagents and reports whether anything blocks merge. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review the changes since a fixed point along three axes — Standards (does it follow this project's documented conventions?), Spec (does it do what was asked?), and Discipline (does it follow the standing engineering rules?). Runs all three in parallel subagents and synthesizes one review that says whether anything blocks merge. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 argument-hint: [fixed-point]
-allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git merge-base:*) Bash(gh pr view:*) Bash(gh issue view:*) Read Grep Glob Task
+allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git merge-base:*) Bash(gh pr view:*) Bash(gh pr comment:*) Bash(gh issue view:*) Read Grep Glob Task
 ---
 
 # Review
@@ -44,8 +44,10 @@ isolation and costs you the context you need for aggregation.
 
 In order:
 
-1. The open PR's body and comments (`gh pr view`) — the task process opens each
-   PR with the brief as its body, and the brief's user stories are the spec.
+1. The open PR's body and comments (`gh pr view --comments`) — the task process
+   puts the brief in the body's collapsed block, and the brief's user stories
+   are the spec. Skip any comment whose first line is a `<!-- suede:… -->`
+   marker: that's agent output, such as an earlier review, not a requirement.
 2. Issue references in the commit messages (`#123`, `Closes #45`) — fetch with
    `gh issue view <number>`. A plan issue found this way holds the cut's
    stories.
@@ -97,41 +99,78 @@ to know what was found.
 
 **A finding blocks merge if it is any of:**
 
-- a `MUST` violation from Discipline;
-- a **Wrong** or **Missing** finding from Spec;
-- a hard violation from Standards.
+- labelled `MUST` by Discipline;
+- labelled `wrong` or `missing` by Spec;
+- labelled `hard` by Standards.
 
-Everything else — SHOULD violations with no stated reason, judgement calls,
-Unasked behavior, story/test mismatches, open questions — is worth reading and
-does not block.
+Everything else — `SHOULD` violations with no stated reason, `judgement` calls,
+`unasked` behavior, story/test `mismatch` findings, open questions — is worth
+reading and does not block.
 
-Format:
+The report follows `CLAUDE.md`, "Agent-authored output": one synthesized review
+for the human, and the reviewers' raw reports collapsed for agents.
 
 ```
+<!-- suede:review -->
 **<N> blocking, <M> non-blocking.** <one line naming the worst finding, or
 "Nothing blocks merge.">
 
-## Standards
-<the subagent's report, verbatim or lightly cleaned>
+- What's wrong. Fix: what to do. In `file.ts:42`.
+- What's wrong. Fix: what to do. In `other.ts:7`.
 
-## Spec
+<details>
+<summary>For agents</summary>
+
+### Standards
+
+<the subagent's report, verbatim>
+
+### Spec
+
 <...>
 
-## Discipline
+### Discipline
+
 <...>
+
+</details>
 ```
 
-Do **not** merge, rerank, or deduplicate across the three reports. The axes are
-separate so the user can see them independently, and a finding that appears in
-two reports is telling you something a merged list would hide.
+The human gets one review, not three reviewers. Write the summary from the
+reports, without reviewer names or labels:
 
-One overlap is deliberate and expected: a defensive branch that no story
-describes will appear as **Unasked** under Spec and as `[FALLBACK-6]` under
-Discipline. That is not duplication — the two axes disagree about what to do
-about it, and both readings are useful. Leave both in.
+- **Every blocking finding gets a line**, most consequential first. They all
+  stay, even past the usual ten-line summary; each one is something the human
+  has to act on. Non-blocking findings appear only as the count in the verdict.
+- **Findings about the same problem become one line**, and that line keeps
+  every reason it was raised. Overlap is signal. A defensive branch no story
+  describes comes back from Spec as unasked and from Discipline as
+  `[FALLBACK-6]`; the merged line says it's both unrequested and an unnamed
+  fallback, because the two readings disagree about what to do with it.
+- **Merging never drops or softens a blocking finding.** If two findings can't
+  share a line without losing a reason, leave them as two.
+- **Reword only to merge or to clarify.** What's wrong and the fix stay what the
+  reviewer said.
 
-If a subagent returns a clean report, keep it. "Standards: no violations" is
-information, and dropping it makes the reader wonder whether the axis ran.
+The collapsed block holds each report verbatim, so any summary line can be
+traced to where it came from. A reviewer that found nothing still gets its
+section saying so — dropping it makes the reader wonder whether it ran — and a
+skipped Spec axis gets a section saying why.
+
+## 6. Deliver
+
+Check for an open PR on the current branch:
+`gh pr view --json number,state -q 'select(.state == "OPEN") | .number'`.
+
+**With an open PR**, post the report as a new comment:
+`gh pr comment <number> --body-file -`, with the report on stdin. Each run posts
+a new comment rather than editing the last, so the PR keeps the history of what
+each review found. In the terminal, show only the verdict line, the blocking
+lines, and the comment URL `gh` prints.
+
+**Without one** — reviewing work in progress — print the report to the terminal.
+`<details>` doesn't render there, so drop the marker and the `<details>`
+wrapper, and print the raw reports under a `## For agents` heading.
 
 ## Why three axes
 
@@ -144,4 +183,5 @@ A change can pass one and fail another:
 - Disciplined and correct, ignores the project's own decisions → Discipline and
   Spec pass, Standards fail.
 
-Reporting them separately is what stops one from masking another.
+Reviewing them in separate contexts is what stops one from masking another.
+The synthesis happens after each has reported, so it can't undo that.
