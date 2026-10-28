@@ -246,6 +246,11 @@ In-repo skills (`.claude/skills/`):
   automatically on `.svelte` and CSS files.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
+- `orient` — render the current work unit as a visual page in `tmp/`.
+  User-invoked; never run it on your own. Offer it once, in one line, when the
+  brief's reversibility line names something hard to undo, or when the human
+  shows they've lost the thread: asking what something is for or why it's
+  there, or returning to a branch after time away.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and
