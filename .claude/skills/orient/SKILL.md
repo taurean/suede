@@ -12,7 +12,9 @@ allowed-tools: Bash(node ${CLAUDE_SKILL_DIR}/build.mjs:*) Bash(git log:*) Bash(g
 
 Produce `tmp/VISUAL-<slug>.html`: one read-only page someone can open cold,
 offline, and come away knowing what this work is for, what was decided and why,
-and where it lives. The slug is the branch name after its `<type>/` prefix.
+and where it lives. The slug is the branch name after its `<type>/` prefix;
+when the branch has no such prefix, it's the whole branch name with `/` turned
+into `-`.
 
 You write data, not HTML. Put the page in `tmp/VISUAL-<slug>.json`, then run
 `node ${CLAUDE_SKILL_DIR}/build.mjs tmp/VISUAL-<slug>.json`. The script checks
@@ -32,17 +34,29 @@ The work unit is the whole branch, not the last change.
 
 - **The brief:** `tmp/BRIEF-<slug>.md`, or `tmp/BRIEF-<PR>-<slug>.md` for a PR
   follow-up (`task/brief.md`, "Where it lives").
-- **The change:** `git log origin/main..HEAD --oneline`, `git diff
-origin/main...HEAD --stat`, and `git status --short` for work not yet
-  committed. Uncommitted files are part of the work unit. Read the full diff of
-  any file a block or decision rests on.
-- **The PR:** `gh pr view --json number,body,comments`. Its summary's action
-  lines are open items. Review findings are in comments whose first line is
-  `<!-- suede:review -->`. If there's no PR, skip it; if the command fails, list
-  the PR as missing and say why.
+- **The change:** `git log origin/main..HEAD --oneline`,
+  `git diff origin/main...HEAD --stat`, and `git status --short` for work not
+  yet committed. Uncommitted files are part of the work unit. Read the full diff
+  of any file whose lines a block shows or a decision quotes; a deleted file
+  needs only its stat. Removed text is a source too: what a change deletes is
+  often what a decision beat.
+- **The PR:** `gh pr view <number> --json number,state,body,comments`. Use the
+  number the human gave; otherwise `gh pr view --json number` finds the PR for
+  the current branch, and "no pull requests found" means there isn't one, so
+  skip it. Any other failure means the PR is missing: list it and why. State
+  matters: a closed or superseded PR says so in `summary`. The PR summary's
+  action lines are open items unless the PR's state has made them moot. Review
+  findings are in comments whose first line is `<!-- suede:review -->`.
 - **This conversation:** decisions made here and not yet written down.
 
-List what you read and what was missing in `sources`.
+`sources.read` and `sources.missing` name sources in a few words each ("brief",
+"PR #12", "review"), never explanations. A fact the page needs that no source
+records goes in `open`, phrased as the question it leaves: "Why was the graph
+dropped? Nothing records it."
+
+`stage` and `slices` come from the brief and PR when the work runs under
+`/task`: the stage it has reached, and the slices it planned. Leave both out
+when nothing says, or when the PR is closed.
 
 ## 2. Choose the blocks
 
@@ -56,7 +70,7 @@ short page.
 | adds or alters a schema or durable type    | `model`                              |
 | hinges on a few lines a reviewer must read | `code`, with notes on those lines    |
 | changes what a screen looks like           | `compare`, before (`main`) and after |
-| touches more than a handful of files       | `files`                              |
+| touches more than a handful of files       | `files`, `lines` as `+12 −3`         |
 | needs a fact no block can show             | `note`, one short paragraph          |
 
 **Say each fact once.** Before adding a block, check whether another block
@@ -70,13 +84,19 @@ there. A decision needs `text`, and `source` naming where it is written —
 "brief: Seams", "commit 1a2b3c", "PR body" — or `"conversation"` when it is
 written nowhere. Unrecorded decisions are the most useful thing on the page;
 they're what nobody can recover after a gap. Fill `beat` and `why` only from a
-source. If nothing records what a decision beat, leave `beat` out.
+source, and when they come from a different place than `text`, name every
+place in `source` ("PR body; CLAUDE.md, removed"). If nothing records what a
+decision beat, leave `beat` out.
 
-Settled items go in decisions; still-open ones go in `open`, drawn from the
-brief's open questions and the PR summary's action lines. Never both.
+A decision is a choice someone made that shaped the work. An instruction about
+what to do next, such as merge order or a tag to push, is an action: it goes in
+`open` while it's still pending and nowhere once it's done or moot. Settled
+items go in decisions; pending ones in `open`, drawn from the brief's open
+questions and the PR summary's action lines. Never both.
 
-**Writing.** `title` is the brief's goal in one line. `summary` is one sentence
-a reader needs before any block. Labels are a few words; prose stands alone,
+**Writing.** `title` is the brief's goal in one line; without a brief, the PR
+title, or else the first commit's subject. `summary` is one sentence a reader
+needs before any block. Labels are a few words; prose stands alone,
 with no "as discussed" or "this revision". Use the codebase's own terms.
 
 ## 3. Screenshots
