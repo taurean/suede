@@ -134,9 +134,15 @@ const code = {
 	check(block, errors) {
 		need(block, 'path', errors);
 		need(block, 'code', errors);
-		const start = block.start ?? 1;
+		if (block.start !== undefined && !Number.isInteger(block.start))
+			errors.push('`start` must be an integer line number');
+		const start = Number.isInteger(block.start) ? block.start : 1;
 		const end = start + String(block.code ?? '').split('\n').length - 1;
 		(block.annotations ?? []).forEach((a, i) => {
+			if (!/^\d+(-\d+)?$/.test(String(a.lines ?? ''))) {
+				errors.push(`annotations[${i}] needs \`lines\` as "N" or "N-M"`);
+				return;
+			}
 			const { from, to } = lineRange(a.lines);
 			if (!(from >= start && to <= end && from <= to))
 				errors.push(`annotations[${i}].lines "${a.lines}" is outside lines ${start}-${end}`);

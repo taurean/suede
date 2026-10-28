@@ -72,6 +72,12 @@ function validate(page) {
 	if (typeof page.title !== 'string') errors.push('page needs `title`');
 	if (page.stage && !STAGES.includes(page.stage))
 		errors.push(`page.stage is "${page.stage}", expected one of: ${STAGES.join(', ')}`);
+	for (const field of ['out', 'open', 'slices'])
+		if (page[field] !== undefined && !Array.isArray(page[field]))
+			errors.push(`page.${field} must be an array`);
+	for (const field of ['read', 'missing'])
+		if (page.sources?.[field] !== undefined && !Array.isArray(page.sources[field]))
+			errors.push(`page.sources.${field} must be an array of short source names`);
 	const blocks = Array.isArray(page.blocks) ? page.blocks : [];
 	if (!blocks.length) errors.push('page needs a non-empty `blocks` array');
 
@@ -156,8 +162,19 @@ function renderHeader(page) {
 	const missing = page.sources?.missing?.length
 		? ` <span class="warn">Missing: ${page.sources.missing.map(esc).join(', ')}.</span>`
 		: '';
-	const noBrief = page.sources?.missing?.includes('brief')
-		? `<p class="missing-brief">No brief, so the goal, user stories, out-of-scope list, and open questions here come only from the PR and commits, or are absent.</p>`
+	const briefMissing = page.sources?.missing?.some((m) => /^brief\b/i.test(m.trim()));
+	// What a brief would have supplied, and the page field each one feeds.
+	const fromBrief = [
+		['example', 'a concrete example'],
+		['out', 'out of scope'],
+		['open', 'open questions'],
+		['slices', 'planned slices']
+	];
+	const leftEmpty = fromBrief
+		.filter(([field]) => !(Array.isArray(page[field]) ? page[field].length : page[field]))
+		.map(([, label]) => label);
+	const noBrief = briefMissing
+		? `<p class="missing-brief">No brief. ${leftEmpty.length ? `Left empty because of it: ${leftEmpty.join(', ')}.` : 'The PR and commits filled every section a brief would have.'}</p>`
 		: '';
 	const out = page.out?.length
 		? `<div class="out"><span class="k">Not in this work</span>${page.out.map((o) => `<span class="chip ghost">${inlineMarkup(o)}</span>`).join('')}</div>`
