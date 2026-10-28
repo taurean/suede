@@ -221,8 +221,9 @@ files, lockfiles, config, or markdown.
 - an extraction whose name doesn't predict what it does;
 - an extraction with hidden inputs or unnamed effects;
 - more than **3** new ideas in one PR without a reason in the PR body. A new
-  idea is a new exported name, module, or dependency, or the first instance of a
-  pattern the codebase didn't have. Forks tune the number here.
+  idea is a new exported name or dependency, or the first instance of a pattern
+  the codebase didn't have. A new module isn't counted apart from its exports:
+  one file exporting one function is one idea. Forks tune the number here.
 
 Read cost, linearity, and concepts held open are advisory: reported where
 they're high, as findings, never as numbers. A diff over about 400 changed lines
