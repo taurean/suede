@@ -82,7 +82,8 @@ nowhere else.
 `decisions`. In a flow, set `on` to the node it concerns so the pin lands
 there. A decision needs `text`, and `source` naming where it is written —
 "brief: Seams", "commit 1a2b3c", "PR body" — or `"conversation"` when it is
-written nowhere. Unrecorded decisions are the most useful thing on the page;
+written nowhere. Give each decision `files`: the paths that carry it, from the
+diff. Unrecorded decisions are the most useful thing on the page;
 they're what nobody can recover after a gap. Fill `beat` and `why` only from a
 source, and when they come from a different place than `text`, name every
 place in `source` ("PR body; CLAUDE.md, removed"). If nothing records what a
@@ -96,7 +97,9 @@ questions and the PR summary's action lines. Never both.
 
 **Writing.** `title` is the brief's goal in one line; without a brief, the PR
 title, or else the first commit's subject. `summary` is one sentence a reader
-needs before any block. Labels are a few words; prose stands alone,
+needs before any block. `example` is one concrete case before any abstraction:
+a person, what they do, and what they see, built from the brief's first user
+story. Without a story, leave it out. Labels are a few words; prose stands alone,
 with no "as discussed" or "this revision". Use the codebase's own terms.
 
 ## 3. Screenshots

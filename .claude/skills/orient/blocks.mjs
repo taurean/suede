@@ -12,7 +12,7 @@ export function esc(value) {
 }
 
 // Escapes, then turns `code` and **bold** into markup. Nothing else.
-export function inline(text) {
+export function inlineMarkup(text) {
 	return esc(text)
 		.replace(/`([^`]+)`/g, '<code>$1</code>')
 		.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
@@ -50,17 +50,17 @@ function fileTree(items) {
 }
 
 // Folds a chain of single-child directories into one row: src/lib/server/db/.
-function compact(name, node) {
+function collapseSingleChildDirs(name, node) {
 	if (node.files.length === 0 && node.dirs.size === 1) {
 		const [[childName, child]] = node.dirs;
-		return compact(`${name}/${childName}`, child);
+		return collapseSingleChildDirs(`${name}/${childName}`, child);
 	}
 	return [name, node];
 }
 
 function renderTree(node) {
 	const dirs = [...node.dirs].map(([dirName, dirNode]) => {
-		const [name, child] = compact(dirName, dirNode);
+		const [name, child] = collapseSingleChildDirs(dirName, dirNode);
 		return `<li class="dir"><span class="name">${esc(name)}/</span><ul>${renderTree(child)}</ul></li>`;
 	});
 	const files = node.files.map(
@@ -68,7 +68,7 @@ function renderTree(node) {
 	<span class="name">${esc(file.name)}</span>
 	<span class="change">${esc(file.change)}</span>
 	${file.lines ? `<span class="lines">${esc(file.lines)}</span>` : ''}
-	${file.note ? `<span class="note">${inline(file.note)}</span>` : ''}
+	${file.note ? `<span class="note">${inlineMarkup(file.note)}</span>` : ''}
 </li>`
 	);
 	return dirs.join('') + files.join('');
@@ -155,7 +155,7 @@ const code = {
 			return `<tr class="${inNote(n) ? 'hl' : ''}"><td class="ln">${n}</td><td class="mk">${marker >= 0 ? `<span class="badge">${marker + 1}</span>` : ''}</td><td class="text">${highlight(text) || ' '}</td></tr>`;
 		});
 		const list = notes.length
-			? `<ol class="code-notes">${notes.map((a) => `<li><strong>${a.label ? esc(a.label) : `Line ${esc(a.lines)}`}</strong> <span class="lines">L${esc(a.lines)}</span> ${inline(a.note)}</li>`).join('')}</ol>`
+			? `<ol class="code-notes">${notes.map((a) => `<li><strong>${a.label ? esc(a.label) : `Line ${esc(a.lines)}`}</strong> <span class="lines">L${esc(a.lines)}</span> ${inlineMarkup(a.note)}</li>`).join('')}</ol>`
 			: '';
 		return `<div class="code"><div class="code-path">${esc(block.path)}</div><table>${rows.join('')}</table></div>${list}`;
 	}
@@ -197,16 +197,16 @@ const endpoints = {
 					? `<table class="params"><tr><th>Param</th><th>In</th><th>Type</th><th></th></tr>${item.params
 							.map(
 								(p) =>
-									`<tr><td><code>${esc(p.name)}</code>${p.required ? ' <span class="req">required</span>' : ''}</td><td>${esc(p.in ?? '')}</td><td><code>${esc(p.type ?? '')}</code></td><td>${inline(p.note ?? '')}</td></tr>`
+									`<tr><td><code>${esc(p.name)}</code>${p.required ? ' <span class="req">required</span>' : ''}</td><td>${esc(p.in ?? '')}</td><td><code>${esc(p.type ?? '')}</code></td><td>${inlineMarkup(p.note ?? '')}</td></tr>`
 							)
 							.join('')}</table>`
 					: '';
 				return `<details class="endpoint ${esc(item.change ?? '')}">
-	<summary><span class="method m-${esc(item.method.toLowerCase())}">${esc(item.method)}</span><code class="path">${esc(item.path)}</code><span class="sum">${inline(item.summary)}</span>${item.change ? `<span class="change">${esc(item.change)}</span>` : ''}</summary>
+	<summary><span class="method m-${esc(item.method.toLowerCase())}">${esc(item.method)}</span><code class="path">${esc(item.path)}</code><span class="sum">${inlineMarkup(item.summary)}</span>${item.change ? `<span class="change">${esc(item.change)}</span>` : ''}</summary>
 	<div class="endpoint-body">
-		${item.auth ? `<p><span class="k">Auth</span> ${inline(item.auth)}</p>` : ''}
+		${item.auth ? `<p><span class="k">Auth</span> ${inlineMarkup(item.auth)}</p>` : ''}
 		${params}
-		${item.returns ? `<p><span class="k">Returns</span> ${inline(item.returns)}</p>` : ''}
+		${item.returns ? `<p><span class="k">Returns</span> ${inlineMarkup(item.returns)}</p>` : ''}
 	</div>
 </details>`;
 			})
@@ -256,7 +256,7 @@ const model = {
 	<table>${t.fields
 		.map(
 			(f) =>
-				`<tr class="${esc(f.change ?? '')}"><td>${f.key ? `<span class="key">${esc(f.key)}</span>` : ''}<code>${esc(f.name)}</code></td><td class="type">${esc(f.type ?? '')}</td><td>${inline(f.note ?? '')}${f.change ? ` <span class="change">${esc(f.change)}</span>` : ''}</td></tr>`
+				`<tr class="${esc(f.change ?? '')}"><td>${f.key ? `<span class="key">${esc(f.key)}</span>` : ''}<code>${esc(f.name)}</code></td><td class="type">${esc(f.type ?? '')}</td><td>${inlineMarkup(f.note ?? '')}${f.change ? ` <span class="change">${esc(f.change)}</span>` : ''}</td></tr>`
 		)
 		.join('')}</table>
 </div>`
@@ -266,7 +266,7 @@ const model = {
 			? `<div class="relations"><span class="k">Relations</span>${block.relations
 					.map(
 						(r) =>
-							`<span class="rel"><code>${esc(r.from)}</code> <span class="kind">${esc(r.kind)}</span> <code>${esc(r.to)}</code>${r.note ? ` <span class="muted">${inline(r.note)}</span>` : ''}</span>`
+							`<span class="rel"><code>${esc(r.from)}</code> <span class="kind">${esc(r.kind)}</span> <code>${esc(r.to)}</code>${r.note ? ` <span class="muted">${inlineMarkup(r.note)}</span>` : ''}</span>`
 					)
 					.join('')}</div>`
 			: '';
@@ -282,6 +282,19 @@ const ROW_H = 96;
 const NODE_W = 180;
 const NODE_H = 52;
 const PAD = 24;
+
+// Where an arrow from node box `a` to node box `b` starts and ends: side to
+// side on the same row, otherwise bottom to top (or top to bottom going up).
+// The 2px gap keeps the arrowhead off the box border.
+function edgeEnds(a, b) {
+	const midY = NODE_H / 2;
+	const midX = NODE_W / 2;
+	if (a.y === b.y && b.x > a.x)
+		return { x1: a.x + NODE_W, y1: a.y + midY, x2: b.x - 2, y2: b.y + midY };
+	if (a.y === b.y) return { x1: a.x, y1: a.y + midY, x2: b.x + NODE_W + 2, y2: b.y + midY };
+	if (b.y > a.y) return { x1: a.x + midX, y1: a.y + NODE_H, x2: b.x + midX, y2: b.y - 2 };
+	return { x1: a.x + midX, y1: a.y, x2: b.x + midX, y2: b.y + NODE_H + 2 };
+}
 
 const flow = {
 	describe:
@@ -316,7 +329,6 @@ const flow = {
 			if (!ids.has(e.to)) errors.push(`edges[${i}].to "${e.to}" is not a node id`);
 		});
 	},
-	nodeIds: (block) => new Set(block.nodes.map((n) => n.id)),
 	render(block, pins) {
 		const pos = new Map(
 			block.nodes.map((n) => [n.id, { x: PAD + n.col * COL_W, y: PAD + n.row * ROW_H }])
@@ -327,16 +339,9 @@ const flow = {
 		const edges = (block.edges ?? []).map((e) => {
 			const a = pos.get(e.from);
 			const b = pos.get(e.to);
-			const sameRow = a.y === b.y;
-			const [x1, y1, x2, y2] = sameRow
-				? b.x > a.x
-					? [a.x + NODE_W, a.y + NODE_H / 2, b.x - 2, b.y + NODE_H / 2]
-					: [a.x, a.y + NODE_H / 2, b.x + NODE_W + 2, b.y + NODE_H / 2]
-				: b.y > a.y
-					? [a.x + NODE_W / 2, a.y + NODE_H, b.x + NODE_W / 2, b.y - 2]
-					: [a.x + NODE_W / 2, a.y, b.x + NODE_W / 2, b.y + NODE_H + 2];
+			const { x1, y1, x2, y2 } = edgeEnds(a, b);
 			const d =
-				sameRow || x1 === x2
+				a.y === b.y || x1 === x2
 					? `M${x1},${y1} L${x2},${y2}`
 					: `M${x1},${y1} C${x1},${(y1 + y2) / 2} ${x2},${(y1 + y2) / 2} ${x2},${y2}`;
 			const label = e.label
@@ -369,7 +374,7 @@ ${n.sub ? `<text class="sub" x="${x + 12}" y="${y + 39}">${esc(n.sub)}</text>` :
 </defs>
 ${edges.join('\n')}
 ${nodes.join('\n')}
-</svg>${block.caption ? `<figcaption>${inline(block.caption)}</figcaption>` : ''}</figure>`;
+</svg>${block.caption ? `<figcaption>${inlineMarkup(block.caption)}</figcaption>` : ''}</figure>`;
 	}
 };
 
@@ -413,7 +418,7 @@ const note = {
 	check(block, errors) {
 		need(block, 'text', errors);
 	},
-	render: (block) => `<p class="note">${inline(block.text)}</p>`
+	render: (block) => `<p class="note">${inlineMarkup(block.text)}</p>`
 };
 
 export const catalog = { flow, files, code, endpoints, model, compare, note };

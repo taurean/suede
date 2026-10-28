@@ -663,3 +663,15 @@ header {
 		display: none;
 	}
 }
+
+.example {
+	border-left: 3px solid var(--accent);
+	padding-left: 0.75rem;
+	max-width: 46rem;
+}
+.missing-brief {
+	border-left: 3px solid var(--warn);
+	padding-left: 0.75rem;
+	color: var(--muted);
+	font-size: 0.86rem;
+}

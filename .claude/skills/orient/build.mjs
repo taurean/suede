@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { catalog, esc, inline } from './blocks.mjs';
+import { catalog, esc, inlineMarkup } from './blocks.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const STAGES = ['align', 'prep', 'build', 'verify', 'review', 'land'];
@@ -19,6 +19,8 @@ const PAGE_EXAMPLE = {
 	branch: 'feat/user-roles',
 	title: 'Org admins can change a member’s role',
 	summary: 'One sentence a reader needs before any block.',
+	example:
+		'Dana, an org admin, opens Members, switches Sam from member to admin, and Sam sees the admin menu on their next page load.',
 	stage: 'build',
 	slices: [
 		{ label: 'role column + migration', done: true },
@@ -37,6 +39,7 @@ const PAGE_EXAMPLE = {
 					on: 'membership',
 					beat: 'a role column on users',
 					why: 'a user can belong to several orgs with different roles',
+					files: ['src/lib/server/db/schema.ts'],
 					source: 'brief: Seams'
 				}
 			]
@@ -53,7 +56,11 @@ function printSchema() {
 	console.log(
 		'decision.source: where it is written (e.g. "brief: Goal", "commit 1a2b3c"), or "conversation" if nowhere.'
 	);
-	console.log('decision.on: a flow node id, to pin the decision onto that node.\n');
+	console.log('decision.on: a flow node id, to pin the decision onto that node. Flow only.');
+	console.log('decision.files: the paths that carry the decision.');
+	console.log(
+		'sources.missing containing "brief" adds a line naming what the brief would have given.\n'
+	);
 	for (const [type, block] of Object.entries(catalog)) {
 		console.log(`BLOCK ${type}\n${block.describe}\n${JSON.stringify(block.example, null, 2)}\n`);
 	}
@@ -65,10 +72,10 @@ function validate(page) {
 	if (typeof page.title !== 'string') errors.push('page needs `title`');
 	if (page.stage && !STAGES.includes(page.stage))
 		errors.push(`page.stage is "${page.stage}", expected one of: ${STAGES.join(', ')}`);
-	if (!Array.isArray(page.blocks) || !page.blocks.length)
-		errors.push('page needs a non-empty `blocks` array');
+	const blocks = Array.isArray(page.blocks) ? page.blocks : [];
+	if (!blocks.length) errors.push('page needs a non-empty `blocks` array');
 
-	(page.blocks ?? []).forEach((block, i) => {
+	blocks.forEach((block, i) => {
 		const where = `blocks[${i}]${block.type ? ` (${block.type})` : ''}`;
 		const def = catalog[block.type];
 		if (!def) {
@@ -79,14 +86,20 @@ function validate(page) {
 		}
 		const blockErrors = [];
 		def.check(block, blockErrors);
-		const nodeIds = block.type === 'flow' && !blockErrors.length ? def.nodeIds(block) : new Set();
-		(block.decisions ?? []).forEach((d, j) => {
+		const flowIsValid = block.type === 'flow' && !blockErrors.length;
+		const decisions = block.decisions ?? [];
+		if (!Array.isArray(decisions)) blockErrors.push('`decisions` must be an array');
+		(Array.isArray(decisions) ? decisions : []).forEach((d, j) => {
 			if (typeof d.text !== 'string') blockErrors.push(`decisions[${j}] needs \`text\``);
 			if (typeof d.source !== 'string')
 				blockErrors.push(
 					`decisions[${j}] needs \`source\` (where it is written, or "conversation")`
 				);
-			if (d.on && !nodeIds.has(d.on))
+			if (d.files !== undefined && !Array.isArray(d.files))
+				blockErrors.push(`decisions[${j}].files must be an array of paths`);
+			if (d.on && block.type !== 'flow')
+				blockErrors.push(`decisions[${j}].on only applies to flow blocks; remove it`);
+			else if (d.on && flowIsValid && !block.nodes.some((n) => n.id === d.on))
 				blockErrors.push(`decisions[${j}].on "${d.on}" is not a node id in this flow`);
 		});
 		errors.push(...blockErrors.map((e) => `${where}: ${e}`));
@@ -113,13 +126,15 @@ function renderDecisions(decisions, firstNumber) {
 	const items = decisions.map((d, i) => {
 		const recorded = d.source !== 'conversation';
 		const detail = [
-			d.beat && `<p><span class="k">Beat</span> ${inline(d.beat)}</p>`,
-			d.why && `<p><span class="k">Why</span> ${inline(d.why)}</p>`
+			d.beat && `<p><span class="k">Beat</span> ${inlineMarkup(d.beat)}</p>`,
+			d.why && `<p><span class="k">Why</span> ${inlineMarkup(d.why)}</p>`,
+			d.files?.length &&
+				`<p><span class="k">Files</span> ${d.files.map((f) => `<code>${esc(f)}</code>`).join(' · ')}</p>`
 		]
 			.filter(Boolean)
 			.join('');
 		const label = `<span class="src ${recorded ? 'rec' : 'unrec'}">${recorded ? esc(d.source) : 'conversation only'}</span>`;
-		const summary = `<span class="n">${firstNumber + i}</span><span>${inline(d.text)} ${label}</span>`;
+		const summary = `<span class="n">${firstNumber + i}</span><span>${inlineMarkup(d.text)} ${label}</span>`;
 		return detail
 			? `<li><details><summary>${summary}</summary>${detail}</details></li>`
 			: `<li><div class="summary">${summary}</div></li>`;
@@ -135,42 +150,57 @@ function renderHeader(page) {
 			}).join('')}</ol>`
 		: '';
 	const slices = page.slices?.length
-		? `<div class="chips">${page.slices.map((s) => `<span class="chip slice${s.done ? ' done' : ''}">${s.done ? '✓ ' : ''}${inline(s.label)}</span>`).join('')}</div>`
+		? `<div class="chips">${page.slices.map((s) => `<span class="chip slice${s.done ? ' done' : ''}">${s.done ? '✓ ' : ''}${inlineMarkup(s.label)}</span>`).join('')}</div>`
 		: '';
 	const read = page.sources?.read?.length ? `Read: ${page.sources.read.map(esc).join(', ')}.` : '';
 	const missing = page.sources?.missing?.length
 		? ` <span class="warn">Missing: ${page.sources.missing.map(esc).join(', ')}.</span>`
 		: '';
+	const noBrief = page.sources?.missing?.includes('brief')
+		? `<p class="missing-brief">No brief, so the goal, user stories, out-of-scope list, and open questions here come only from the PR and commits, or are absent.</p>`
+		: '';
 	const out = page.out?.length
-		? `<div class="out"><span class="k">Not in this work</span>${page.out.map((o) => `<span class="chip ghost">${inline(o)}</span>`).join('')}</div>`
+		? `<div class="out"><span class="k">Not in this work</span>${page.out.map((o) => `<span class="chip ghost">${inlineMarkup(o)}</span>`).join('')}</div>`
 		: '';
 	return `<header>
 	<div class="branch">${esc(page.branch)} · generated ${new Date().toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short' })}</div>
-	<h1>${inline(page.title)}</h1>
-	${page.summary ? `<p class="summary">${inline(page.summary)}</p>` : ''}
+	<h1>${inlineMarkup(page.title)}</h1>
+	${page.summary ? `<p class="summary">${inlineMarkup(page.summary)}</p>` : ''}
+	${page.example ? `<p class="example"><span class="k">For example</span>${inlineMarkup(page.example)}</p>` : ''}
 	<p class="meta">${read}${missing}</p>
+	${noBrief}
 	${stages}${slices}${out}
 </header>`;
 }
 
-function renderPage(page) {
+// Decisions are numbered once across the whole page, in block order.
+function firstDecisionNumbers(blocks) {
 	let next = 1;
-	const sections = page.blocks.map((block) => {
+	return blocks.map((block) => {
 		const first = next;
-		const pins = new Map();
-		(block.decisions ?? []).forEach((d, i) => d.on && pins.set(d.on, first + i));
 		next += block.decisions?.length ?? 0;
+		return first;
+	});
+}
+
+function renderPage(page, css) {
+	const firsts = firstDecisionNumbers(page.blocks);
+	const sections = page.blocks.map((block, i) => {
+		const first = firsts[i];
+		// Only flow draws pins: decision number by the node id it sits on.
+		const pins = new Map(
+			(block.decisions ?? []).flatMap((d, j) => (d.on ? [[d.on, first + j]] : []))
+		);
 		return `<section class="block block-${block.type}">
-	${block.title ? `<h2>${inline(block.title)}</h2>` : ''}
-	${block.intro ? `<p class="intro">${inline(block.intro)}</p>` : ''}
+	${block.title ? `<h2>${inlineMarkup(block.title)}</h2>` : ''}
+	${block.intro ? `<p class="intro">${inlineMarkup(block.intro)}</p>` : ''}
 	${catalog[block.type].render(block, pins)}
 	${renderDecisions(block.decisions, first)}
 </section>`;
 	});
 	const open = page.open?.length
-		? `<section class="open"><h2>Still open</h2><ul>${page.open.map((q) => `<li>${inline(q)}</li>`).join('')}</ul><p class="meta">Answer in the conversation or the brief, not here.</p></section>`
+		? `<section class="open"><h2>Still open</h2><ul>${page.open.map((q) => `<li>${inlineMarkup(q)}</li>`).join('')}</ul><p class="meta">Answer in the conversation or the brief, not here.</p></section>`
 		: '';
-	const css = readFileSync(resolve(HERE, 'style.css'), 'utf8');
 	return `<!doctype html>
 <html lang="en">
 <head>
@@ -217,5 +247,6 @@ if (errors.length) {
 }
 
 const outPath = dataPath.replace(/\.json$/, '.html');
-writeFileSync(outPath, renderPage(page));
+const css = readFileSync(resolve(HERE, 'style.css'), 'utf8');
+writeFileSync(outPath, renderPage(page, css));
 console.log(outPath);
