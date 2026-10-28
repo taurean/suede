@@ -197,6 +197,48 @@ closeout. Alongside it, the supporting layer applies throughout: authoring
 boundaries and the co-authorship trailer. Verification and release mechanics
 have their own sections below. The merge to `main` is human-only.
 
+## Agent-authored output
+
+Everything an agent writes on GitHub — PR bodies, `/review` reports, closeout
+comments — has two readers: the human deciding what to do, and the next agent
+picking up the work. They need different things, so each gets its own part.
+
+**The human summary comes first**, at most about ten lines. Lead with the
+verdict: whether anything blocks, or what the human needs to decide. Then one
+line per item they act on:
+
+```
+- `path/to/file.ts:42` — what's wrong — the fix
+```
+
+Nothing goes in the summary that the human doesn't act on. If it runs past ten
+lines, detail has leaked in; move it down.
+
+**Everything for agents goes below, collapsed:**
+
+```
+<details>
+<summary>For agents</summary>
+
+The brief, full reports, reasoning, evidence.
+
+</details>
+```
+
+The blank lines inside the block are required; GitHub doesn't render markdown
+without them.
+
+| Surface                  | Summary                                                                     | Collapsed                    |
+| ------------------------ | --------------------------------------------------------------------------- | ---------------------------- |
+| PR body                  | What changed, why, where the human's judgement is needed, verification line | The brief                    |
+| `/review` report         | Verdict, then one line per blocking finding                                 | Each axis's report, separate |
+| `/task` closeout comment | Merge verdict, where to focus, one line per open question                   | Reasoning behind each        |
+
+**Agent comments start with a marker** on their first line —
+`<!-- suede:review -->` or `<!-- suede:closeout -->`. `/review` reads PR comments
+as spec and skips any carrying a `suede:` marker, so a past review never gets
+read as a requirement.
+
 ## Releases
 
 Suede uses [chronver](https://chronver.org) by default. Version lives in

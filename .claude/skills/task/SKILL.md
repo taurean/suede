@@ -71,7 +71,11 @@ could merge independently — say so and suggest `/project-plan` before any prep
    repository; that is what the map exists to prevent. If the file doesn't
    exist (suede itself ships none), skip this step.
 3. Write the brief ([brief.md](brief.md)).
-4. Open a draft PR titled for the task, with the brief as its body.
+4. Open a draft PR titled for the task. The body follows `CLAUDE.md`, "Agent-
+   authored output": the brief goes in the collapsed block, and the summary
+   above it is the goal in one line, plus anything you already know needs the
+   human's judgement. Nothing has changed yet, so the summary says so; land
+   rewrites it.
 
 The draft PR exists from here on, so the work is inspectable while it happens
 rather than only at the end.
@@ -145,7 +149,9 @@ run and agent follows it.
    control: props, arguments, requests, user settings. Follow
    [testing.md](testing.md), "Prune pass", when the project has one. The
    deletions are one `chore(tests): prune` commit.
-3. Push the branch. Update the PR body if the brief diverged during the task.
+3. Push the branch. Rewrite the PR body's summary for what actually changed,
+   why, where the human's judgement is needed, and one verification line. Update
+   the collapsed brief if it diverged during the task.
 4. Comment on the PR with: whether anything blocks merge, where the human should
    focus, and the open-questions queue. Lead with the verdict ([ASK-5]).
 5. Delete the worktree. Return to `main` and pull.
