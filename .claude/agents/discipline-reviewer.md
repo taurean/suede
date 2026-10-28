@@ -19,7 +19,8 @@ You will be given a diff command and a commit list.
 
 Report every violation you find, in two parts.
 
-**Findings** — one line each, so the review skill can lift them unchanged:
+**Findings** — one line each, in the format from `CLAUDE.md`, "Agent-authored
+output", so the review skill can lift them unchanged:
 
 ```
 - [MUST] [FALLBACK-1] `path/to/file.ts:42` — what's wrong — the fix

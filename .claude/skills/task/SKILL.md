@@ -71,8 +71,8 @@ could merge independently — say so and suggest `/project-plan` before any prep
    repository; that is what the map exists to prevent. If the file doesn't
    exist (suede itself ships none), skip this step.
 3. Write the brief ([brief.md](brief.md)).
-4. Open a draft PR titled for the task. The body follows `CLAUDE.md`, "Agent-
-   authored output": the brief goes in the collapsed block, and the summary
+4. Open a draft PR titled for the task. The body follows `CLAUDE.md`,
+   "Agent-authored output": the brief goes in the collapsed block, and the summary
    above it is the goal in one line, plus anything you already know needs the
    human's judgement. Nothing has changed yet, so the summary says so; land
    rewrites it.

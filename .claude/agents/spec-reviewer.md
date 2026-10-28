@@ -35,7 +35,8 @@ story's behavior broke, not by whether it exists.
 
 Report in two parts.
 
-**Findings** — one line each, so the review skill can lift them unchanged:
+**Findings** — one line each, in the format from `CLAUDE.md`, "Agent-authored
+output", so the review skill can lift them unchanged:
 
 ```
 - [wrong] `path/to/file.ts:42` — what's wrong — the fix

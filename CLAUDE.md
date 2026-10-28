@@ -236,8 +236,8 @@ without them.
 
 **Agent comments start with a marker** on their first line —
 `<!-- suede:review -->` or `<!-- suede:closeout -->`. `/review` reads PR comments
-as spec and skips any carrying a `suede:` marker, so a past review never gets
-read as a requirement.
+as spec and skips any whose first line is a `suede:` marker, so a past review
+never gets read as a requirement.
 
 ## Releases
 
