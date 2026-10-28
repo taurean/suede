@@ -212,7 +212,7 @@ line per item they act on:
 ```
 
 Nothing goes in the summary that the human doesn't act on. If it runs past ten
-lines, detail has leaked in; move it down.
+lines and not every line is an action, detail has leaked in; move it down.
 
 **Everything for agents goes below, collapsed:**
 

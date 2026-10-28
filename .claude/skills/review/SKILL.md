@@ -2,7 +2,7 @@
 name: review
 description: Review the changes since a fixed point along three axes — Standards (does it follow this project's documented conventions?), Spec (does it do what was asked?), and Discipline (does it follow the standing engineering rules?). Runs all three in parallel subagents and reports whether anything blocks merge. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 argument-hint: [fixed-point]
-allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git merge-base:*) Bash(gh pr view:*) Bash(gh issue view:*) Read Grep Glob Task
+allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git merge-base:*) Bash(gh pr view:*) Bash(gh pr comment:*) Bash(gh issue view:*) Read Grep Glob Task
 ---
 
 # Review
@@ -44,8 +44,10 @@ isolation and costs you the context you need for aggregation.
 
 In order:
 
-1. The open PR's body and comments (`gh pr view`) — the task process opens each
-   PR with the brief as its body, and the brief's user stories are the spec.
+1. The open PR's body and comments (`gh pr view --comments`) — the task process
+   puts the brief in the body's collapsed block, and the brief's user stories
+   are the spec. Skip any comment whose first line is a `<!-- suede:… -->`
+   marker: that's agent output, such as an earlier review, not a requirement.
 2. Issue references in the commit messages (`#123`, `Closes #45`) — fetch with
    `gh issue view <number>`. A plan issue found this way holds the cut's
    stories.
@@ -105,21 +107,45 @@ Everything else — SHOULD violations with no stated reason, judgement calls,
 Unasked behavior, story/test mismatches, open questions — is worth reading and
 does not block.
 
-Format:
+The report follows `CLAUDE.md`, "Agent-authored output": a human summary, then
+each axis's full report collapsed.
 
 ```
+<!-- suede:review -->
 **<N> blocking, <M> non-blocking.** <one line naming the worst finding, or
 "Nothing blocks merge.">
 
-## Standards
-<the subagent's report, verbatim or lightly cleaned>
+- Standards: [hard] `path/to/file.ts:42` — what's wrong — the fix
+- Discipline: [MUST] [FALLBACK-1] `path/to/other.ts:7` — what's wrong — the fix
 
-## Spec
+<details>
+<summary>Standards: <n> findings</summary>
+
+<the subagent's report, verbatim>
+
+</details>
+
+<details>
+<summary>Spec: <n> findings</summary>
+
 <...>
 
-## Discipline
+</details>
+
+<details>
+<summary>Discipline: <n> findings</summary>
+
 <...>
+
+</details>
 ```
+
+The summary lists every blocking finding and nothing else: each one is a line
+lifted unchanged from its axis's Findings, prefixed with the axis name, in the
+order Standards, Spec, Discipline. Every blocking line stays, even past the
+usual ten-line summary; each one is something the human has to act on.
+Non-blocking findings appear only as the count in the verdict and in their
+axis's collapsed report.
 
 Do **not** merge, rerank, or deduplicate across the three reports. The axes are
 separate so the user can see them independently, and a finding that appears in
@@ -131,7 +157,23 @@ Discipline. That is not duplication — the two axes disagree about what to do
 about it, and both readings are useful. Leave both in.
 
 If a subagent returns a clean report, keep it. "Standards: no violations" is
-information, and dropping it makes the reader wonder whether the axis ran.
+information, and dropping it makes the reader wonder whether the axis ran. A
+skipped Spec axis gets its own collapsed block saying why.
+
+## 6. Deliver
+
+Check for an open PR on the current branch:
+`gh pr view --json number,state -q 'select(.state == "OPEN") | .number'`.
+
+**With an open PR**, post the report as a new comment:
+`gh pr comment <number> --body-file -`, with the report on stdin. Each run posts
+a new comment rather than editing the last, so the PR keeps the history of what
+each review found. In the terminal, show only the verdict line, the blocking
+lines, and the comment URL `gh` prints.
+
+**Without one** — reviewing work in progress — print the report to the terminal.
+`<details>` doesn't render there, so swap each collapsed block for a
+`## <Axis>` heading and drop the marker.
 
 ## Why three axes
 

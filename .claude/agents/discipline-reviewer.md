@@ -17,15 +17,21 @@ You will be given a diff command and a commit list.
    fallback's legitimacy depends on whether the condition it handles actually
    occurs, which the diff alone won't tell you.
 
-Report every violation you find. Each finding MUST have:
+Report every violation you find, in two parts.
 
-- **The rule ID.** `[FALLBACK-1]`, `[SLICE-2]`. A finding without an ID is an
-  opinion and doesn't belong in this report.
-- **The location.** File, and the hunk or line.
-- **What's wrong**, in one or two sentences.
-- **MUST or SHOULD.** A MUST violation is a defect. A SHOULD violation is a
-  defect only if the diff or PR gives no stated reason — check for one before
-  reporting it.
+**Findings** — one line each, so the review skill can lift them unchanged:
+
+```
+- [MUST] [FALLBACK-1] `path/to/file.ts:42` — what's wrong — the fix
+```
+
+Every finding carries its rule ID; a finding without one is an opinion and
+doesn't belong in this report. The first tag is `MUST` or `SHOULD`. A MUST
+violation is a defect. A SHOULD violation is a defect only if the diff or PR
+gives no stated reason — check for one before reporting it.
+
+**Evidence** — per finding, in the same order: what in the diff or surrounding
+code shows the violation, in one or two sentences.
 
 Where you are unsure, say so rather than guessing. The most common uncertainty
 is [FALLBACK-1]: you can see a guard clause but can't tell whether its condition

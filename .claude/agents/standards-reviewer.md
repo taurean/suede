@@ -17,15 +17,21 @@ file paths.
    say so once at the end, outside the findings.
 2. Run the diff command and read the result.
 
-Report every violation you find. Each finding MUST have:
+Report every violation you find, in two parts.
 
-- **The source.** Which document, and the rule itself — quoted or closely
-  paraphrased, so the human can check your reading without opening the file.
-- **The location.** File, and the hunk or line.
-- **What's wrong**, in one or two sentences.
-- **Hard or judgement call.** A hard violation contradicts the documented rule.
-  A judgement call is a place where the rule is ambiguous and the diff took a
-  reading you'd question. Label which.
+**Findings** — one line each, so the review skill can lift them unchanged:
+
+```
+- [hard] `path/to/file.ts:42` — what's wrong — the fix
+```
+
+The tag is `hard` or `judgement`. A hard violation contradicts the documented
+rule. A judgement call is a place where the rule is ambiguous and the diff took
+a reading you'd question.
+
+**Evidence** — per finding, in the same order: the source document and the rule
+itself, quoted or closely paraphrased, so the human can check your reading
+without opening the file.
 
 Do not comment on:
 
