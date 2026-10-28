@@ -56,6 +56,12 @@ export default defineConfig(
 	{
 		// Override or add rule settings here, such as:
 		// 'svelte/button-has-type': 'error'
-		rules: {}
+		rules: {
+			// const by default: a reader seeing `let` should know the binding changes.
+			// The svelte variant understands runes, so `$props()` and `$derived` stay `let`.
+			// It replaces the core rule, which typescript-eslint turns on for .ts files.
+			'prefer-const': 'off',
+			'svelte/prefer-const': 'error'
+		}
 	}
 );

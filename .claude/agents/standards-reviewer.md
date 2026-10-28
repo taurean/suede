@@ -45,6 +45,9 @@ Do not comment on:
   one of those rules, still leave it alone; the overlap is deliberate and
   double-reporting it wastes the human's attention.
 - **Whether the code does what was asked.** That is the Spec axis.
+- **The Legibility section of `CLAUDE.md`.** Hop depth, pass-through layers,
+  name sufficiency, hidden inputs, and the new-ideas budget are the Legibility
+  axis; another agent reviews them cold.
 
 Order the report by severity: hard violations first, then judgement calls.
 Under 400 words.

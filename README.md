@@ -87,10 +87,10 @@ Every task moves through the same pipeline. The _process_ is constant across all
 3. **Cut plan** (`/project-plan`) — only for work too big for one PR: agree on the few independently-mergeable cuts, publish one plan issue with the cut checklist. Single-PR tasks skip straight to build.
 4. **Build** (`/task`) — prep (sibling worktree, systems map, brief, draft PR), then vertical slices with one story-derived test per user story.
 5. **Verify** (`/verify`) — the app observed doing the thing, not just a green suite.
-6. **Review** (`/review`) — three-axis review (Standards, Spec, Discipline) in parallel subagents, before merge.
+6. **Review** (`/review`) — four-axis review (Standards, Spec, Discipline, Legibility) in parallel subagents, before merge.
 7. **Release** (CLAUDE.md "Releases") — chronver bump as the final commit on the branch; human merges and tags.
 
-`engineering-discipline`, `poke-holes`, and `systems-map` are personal skills the pipeline depends on; they are not in this repo. Install each from [selvage](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills) by copying its folder into `~/.claude/skills/<name>/`. The subagents the pipeline dispatches (`standards-reviewer`, `spec-reviewer`, `discipline-reviewer`, `story-test-writer`) ship in `.claude/agents/`.
+`engineering-discipline`, `poke-holes`, and `systems-map` are personal skills the pipeline depends on; they are not in this repo. Install each from [selvage](https://github.com/taurean/selvage/tree/main/dot_claude/exact_skills) by copying its folder into `~/.claude/skills/<name>/`. The subagents the pipeline dispatches (`standards-reviewer`, `spec-reviewer`, `discipline-reviewer`, `legibility-reviewer`, `story-test-writer`) ship in `.claude/agents/`.
 
 ### The shape of a single task
 
@@ -108,7 +108,7 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 | --------------- | -------------------------------------------------------------------------------------------------- |
 | `task`          | The task spine: alignment, prep, build, verify, review, closeout. `brief.md` owns the brief format |
 | `project-plan`  | Cut plan for multi-PR work, published as one plan issue                                            |
-| `review`        | Three-axis review (Standards, Spec, Discipline) in parallel subagents                              |
+| `review`        | Four-axis review (Standards, Spec, Discipline, Legibility) in parallel subagents                   |
 | `design`        | Visual judgment for new UI in a suede-css + Bits UI project                                        |
 | `writing-css`   | CSS and component markup in suede-css + Bits UI; loads on `.svelte` and CSS files                  |
 | `suede-kickoff` | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
