@@ -152,6 +152,9 @@ run and agent follows it.
 3. Push the branch. Rewrite the PR body's summary for what actually changed,
    why, where the human's judgement is needed, and one verification line. Update
    the collapsed brief if it diverged during the task.
-4. Comment on the PR with: whether anything blocks merge, where the human should
-   focus, and the open-questions queue. Lead with the verdict ([ASK-5]).
+4. Comment on the PR, following `CLAUDE.md`, "Agent-authored output", with
+   `<!-- suede:closeout -->` as the first line. The summary leads with whether
+   anything blocks merge ([ASK-5]), then where the human should focus, then the
+   open-questions queue, one line per question. The reasoning behind each goes
+   in the collapsed block.
 5. Delete the worktree. Return to `main` and pull.
