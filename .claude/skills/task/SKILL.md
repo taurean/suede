@@ -14,7 +14,8 @@ Align → prep → build → verify → review → land.
 
 `engineering-discipline` is in effect from the first line of code to the last.
 Its stopping rules govern every interruption in this process; don't restate
-them here, follow them.
+them here, follow them. Code is written to `CLAUDE.md`, "Legibility" — the same
+standard `/review` blocks on.
 
 ## 1. Align
 

@@ -162,6 +162,72 @@ Storybook is the suede default. A fork that rips it records the override during
 kickoff, and the follow-up rewrites this section and the `task` skill's
 references.
 
+## Legibility
+
+Most code here is generated, and it's read by people who weren't there when it
+was written. Write for the time it takes someone unoriented to understand one
+unit — a function, component, or route — and to debug it. People hold about four
+half-understood ideas at once; every layer that makes them hold one more is a
+cost.
+
+This covers hand-written code: app code, tests, and stories. Not generated
+files, lockfiles, config, or markdown.
+
+### What reading a unit costs
+
+- **Read cost** — the lines a reader actually reads to understand the unit: the
+  unit itself plus every hop they have to follow. Shorter is better, until
+  shortness makes code confusing, brittle, or opaque.
+  - When **understanding**, a reader skips hops whose name and signature say
+    what they do.
+  - When **debugging**, names stop helping: the question is whether the code
+    does what its name says. The reader follows every hop on the failing path,
+    except ones they can check at the boundary.
+- **Linearity** — how often a top-to-bottom read has to leave the unit. Code
+  that needs a reading order explained isn't linear.
+- **Name sufficiency** — whether a hop's name and signature predict what it
+  does. A hop that does is free to a reader who's understanding, not debugging.
+- **Hop depth** — how many hops a reader has to follow before reaching ground
+  they already know: the language, the framework, or a well-known library. A
+  name-sufficient hop isn't followed, so it doesn't count.
+- **Concepts held open** — the most half-understood things a reader has to keep
+  in mind at once.
+- **Pass-through layer** — a layer that, inlined, would cost the reader nothing:
+  a wrapper that forwards its arguments, a single-use helper whose name says
+  less than its body, an options object with one caller.
+- **Explicit boundary** — an extracted unit's inputs are its arguments, and its
+  effects are its return value or named by it (`saveDraft`, not `process`). A
+  hidden input is anything read from outside the arguments, except module-level
+  `const` and imports from the framework or standard library. `getContext`,
+  stores, and `$page` count as hidden. A unit with an explicit boundary can be
+  checked from the call site — what went in, what came out — without stepping
+  into it.
+
+### Writing to it
+
+- Extract only when the name lets a reader skip the body. Otherwise, inline.
+- Keep inputs in the arguments. Read framework state (context, stores, `$page`)
+  in the component or route, and pass the value down.
+- Extend a pattern the codebase already has before introducing a new one.
+- `const` by default; `let` only for a binding that's reassigned. Lint enforces
+  this (`svelte/prefer-const`).
+
+### What blocks merge
+
+`/review`'s legibility reviewer blocks on:
+
+- hop depth over 2;
+- any pass-through layer;
+- an extraction whose name doesn't predict what it does;
+- an extraction with hidden inputs or unnamed effects;
+- more than **3** new ideas in one PR without a reason in the PR body. A new
+  idea is a new exported name, module, or dependency, or the first instance of a
+  pattern the codebase didn't have. Forks tune the number here.
+
+Read cost, linearity, and concepts held open are advisory: reported where
+they're high, as findings, never as numbers. A diff over about 400 changed lines
+of hand-written code is noted, never blocked.
+
 ## Working style
 
 The pipeline table above says which skill applies at which stage. Load the
