@@ -240,6 +240,8 @@ In-repo skills (`.claude/skills/`):
   `testing.md` owns test quality and the prune pass.
 - `project-plan` — cut plan for work too big for one PR. User-invoked.
 - `review` — four-axis review, dispatching to the in-repo reviewer agents.
+- `design` — visual judgment for new UI in suede-css + Bits UI. Loads
+  automatically on `.svelte` and CSS files.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
