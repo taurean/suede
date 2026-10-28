@@ -107,12 +107,14 @@ to know what was found.
 - labelled `MUST` by Discipline;
 - labelled `wrong` or `missing` by Spec;
 - labelled `hard` by Standards;
-- labelled `block` by Legibility.
+- labelled `block` by Legibility, except `new-ideas`, which blocks only when the
+  PR body gives no reason for the count. The reviewer is cold and can't see the
+  PR body, so check it here: a reason in the body turns that finding into a
+  non-blocking one, and the summary says so.
 
 Everything else — `SHOULD` violations with no stated reason, `judgement` calls,
 `unasked` behavior, story/test `mismatch` findings, Legibility's `advise`
-findings, open questions — is worth
-reading and does not block.
+findings, open questions — is worth reading and does not block.
 
 The report follows `CLAUDE.md`, "Agent-authored output": one synthesized review
 for the human, and the reviewers' raw reports collapsed for agents.

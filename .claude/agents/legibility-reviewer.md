@@ -45,8 +45,9 @@ component, or route — in hand-written code:
 
 Then, across the whole diff, count the new ideas, as the rubric defines them.
 Read the existing codebase to tell a new pattern from an extended one. If the
-count is over the rubric's budget, the commit list or the code may give a
-reason; you can't see the PR body, so report it and let the human weigh it.
+count is over the rubric's budget, report it as `block, new-ideas` and list the
+ideas. You can't see the PR body, where a reason would be given; the review
+skill checks that after you report.
 
 Count internally. The human never sees your numbers, only findings.
 

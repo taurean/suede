@@ -246,8 +246,8 @@ In-repo skills (`.claude/skills/`):
   itself when consumed.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
-`discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and `story-test-writer`
-(dispatched by `task`).
+`discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and
+`story-test-writer` (dispatched by `task`).
 
 Personal skills live in `~/.claude/skills/` and are not enumerated here.
 `engineering-discipline`, `poke-holes`, and `systems-map` are the ones this
