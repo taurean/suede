@@ -39,7 +39,7 @@ Report in two parts.
 output", so the review skill can lift them unchanged:
 
 ```
-- [wrong] `path/to/file.ts:42` — what's wrong — the fix
+- What's wrong, in plain words. Fix: what to do. In `file.ts:42`. (wrong)
 ```
 
 The tag is `wrong`, `missing`, `mismatch`, or `unasked`. For a missing

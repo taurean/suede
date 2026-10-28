@@ -23,7 +23,7 @@ Report every violation you find, in two parts.
 output", so the review skill can lift them unchanged:
 
 ```
-- [MUST] [FALLBACK-1] `path/to/file.ts:42` — what's wrong — the fix
+- What's wrong, in plain words. Fix: what to do. In `file.ts:42`. (MUST, FALLBACK-1)
 ```
 
 Every finding carries its rule ID; a finding without one is an opinion and

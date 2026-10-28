@@ -208,8 +208,14 @@ verdict: whether anything blocks, or what the human needs to decide. Then one
 line per item they act on:
 
 ```
-- `path/to/file.ts:42` — what's wrong — the fix
+- What's wrong, in plain words. Fix: what to do. In `file.ts:42`.
 ```
+
+The problem comes first, because it's what the reader needs to decide whether
+to keep reading. Location comes last: a bare file name when it's unambiguous, a
+path when it isn't, and every file named on its own — never a `{a,b}` set.
+Labels a reader can skip, like a category or severity, go after the location in
+parentheses.
 
 Nothing goes in the summary that the human doesn't act on. If it runs past ten
 lines and not every line is an action, detail has leaked in; move it down.

@@ -115,8 +115,8 @@ each axis's full report collapsed.
 **<N> blocking, <M> non-blocking.** <one line naming the worst finding, or
 "Nothing blocks merge.">
 
-- Standards: [hard] `path/to/file.ts:42` — what's wrong — the fix
-- Discipline: [MUST] [FALLBACK-1] `path/to/other.ts:7` — what's wrong — the fix
+- What's wrong. Fix: what to do. In `file.ts:42`. (Standards, hard)
+- What's wrong. Fix: what to do. In `other.ts:7`. (Discipline, MUST, FALLBACK-1)
 
 <details>
 <summary>Standards: <n> findings</summary>
@@ -141,7 +141,7 @@ each axis's full report collapsed.
 ```
 
 The summary lists every blocking finding and nothing else: each one is a line
-lifted unchanged from its axis's Findings, prefixed with the axis name, in the
+lifted from its axis's Findings with the axis name added to its labels, in the
 order Standards, Spec, Discipline. Every blocking line stays, even past the
 usual ten-line summary; each one is something the human has to act on.
 Non-blocking findings appear only as the count in the verdict and in their
