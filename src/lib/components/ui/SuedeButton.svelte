@@ -11,6 +11,7 @@
 	let { href, type = 'button', disabled, children, class: className, ...rest }: Props = $props();
 </script>
 
+<!-- A disabled link keeps its link role and styling, but loses its href so it can't be followed. -->
 <svelte:element
 	this={href ? 'a' : 'button'}
 	href={href && !disabled ? href : undefined}
@@ -20,7 +21,7 @@
 	role={href && disabled ? 'link' : undefined}
 	tabindex={href && disabled ? -1 : undefined}
 	{...rest}
-	class={`suede-button u:fs-1${className ? ` ${className}` : ''}`}
+	class={`suede-button${className ? ` ${className}` : ''}`}
 >
 	{@render children?.()}
 </svelte:element>
@@ -30,15 +31,16 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: var(--space-xs);
+		gap: var(--gap-xs);
 		font-family: var(--ff-ui);
-		font-weight: 600;
-		line-height: 1;
+		font-size: var(--text-sm);
+		font-weight: var(--fw-semibold);
+		line-height: var(--leading-ui);
 		background-color: var(--hue-blue-500);
 		color: var(--hue-white);
-		padding: var(--space-sm) var(--space-lg);
+		padding: var(--gap-sm) var(--gap-lg);
 		border: 0;
-		border-radius: 0.375rem;
+		border-radius: var(--radius-md);
 		cursor: pointer;
 		text-decoration: none;
 		transition:
@@ -47,15 +49,15 @@
 			transform 0.05s ease;
 	}
 
-	.suede-button:not([href]):hover:not(:disabled):not([aria-disabled='true']) {
+	button.suede-button:hover:not(:disabled) {
 		background-color: var(--hue-blue-600);
 	}
 
-	.suede-button:not([href]):active:not(:disabled):not([aria-disabled='true']) {
+	button.suede-button:active:not(:disabled) {
 		transform: scale(0.98);
 	}
 
-	.suede-button[href] {
+	a.suede-button {
 		background-color: transparent;
 		color: var(--hue-blue-500);
 		padding-inline: 0;
@@ -64,7 +66,7 @@
 		text-underline-offset: 0.2em;
 	}
 
-	.suede-button[href]:hover:not(:disabled):not([aria-disabled='true']) {
+	a.suede-button:hover:not([aria-disabled='true']) {
 		color: var(--hue-blue-600);
 	}
 

@@ -86,12 +86,12 @@ Override the `--river-gap` and `--waterfall-gap` custom properties on the parent
 when the default rhythm is wrong; don't reach for a new utility.
 
 **Utility (suede-css `suede-utility` layer).** One job, one class. Currently exposed:
-`u:radius-full` (pill shape, any element), `u:fs-0` through `u:fs-10` (older fluid
+`u:radius-full` (pill shape, on an element whose scoped rules set no radius), `u:fs-0` through `u:fs-10` (older fluid
 sizes, mapped to `--fs-*`; new work uses `--text-*` instead),
-`u:lh-ui|...|loose` (line heights, mapped to `--lh-*`),
+`u:lh-ui|...|loose` (older line heights, mapped to `--lh-*`; new work uses `--leading-*`),
 `u:ff-content|heading|sans|serif|ui|mono` (font families, mapped to `--ff-*`),
 and `u:visually-hidden`. Use these for typography
-that varies per element rather than per block — e.g. `<h1 class="u:fs-7">`. If a
+that varies per element rather than per block — e.g. `<h1 class="u:ff-heading">`. If a
 property needs a utility and suede-css doesn't ship one, add it to a
 project-local CSS file in `src/lib/styles/` rather than hardcoding it. The
 utility layer's job is to extend tokens, never to redefine them.
@@ -103,8 +103,8 @@ the block CSS should be **a handful of rules** that only apply in that context.
 Hard cap at around 80 lines of CSS per block; if it's growing, the block is
 solving more than one contextual problem and should split.
 
-Block CSS draws from suede-css custom properties (`--hue-*`, `--space-*`,
-`--ff-*`, `--fs-*`, `--lh-*`). It never hardcodes a colour, a spacing value, or
+Block CSS draws from custom properties (`--hue-*`, `--gap-*`, `--ff-*`, `--text-*`,
+`--leading-*`). It never hardcodes a colour, a spacing value, or
 a font stack. The exception is shorthand that resolves through tokens
 immediately: `color: white` on a saturated `--hue-blue-500` background is fine
 because the contrast is what's being captured, not a colour value.
@@ -201,16 +201,16 @@ most of the work before the block ever loads.
   Dark surfaces with a tint come from the `slate` and `zinc` scales, whose `950` steps
   are dark and slightly blue. Check the scales before calling a colour a gap.
 
-  Past the 0.15 chroma cap, a saturated brand or accent colour on a prototype goes in one
+  suede's palette caps chroma at 0.15, so vivid colours are out of its reach. A saturated brand or accent colour on a prototype goes in one
   clearly marked file beside the route, in the `token` layer. Promoting it is the human's call.
 
 - **Spacing.** `--gap-{xs,sm,md,lg,xl}` are fixed at 4, 8, 12, 16 and 24px.
   `--gap-{2xl,3xl,4xl,5xl}` scale from 375px to 1440px, ending at 32, 48, 64 and
   112px. Apply via `padding`, `margin`, or `gap`, and let padding size controls
-  and rows. `--space-*` is the older scale, kept for existing code.
+  and rows. `--space-*` is suede-css's older scale. Nothing here uses it, so don't start.
 - **Typography.** `--text-{xs,sm,md,lg,xl}` are fixed at 12, 14, 16, 18 and 20px.
   `--text-{2xl..8xl}` scale from 375px to 1440px, ending at 24, 32, 38, 48, 72, 96 and
-  128px. `--fs-*` is the older scale, kept for existing code. Line height is
+  128px. `--fs-*` is the older scale, and only `DynamicText.stories.svelte` still uses it. Line height is
   `--leading-ui` (1), `--leading-tight` or `--leading-loose`. Tight and loose
   resolve to a length, so set them on the same element as the font size, or a child
   with a different size inherits the wrong line. `--ff-{system,sans,serif,ui,content,
@@ -237,15 +237,13 @@ When a block needs scoped CSS — colours, sizing, a hover state — the recipe 
 
 1. Render a semantic HTML element in the component's own markup, through a Bits UI
    primitive's `child` snippet when one applies ([CSS-2]).
-2. Apply a single block class plus any token-backed utilities (`u:fs-*`,
-   `u:lh-*`).
+2. Apply a single block class, and set type with `--text-*` and `--leading-*`.
 3. In the scoped `<style>`, reference that class directly and tokens by name. Stay
    under ~80 lines. Don't wrap the block in `@layer`.
 
 A working example is `src/lib/components/ui/SuedeButton.svelte` in any
-suede-family project. The `--hue-blue-500` → `--hue-blue-600` hover transition, the
-`[href]` exception for the link variant, the `:focus-visible` outline using a token:
-that's the shape.
+suede-family project. The `--hue-blue-500` → `--hue-blue-600` hover transition and
+the separate rules for the link variant: that's the shape.
 
 ## When an element earns a class
 

@@ -20,12 +20,6 @@
 	}
 }
 
-@layer utility {
-	.u\:fg-muted {
-		color: var(--hue-z0-muted);
-	}
-}
-
 @layer layout {
 	.l\:grid > [data-grid-columns='sixth'] {
 		grid-column: span calc(var(--grid-columns) / 6);
@@ -33,7 +27,7 @@
 }
 
 /*
- * Type and space scale, replacing --fs-* and --space-* in new work. Every token has a value at
+ * Type and space scale, replacing --fs-*, --space-* and --lh-* in new work. Every token has a value at
  * 375px and at 1440px, the two Figma modes. Fixed tokens have the same value in both. Fluid
  * values are straight lines between the two and stop growing past 1440px.
  */
@@ -75,6 +69,7 @@
 
 		/* Past 1440px the container stops growing and centres. */
 		--page-max: 90rem;
+		--grid-max-width: var(--page-max);
 	}
 }
 
