@@ -231,3 +231,7 @@ Built from two sketches, prose notes and brand guide screenshots. The route was 
 - "I do have another prototype thing that I had built this morning and I have not given any visual design guidance yet. I have only given ux flow guidance. lets take what we learned here and update all of our skills and stuff as needed. then we'll do this again in a nother fresh test. this time I'll describe the project, provide screenshots of the current prototype, and provide some screens of design inspiration for reference."
   Why: stated in the note itself. A transcript of the clean-context test shows every design skill loaded and `writing-css` was read, and the page still broke its layout conventions, so the fix is a recipe and a verifier, not more wording.
   Became: `CSS-3` to `CSS-5`, `DSC-6` and its audit script, `design-from-references`, sharper `DPV` wording. All written on this go-ahead; the numbered list from the comparison was never answered individually.
+
+- Answers to my open questions, chosen from options I wrote: rebuild the other prototype in this worktree, review the point-of-view rules before the test, add a bigger step to the type scale, leave the archive branches local.
+  Why: not stated
+  Became: `--text-8xl`, rule review pending

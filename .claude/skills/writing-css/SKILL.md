@@ -211,8 +211,8 @@ most of the work before the block ever loads.
   112px. Apply via `padding`, `margin`, or `gap`, and let padding size controls
   and rows. `--space-*` is the older scale, kept for existing code.
 - **Typography.** `--text-{xs,sm,md,lg,xl}` are fixed at 12, 14, 16, 18 and 20px.
-  `--text-{2xl..7xl}` scale from 375px to 1440px, ending at 24, 32, 38, 48, 72 and
-  96px. `--fs-*` is the older scale, kept for existing code. Line height is
+  `--text-{2xl..8xl}` scale from 375px to 1440px, ending at 24, 32, 38, 48, 72, 96 and
+  128px. `--fs-*` is the older scale, kept for existing code. Line height is
   `--leading-ui` (1), `--leading-tight` or `--leading-loose`. Tight and loose
   resolve to a length, so set them on the same element as the font size, or a child
   with a different size inherits the wrong line. `--ff-{system,sans,serif,ui,content,

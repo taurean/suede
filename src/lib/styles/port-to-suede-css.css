@@ -52,6 +52,7 @@
 		--text-5xl: clamp(2.25rem, 1.9859rem + 1.12676vw, 3rem); /* 36 → 48 */
 		--text-6xl: clamp(2.75rem, 2.1338rem + 2.6291vw, 4.5rem); /* 44 → 72 */
 		--text-7xl: clamp(3.5rem, 2.6197rem + 3.7559vw, 6rem); /* 56 → 96 */
+		--text-8xl: clamp(4.5rem, 3.2676rem + 5.2582vw, 8rem); /* 72 → 128 */
 
 		/* Space. Fixed: 4, 8, 12, 16, 24. */
 		--gap-xs: 0.25rem;
