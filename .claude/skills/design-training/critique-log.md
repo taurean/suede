@@ -43,3 +43,11 @@ The human's notes, newest last. Format is defined in `SKILL.md`, steps 5 and 6.
 - "agreed, I really dont like it. lets remove it."
   Why: about the CUBE bracket convention in class lists. Their own reason not stated beyond disliking it; I had argued the `u:` and `l:` prefixes already show the layer.
   Became: removed from `writing-css`
+
+- "the idea behind the --hue-z*-* thing was so that it was clear which sets of contextual colors lived together. that may not be perfect and need some work. I agree that muted is likely to be needed."
+  Why: stated in the note itself
+  Became: waiting
+
+- "sounds good, I'm into that suggestion. I do think we need a --hue-white and --hue-black for the extremes, they are useful."
+  Why: approves giving every z-layer set the same shape (`bg`, `fg`, `muted`, `border`). The reason for white and black: "they are useful" for the extremes.
+  Became: waiting, a suede-css change for the human
