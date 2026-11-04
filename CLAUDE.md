@@ -242,6 +242,7 @@ In-repo skills (`.claude/skills/`):
 - `review` — four-axis review, dispatching to the in-repo reviewer agents.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
+- `product-design-typography` — how type carries hierarchy in product UI.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 - `orient` — render the current work unit as a visual page in `tmp/`.

@@ -58,6 +58,11 @@ Report what's on the page, not what the code should produce.
 when the reason isn't clear, since the reason is what generalizes. Disagree
 plainly when you have a concrete objection, then follow their call.
 
+When their notes are done, say what the round taught about visual design and
+typography as a numbered list, so they can answer by number. Keep what their notes
+back apart from what you only noticed in the reference, and name where suede fell
+short. What they confirm goes in the log. What they don't confirm doesn't.
+
 **5. Log.** Add each note to `critique-log.md` as you get it: their words
 verbatim, the round, and the reason. Note a mistake you repeated even if they
 only said it again. Don't paraphrase taste into something tidier.
@@ -74,7 +79,7 @@ round produced no rule.
 
 ## Where rules go
 
-Put a rule in the skill that already owns its question. Give each rule an ID so
+Guides split by type of work and discipline, like `product-design-typography`. Put a rule in the skill that already owns its question. Give each rule an ID so
 other skills can cite it. Propose a new skill only when one of these holds:
 
 - Several rules share a trigger the existing skills don't have.
