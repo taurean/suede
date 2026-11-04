@@ -251,6 +251,17 @@ the separate rules for the link variant: that's the shape.
 styles, and it has styles only if existing utility classes and data attributes
 can't reasonably cover them.
 
+**[CSS-6]** An element selector fits when the tag already says what the thing is, like
+`kbd` and `small`. A class fits when a `span` needs a name.
+
+## When to use a custom property
+
+**[CSS-7]** A custom property generally works like an API for a class: something a parent
+can tweak, with guard rails. Stating which property the value feeds is usually guard rail
+enough, as in `--action-gap`. A custom property also helps when a value's semantic meaning
+would otherwise be hard to understand. Neither of these is a design token, which still
+belongs in the `token` layer.
+
 ## Common mistakes
 
 - **Reaching for raw HTML where Bits UI implements the behaviour.** `<dialog>`
