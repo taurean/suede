@@ -249,9 +249,12 @@ In-repo skills (`.claude/skills/`):
 - `design-page-layout` — how a page takes up the viewport and adapts across widths.
 - `design-self-critique` — how to build a large page and check visual work.
 - `design-point-of-view` — how a page gets an idea and character, not only correctness.
+- `design-from-references` — what to take from a prototype, inspiration images or brand material.
 
 Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
-`design-page-layout` and `design-self-critique`, along with `writing-css`.
+`design-page-layout` and `design-self-critique`, along with `writing-css`, and
+`design-from-references` when the brief includes a prototype, images or brand material. Run
+the audit in `DSC-6` before showing the page.
 
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.

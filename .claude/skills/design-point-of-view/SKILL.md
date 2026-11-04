@@ -13,6 +13,10 @@ This skill owns what makes a page worth looking at. `design-type-rhythm` and
 `design-page-layout` keep a page correct, and correct isn't enough. Which token or layer
 something uses belongs to `writing-css`.
 
+On dense working screens, the `product-design-*` rules win where they conflict. One text
+size still does most of the work, and strong colour stays rare. The point of view comes
+through `DPV-1`, `DPV-4` and `DPV-5` instead of extreme size.
+
 **[DPV-1]** Decide the page's idea before building. Write one sentence saying what the
 page is about, what its hero is and what its signature element is. A brief or sketch is a
 starting point. Follow its intent, and improve its arrangement where that serves the idea.
@@ -20,7 +24,8 @@ starting point. Follow its intent, and improve its arrangement where that serves
 **[DPV-2]** Make the contrast in size extreme. The hero should be far larger than anything
 else, and supporting detail can be small. A page where everything sits in a narrow band of
 sizes reads as timid. Roles stay consistent under `DTR-1`, and the roles sit far apart.
-The hero's size comes from the top of the scale, well above an ordinary heading.
+The hero's size comes from the top of the scale, well above an ordinary heading, and
+stops there.
 
 **[DPV-3]** Give the page one expressive colour with one job. Spend it on the signature
 element and let everything else stay neutral. A monochrome brand or a silent brief doesn't
@@ -28,16 +33,20 @@ rule this out: choose a colour that suits the subject.
 
 **[DPV-4]** Build a signature element. Take the most meaningful thing on the page, often a
 piece of data, and draw it in a way that belongs to this page instead of the default
-widget. Then repeat it at other sizes, so one idea runs through the page.
+widget. Then repeat it at other sizes, so one idea runs through the page. It still has to
+communicate at every size: if a small version can't show the difference between two values,
+give it a simpler form or pair it with the number.
 
-**[DPV-5]** Chrome steps back. Logo and navigation are quiet in colour and size, so the
-page starts with its content.
+**[DPV-5]** Chrome steps back. Logo and navigation use a muted colour as well as a small
+size, so the page starts with its content. Black chrome isn't quiet.
 
 **[DPV-6]** Close the page on purpose. The footer can be a distinct, full-bleed band, and
-a large brand element there can be quiet. It shouldn't compete with the hero.
+a large brand element there sits close in tone to its background. Big and high-contrast
+competes with the hero.
 
 **[DPV-7]** The container's maximum width is a ceiling and not a target. Choose the width
-the content wants, and use generous margins and large gaps between bands. Filling the
+the content wants, usually well under the ceiling on a page of reading and images, and
+use generous margins and large gaps between bands. Filling the
 width with thin gutters makes a page feel bigger and less considered.
 
 **[DPV-8]** Things that belong together sit together. When one element explains another,

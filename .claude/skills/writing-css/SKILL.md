@@ -25,6 +25,43 @@ overrides `suede-layout` and nothing above it. Lean into that. Every line of CSS
 in this stack should fall into one of the four CUBE layers, and most lines
 should land in the layers suede-css already provides.
 
+## Page structure
+
+**[CSS-3]** Page columns come from `l:grid` and `data-grid-columns`, not local
+`grid-template-columns`. The grid keeps its 12 columns at every width. A media query may
+change how many columns a child spans, and may make a structural change that wrapping
+can't, like hiding a sidebar. It never changes the number of columns. Local tracks and
+`auto-fit` are fine inside a component, like a row of chips or a label and its value.
+
+```svelte
+<div class="l:grid">
+	<div class="column" data-grid-columns="half">...</div>
+	<div class="column" data-grid-columns="half">...</div>
+</div>
+
+<style>
+	@media (max-width: 48rem) {
+		.column {
+			grid-column: span 12;
+		}
+	}
+</style>
+```
+
+A grid nested in a grid brings its own gutter padding, so give the inner one
+`padding-inline: 0`. Vertical rhythm comes from `l:waterfall` and `--waterfall-gap`.
+
+**[CSS-4]** Sizes and colours come from tokens, on logical properties. Use `inline-size`
+and `block-size`, `--border-w-*` for borders, `--text-*` for font sizes and `--gap-*`
+for spacing. A display element sized to fill its container, like a footer wordmark, may
+use container units and says so in a comment. Don't write a `clamp()` of your own to get
+past the top of the scale.
+
+**[CSS-5]** A `<style>` block stops at about 80 lines. Past that, split the page into
+components with their inputs as props.
+
+Other training pages under `src/routes/` don't set the pattern. This file does.
+
 ## The four layers
 
 **Composition (suede-css `suede-layout` layer).** Page-level layout, rhythm, and flow.

@@ -49,7 +49,7 @@ Use suede parts. When they can't express the design, get as close as they allow
 and name the gap. A gap is a finding, and new tokens and primitives stay the
 human's call under CLAUDE.md's authoring boundaries.
 
-**3. Look.** Run the app and screenshot the page in a browser, then compare it
+**3. Look.** Run the audit in `DSC-6`. Run the app and screenshot the page in a browser, then compare it
 against the reference or brief. Check whatever states and viewports the exercise
 is about. Fix what you can see before showing it, and say what you couldn't fix.
 Report what's on the page, not what the code should produce.

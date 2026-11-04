@@ -31,3 +31,12 @@ the tokens and utilities, and report a gap only once none of them fits.
 **[DSC-5]** Ask whether the page has a point of view. Name its idea, hero and signature
 element under `DPV-1`, then ask what could be bolder. Correct and plain isn't finished.
 Name each section's weakest choice and fix it before showing the page.
+
+**[DSC-6]** Run the convention audit before showing a page, and again after the last fix:
+
+```sh
+bash .claude/skills/design-self-critique/audit.sh src/routes/your-page
+```
+
+Fix each finding, or name it as a deliberate exception in your report. Reading a rule
+doesn't mean the code follows it, and the audit shows what actually happened.

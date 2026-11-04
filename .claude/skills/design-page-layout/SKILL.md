@@ -17,7 +17,7 @@ changes that wrapping can't make, like a sidebar becoming a menu.
 
 **[DPL-2]** A page with deliberate columns uses a real grid. The grid sets the columns,
 and content sizes itself inside them. DPL-1 doesn't replace it: content can't align
-separate columns with each other.
+separate columns with each other. The grid's column count never changes (`CSS-3`).
 
 **[DPL-3]** Content looks native to the page. Backgrounds and rules reach the viewport
 edge, and past the page's maximum width only the content stops and centres. A page never
