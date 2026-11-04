@@ -15,7 +15,7 @@ something uses belongs to `writing-css`.
 On dense working screens, the `product-design-*` rules win where they conflict.
 
 **[DPV-1]** Decide the page's idea before building. Write one sentence saying what the
-page is about, what its hero is and what its signature element is. A brief or sketch is a
+page is about and what its hero is. A brief or sketch is a
 starting point. Follow its intent, and improve its arrangement where that serves the idea.
 
 **[DPV-2]** Close the page on purpose. The footer is a deliberate ending, and it doesn't
@@ -28,3 +28,7 @@ page feel bigger and less considered.
 
 **[DPV-4]** Things that belong together sit together. When one element explains another,
 put it directly beside or beneath it, even if that moves it away from similar elements.
+
+When a page is correct but seems to be missing something, one of many things to try is a
+signature element: something meaningful, drawn in a way that belongs to this page. It's an
+option and not a requirement, and most of a page should stay ordinary.

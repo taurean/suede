@@ -28,8 +28,7 @@ band beside it can decide whether a page feels finished, and neither survives a 
 **[DSC-4]** Before calling something a gap in the system, check what already exists. Read
 the tokens and utilities, and report a gap only once none of them fits.
 
-**[DSC-5]** Ask whether the page has a point of view. Name its idea, hero and signature
-element under `DPV-1`, then ask what could be bolder. Correct and plain isn't finished.
+**[DSC-5]** Ask whether the page has a point of view. Name its idea and hero under `DPV-1`, then ask what could be bolder or what seems to be missing. Correct and plain isn't finished.
 Name each section's weakest choice and fix it before showing the page.
 
 **[DSC-6]** Run the convention audit before showing a page, and again after the last fix:
