@@ -245,6 +245,14 @@ In-repo skills (`.claude/skills/`):
 - `product-design-typography` — how type carries hierarchy in product UI.
 - `product-design-color` — how much strong colour product UI uses, and what for.
 - `product-design-elevation` — when a surface in product UI is raised, and how far.
+- `design-type-rhythm` — how text sizes, line heights and text spacing relate on any page.
+- `design-page-layout` — how a page takes up the viewport and adapts across widths.
+- `design-self-critique` — how to build a large page and check visual work.
+- `design-point-of-view` — how a page gets an idea and character, not only correctness.
+
+Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
+`design-page-layout` and `design-self-critique`, along with `writing-css`.
+
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 - `orient` — render the current work unit as a visual page in `tmp/`.
@@ -255,7 +263,8 @@ In-repo skills (`.claude/skills/`):
 - `design-training` — temporary, user-invoked. Grows the design skills through
   exercises and critique. Round branches base on
   `feat/design-training-montage`, the one exception to branch-from-`main`. The
-  skill and this line are deleted before that branch merges to `main`.
+  skill and this line are deleted before that branch merges to `main`. Pages under
+  `src/routes/training/` are throwaway exercises, so don't treat them as patterns.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and

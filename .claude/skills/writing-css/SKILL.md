@@ -30,10 +30,13 @@ should land in the layers suede-css already provides.
 **Composition (suede-css `suede-layout` layer).** Page-level layout, rhythm, and flow.
 Reach for these utilities before writing any layout CSS of your own:
 
-- `l:grid` — 12-column responsive grid. Pair with
-  `[data-grid-columns="quarter|third|half|full"]` on direct children for span
-  variants (this is the Exception pattern, see below). The attribute does
-  nothing on a grandchild.
+- `l:grid` — 12-column grid. Pair with
+  `[data-grid-columns="sixth|quarter|third|half|full"]` on direct children for
+  span variants (this is the Exception pattern, see below). The attribute does
+  nothing on a grandchild. The grid keeps its 12 columns at every width. Where
+  columns need to stack, a media query changes only how many each child spans,
+  as in `grid-column: span 12`. Row gaps are off by default, so set `row-gap`
+  when children can stack.
 - `l:root` — single centred container with max-width and gutter.
 - `l:waterfall > *` — vertical rhythm; every direct child gets
   `margin-block-start: var(--waterfall-gap, 2em)`.
@@ -48,7 +51,8 @@ Override the `--river-gap` and `--waterfall-gap` custom properties on the parent
 when the default rhythm is wrong; don't reach for a new utility.
 
 **Utility (suede-css `suede-utility` layer).** One job, one class. Currently exposed:
-`u:fs-0` through `u:fs-10` (fluid font sizes, mapped to `--fs-*`),
+`u:radius-full` (pill shape, any element), `u:fs-0` through `u:fs-10` (older fluid
+sizes, mapped to `--fs-*`; new work uses `--text-*` instead),
 `u:lh-ui|...|loose` (line heights, mapped to `--lh-*`),
 `u:ff-content|heading|sans|serif|ui|mono` (font families, mapped to `--ff-*`),
 and `u:visually-hidden`. Use these for typography
@@ -159,16 +163,28 @@ most of the work before the block ever loads.
   `--hue-white` and `--hue-black` name the extremes the scale stops short of.
   Additions on their way to suede-css live in `src/lib/styles/port-to-suede-css.css`.
 
-- **Spacing.** `--space-5xs` through `--space-5xl`, with `sm` and `medium`
-  slotted between `xs` and `lg` (the stops are `5xs, 4xs, 3xs, 2xs, xs, sm,
-medium, lg, xl, 2xl, 3xl, 4xl, 5xl`). Fluid via `clamp()` — viewport-aware
-  without media queries. Apply via `padding`, `margin`, or `gap`; never via
-  width/height where it would clip the fluid scaling.
-- **Typography.** `--fs-0..10` for size,
-  `--lh-{ui,snug,condensed,standard,expanded,loose}` for line-height, and
-  `--ff-{system,sans,serif,ui,content,heading,old-style,rounded-sans-display,...}`
-  for family. The `--ff-ui`, `--ff-content`, `--ff-heading`, `--ff-sans`,
-  `--ff-serif` aliases are usually what you want.
+  Dark surfaces with a tint come from the `slate` and `zinc` scales, whose `950` steps
+  are dark and slightly blue. Check the scales before calling a colour a gap.
+
+  Past the 0.15 chroma cap, a saturated brand or accent colour on a prototype goes in one
+  clearly marked file beside the route, in the `token` layer. Promoting it is the human's call.
+
+- **Spacing.** `--gap-{xs,sm,md,lg,xl}` are fixed at 4, 8, 12, 16 and 24px.
+  `--gap-{2xl,3xl,4xl,5xl}` scale from 375px to 1440px, ending at 32, 48, 64 and
+  112px. Apply via `padding`, `margin`, or `gap`, and let padding size controls
+  and rows. `--space-*` is the older scale, kept for existing code.
+- **Typography.** `--text-{xs,sm,md,lg,xl}` are fixed at 12, 14, 16, 18 and 20px.
+  `--text-{2xl..7xl}` scale from 375px to 1440px, ending at 24, 32, 38, 48, 72 and
+  96px. `--fs-*` is the older scale, kept for existing code. Line height is
+  `--leading-ui` (1), `--leading-tight` or `--leading-loose`. Tight and loose
+  resolve to a length, so set them on the same element as the font size, or a child
+  with a different size inherits the wrong line. `--ff-{system,sans,serif,ui,content,
+heading,old-style,didone-display,...}` for family. The `--ff-ui`, `--ff-content`,
+  `--ff-heading`, `--ff-sans`, `--ff-serif` aliases are usually what you want. When
+  a brief names a typeface the project doesn't have, use the closest stack and name
+  the gap.
+- **Page width.** `--page-max` is 1440px. Past it, content stops growing and centres.
+  Set `--grid-max-width` on a parent to change a grid's ceiling.
 - **Grid.** `--grid-max-width`, `--grid-gutter`, `--grid-columns`. Override on
   the parent when a section needs a different ceiling.
 - **Flow gaps.** `--waterfall-gap`, `--river-gap`. Defaulted on the utility;
@@ -230,6 +246,13 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
   `src/lib/styles/` that doesn't declare `@layer layout { … }` (or whatever
   layer) lands unlayered and wins by accident, not by intent. Declare the
   layer.
+- **Letting suede's element defaults leak in.** Text inside `article` gets a serif at a
+  larger size, headings get their own sizes, and `p` gets its own line height. Use a
+  `div` for a short item in a list, keep `article` for long-form reading, and audit the
+  rendered sizes.
+- **Resetting elements in a scoped block and expecting a layout utility to win.** Unlayered
+  scoped rules outrank every layer, so `p { margin: 0 }` removes the gaps `l:waterfall`
+  would add. Reset in a lower layer, or leave out what the utility sets.
 - **Layering a scoped `<style>` block.** Inside a layer, a component's own
   rules lose to any unlayered CSS on the page. Leave scoped blocks unlayered.
 

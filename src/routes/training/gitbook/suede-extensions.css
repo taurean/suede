@@ -1,0 +1,58 @@
+/*
+ * Training prototype. Everything these pages needed that suede-css 0.13 lacks.
+ * Isolated here so each gap can be judged and either promoted or dropped.
+ */
+@layer token {
+	:root {
+		/* suede's palette caps chroma at 0.15, so --hue-orange-500 reads as peach. The
+		   reference's accent is rgb(254, 85, 27), and white text has to sit on it. */
+		--ext-accent: oklch(68% 0.22 38);
+
+		/* The reference's page and raised surfaces are pure white; z0 is 98.83%. */
+		--ext-surface: light-dark(var(--hue-white), var(--hue-neutral-950));
+
+		/* The reference's soft surface is rgb(250, 250, 249); --hue-stone-50 reads as cream. */
+		--ext-surface-soft: light-dark(oklch(98.5% 0.001 90), var(--hue-neutral-900));
+
+		/* The reference's neutrals are warm: rgb(28, 25, 23) ink, rgb(87, 83, 77) body. */
+		--ext-ink: light-dark(var(--hue-stone-950), var(--hue-stone-100));
+		--ext-body: light-dark(var(--hue-stone-700), var(--hue-stone-400));
+
+		/* The reference's pass state is rgb(164, 244, 207); suede's greens stay muted. */
+		--ext-ok: oklch(90% 0.11 165);
+
+		/* Tight display tracking; suede has no letter-spacing tokens. */
+		--ext-tracking-display: -0.02em;
+
+		/* Fixed control height and the docs page's three-column widths. Space tokens are
+		   fluid and the skill says not to apply them to width or height. */
+		--ext-size-control: 2.375rem;
+		--ext-size-control-sm: 2rem;
+		--ext-size-icon: 1rem;
+		--ext-docs-sidebar: 18rem;
+		--ext-docs-content: 48rem;
+		--ext-docs-toc: 16rem;
+	}
+}
+
+/* suede's fluid scale lands on 15, 18, 42 and 52px at 1440. The reference uses fixed steps. */
+@layer utility {
+	.ext\:fs-12 {
+		font-size: 0.75rem;
+	}
+	.ext\:fs-14 {
+		font-size: 0.875rem;
+	}
+	.ext\:fs-16 {
+		font-size: 1rem;
+	}
+	.ext\:fs-18 {
+		font-size: 1.125rem;
+	}
+	.ext\:fs-20 {
+		font-size: 1.25rem;
+	}
+	.ext\:fs-24 {
+		font-size: 1.5rem;
+	}
+}

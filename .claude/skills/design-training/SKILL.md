@@ -39,7 +39,7 @@ standing exception to CLAUDE.md's branch-from-`main` rule. For each round:
 judged on. If the exercise leaves one thing open that would change the work, ask
 it, and otherwise start.
 
-**2. Build.** Read `critique-log.md` first, then follow `writing-css`
+**2. Build.** Read `critique-log.md` and `needs.md` first, then follow `writing-css`
 and any design skills that exist by then. Put the page at
 `src/routes/training/<slug>/+page.svelte`, marked in a comment as a training
 prototype. Keep references and screenshots in `tmp/design-training/<slug>/`, so
@@ -63,7 +63,7 @@ typography as a numbered list, so they can answer by number. Keep what their not
 back apart from what you only noticed in the reference, and name where suede fell
 short. What they confirm goes in the log. What they don't confirm doesn't.
 
-**5. Log.** Add each note to `critique-log.md` as you get it: their words
+**5. Log.** Update `needs.md` with gaps the round confirmed. Add each note to `critique-log.md` as you get it: their words
 verbatim, the round, and the reason. Note a mistake you repeated even if they
 only said it again. Don't paraphrase taste into something tidier.
 
