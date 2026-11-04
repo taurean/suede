@@ -242,6 +242,5 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
 This file governs **where a rule goes** — which layer, which token, which
 primitive. It does not govern **what the design should be**: which shade carries
 which meaning, how much space a hierarchy needs, when a thing should be quieter
-than the thing next to it. Those are visual-judgment questions and belong in a
-separate skill. If a task needs that judgment and it isn't available, say so
-rather than picking a token and calling it a decision.
+than the thing next to it. When a task needs that judgment and no skill covers
+it, say so rather than picking a token and calling it a decision.

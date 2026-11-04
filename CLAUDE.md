@@ -240,8 +240,6 @@ In-repo skills (`.claude/skills/`):
   `testing.md` owns test quality and the prune pass.
 - `project-plan` — cut plan for work too big for one PR. User-invoked.
 - `review` — four-axis review, dispatching to the in-repo reviewer agents.
-- `design` — visual judgment for new UI in suede-css + Bits UI. Loads
-  automatically on `.svelte` and CSS files.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
@@ -251,6 +249,10 @@ In-repo skills (`.claude/skills/`):
   brief's reversibility line names something hard to undo, or when the human
   shows they've lost the thread: asking what something is for or why it's
   there, or returning to a branch after time away.
+- `design-training` — temporary, user-invoked. Grows the design skills through
+  exercises and critique. Round branches base on
+  `feat/design-training-montage`, the one exception to branch-from-`main`. The
+  skill and this line are deleted before that branch merges to `main`.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and

@@ -109,7 +109,6 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 | `task`          | The task spine: alignment, prep, build, verify, review, closeout. `brief.md` owns the brief format |
 | `project-plan`  | Cut plan for multi-PR work, published as one plan issue                                            |
 | `review`        | Four-axis review (Standards, Spec, Discipline, Legibility) in parallel subagents                   |
-| `design`        | Visual judgment for new UI in a suede-css + Bits UI project                                        |
 | `writing-css`   | CSS and component markup in suede-css + Bits UI; loads on `.svelte` and CSS files                  |
 | `suede-kickoff` | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
 | `orient`        | Visual page of the current work unit (diagrams, schemas, endpoints, decisions) in `tmp/`           |
