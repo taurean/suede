@@ -75,3 +75,7 @@ The human's notes, newest last. Format is defined in `SKILL.md`, steps 5 and 6.
 - "they are different, yes. elevation is not used for emphasis."
   Why: not stated. Correcting my claim that colour and elevation both answer "how much emphasis".
   Became: PDE-1, in its own `product-design-elevation` skill
+
+- "elevation is used to communicate relationship and focus. popovers communicate that this is related to the context it came from. modals capture attention during a different flow."
+  Why: stated in the note itself
+  Became: PDE-1
