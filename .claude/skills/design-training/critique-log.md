@@ -58,7 +58,7 @@ The human's notes, newest last. Format is defined in `SKILL.md`, steps 5 and 6.
 
 - "yes to text size, yes to weight, yes to strong color is rare, yes to elevation is subtle and has a purpose and I would add is rare. yes icons match text."
   Why: not stated. Confirming my observations of the reference: one text size does most of the work and hierarchy comes from colour and placement; weight stays quiet and headers use muted colour and a tinted background instead of bold; near-black, red and blue each have one narrow job; surfaces separate through small tonal shifts and hairlines; icons are about 16px with a light stroke and sit with the label. Fixed heights and identifiers stepping back were not confirmed.
-  Became: PDT-1, PDT-2, PDT-3 for text size, weight and icons. Colour and elevation are waiting
+  Became: PDT-1, PDT-2, PDT-3 for text size, weight and icons. PDC-1 and PDC-2 for colour and elevation
 
 - "lets update the /design-training skill to include doing this in the future except with numbered lists instead of bullets."
   Why: not stated
@@ -67,3 +67,7 @@ The human's notes, newest last. Format is defined in `SKILL.md`, steps 5 and 6.
 - "we can have a skill for product-design-typography. our guides should be split by type of work and discipline."
   Why: not stated
   Became: `product-design-typography`, and the design-training skill's section on where rules go
+
+- "both should apply to product design (color and elevation). go ahead and update the conflict as you said as well."
+  Why: not stated
+  Became: PDC-1, PDC-2, and the split replacing the old test for proposing a new skill

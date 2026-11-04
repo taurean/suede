@@ -80,10 +80,7 @@ round produced no rule.
 ## Where rules go
 
 Guides split by type of work and discipline, like `product-design-typography`. Put a rule in the skill that already owns its question. Give each rule an ID so
-other skills can cite it. Propose a new skill only when one of these holds:
-
-- Several rules share a trigger the existing skills don't have.
-- A skill has grown past one readable pass.
+other skills can cite it. Propose a new skill when a type of work or discipline has rules and no guide yet.
 
 Each skill owns one question, the way `writing-css` owns where a rule goes.
 Skills cite each other's rule IDs and never restate them. When a new rule
