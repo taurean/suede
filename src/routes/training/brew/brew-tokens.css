@@ -1,0 +1,15 @@
+/*
+ * Training prototype. Colours the brew screens need that suede's scale can't give.
+ * Promoting or dropping them is the human's call.
+ */
+@layer token {
+	:root {
+		/* --hue-neutral-950 stops at 19% lightness. An instrument display wants a deeper black. */
+		--brew-ground: oklch(13% 0.004 60);
+		/* The one warm colour: what's happening now. */
+		--brew-accent: var(--hue-orange-300);
+		/* Reading is good, reading is off. */
+		--brew-ok: var(--hue-lime-300);
+		--brew-off: var(--hue-rose-300);
+	}
+}
