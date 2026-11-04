@@ -1,0 +1,16 @@
+/*
+ * Training prototype. Everything the Drydown page needs that suede-css lacks, isolated
+ * so each gap can be judged and either promoted or dropped.
+ */
+@layer token {
+	:root {
+		/* The one expressive colour, spent only on score meters. suede's palette caps chroma
+		   at 0.15, which reads as peach here. */
+		--drydown-accent: oklch(66% 0.21 42);
+
+		/* Concrette XL is a licensed face the repo doesn't have. It renders where installed,
+		   and the rest of the stack is the closest high-contrast serif. */
+		--drydown-ff-headline: 'Concrette XL', 'Concrette', var(--ff-didone-display), serif;
+		--drydown-ff-body: 'Public Sans', var(--ff-sans), sans-serif;
+	}
+}
