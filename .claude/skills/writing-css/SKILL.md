@@ -25,15 +25,53 @@ overrides `suede-layout` and nothing above it. Lean into that. Every line of CSS
 in this stack should fall into one of the four CUBE layers, and most lines
 should land in the layers suede-css already provides.
 
+## Page structure
+
+**[CSS-3]** Page columns come from `l:grid` and `data-grid-columns`, not local
+`grid-template-columns`. The grid keeps its 12 columns at every width. A media query may
+change how many columns a child spans, and may make a structural change that wrapping
+can't, like hiding a sidebar. It never changes the number of columns. Local tracks and
+`auto-fit` are fine inside a component, like a row of chips or a label and its value.
+
+```svelte
+<div class="l:grid">
+	<div class="column" data-grid-columns="half">...</div>
+	<div class="column" data-grid-columns="half">...</div>
+</div>
+
+<style>
+	@media (max-width: 48rem) {
+		.column {
+			grid-column: span 12;
+		}
+	}
+</style>
+```
+
+A grid nested in a grid brings its own gutter padding, so give the inner one
+`padding-inline: 0`. Vertical rhythm comes from `l:waterfall` and `--waterfall-gap`.
+
+**[CSS-4]** Sizes and colours come from tokens, on logical properties. Use `inline-size`
+and `block-size`, `--border-w-*` for borders, `--text-*` for font sizes and `--gap-*`
+for spacing. A display element sized to fill its container, like a footer wordmark, may
+use container units and says so in a comment. Don't write a `clamp()` of your own to get
+past the top of the scale.
+
+**[CSS-5]** A `<style>` block stops at about 80 lines. Past that, split the page into
+components with their inputs as props.
+
 ## The four layers
 
 **Composition (suede-css `suede-layout` layer).** Page-level layout, rhythm, and flow.
 Reach for these utilities before writing any layout CSS of your own:
 
-- `l:grid` — 12-column responsive grid. Pair with
-  `[data-grid-columns="quarter|third|half|full"]` on direct children for span
-  variants (this is the Exception pattern, see below). The attribute does
-  nothing on a grandchild.
+- `l:grid` — 12-column grid. Pair with
+  `[data-grid-columns="sixth|quarter|third|half|full"]` on direct children for
+  span variants (this is the Exception pattern, see below). The attribute does
+  nothing on a grandchild. The grid keeps its 12 columns at every width. Where
+  columns need to stack, a media query changes only how many each child spans,
+  as in `grid-column: span 12`. Row gaps are off by default, so set `row-gap`
+  when children can stack.
 - `l:root` — single centred container with max-width and gutter.
 - `l:waterfall > *` — vertical rhythm; every direct child gets
   `margin-block-start: var(--waterfall-gap, 2em)`.
@@ -48,11 +86,12 @@ Override the `--river-gap` and `--waterfall-gap` custom properties on the parent
 when the default rhythm is wrong; don't reach for a new utility.
 
 **Utility (suede-css `suede-utility` layer).** One job, one class. Currently exposed:
-`u:fs-0` through `u:fs-10` (fluid font sizes, mapped to `--fs-*`),
-`u:lh-ui|...|loose` (line heights, mapped to `--lh-*`),
+`u:radius-full` (pill shape, on an element whose scoped rules set no radius), `u:fs-0` through `u:fs-10` (older fluid
+sizes, mapped to `--fs-*`; new work uses `--text-*` instead),
+`u:lh-ui|...|loose` (older line heights, mapped to `--lh-*`; new work uses `--leading-*`),
 `u:ff-content|heading|sans|serif|ui|mono` (font families, mapped to `--ff-*`),
 and `u:visually-hidden`. Use these for typography
-that varies per element rather than per block — e.g. `<h1 class="u:fs-7">`. If a
+that varies per element rather than per block — e.g. `<h1 class="u:ff-heading">`. If a
 property needs a utility and suede-css doesn't ship one, add it to a
 project-local CSS file in `src/lib/styles/` rather than hardcoding it. The
 utility layer's job is to extend tokens, never to redefine them.
@@ -64,8 +103,8 @@ the block CSS should be **a handful of rules** that only apply in that context.
 Hard cap at around 80 lines of CSS per block; if it's growing, the block is
 solving more than one contextual problem and should split.
 
-Block CSS draws from suede-css custom properties (`--hue-*`, `--space-*`,
-`--ff-*`, `--fs-*`, `--lh-*`). It never hardcodes a colour, a spacing value, or
+Block CSS draws from custom properties (`--hue-*`, `--gap-*`, `--ff-*`, `--text-*`,
+`--leading-*`). It never hardcodes a colour, a spacing value, or
 a font stack. The exception is shorthand that resolves through tokens
 immediately: `color: white` on a saturated `--hue-blue-500` background is fine
 because the contrast is what's being captured, not a colour value.
@@ -97,27 +136,24 @@ rearrangements, not for a second design.
 
 ## Bits UI is the source of interactive primitives
 
-The interactive vocabulary comes from Bits UI. Any interactive element — button,
-dialog, dropdown, tabs, accordion, tooltip, combobox, switch — uses its Bits UI
-primitive as the wrapper. The SuedeButton example is the shape:
+The interactive vocabulary comes from Bits UI. Any interactive element whose
+behaviour Bits UI implements (dialog, dropdown, tabs, accordion, tooltip, combobox,
+checkbox, switch) uses its primitive. Bits UI's accessibility behaviour (keyboard
+handling, ARIA wiring, focus management) is the point.
+
+**[CSS-2]** Keep a component's elements in its own markup so its styles stay
+scoped. When a Bits UI primitive offers a `child` snippet, use it and spread
+`{...props}` onto your element. `:global` is the last resort.
 
 ```svelte
-<script lang="ts">
-	import { Button, type ButtonRootProps } from 'bits-ui';
-	let { href, children, class: className, ...rest }: Props = $props();
-</script>
-
-<Button.Root {href} {...rest} class={`suede-button u:fs-1${className ? ` ${className}` : ''}`}>
-	{@render children?.()}
-</Button.Root>
+<Checkbox.Root bind:checked>
+	{#snippet child({ props })}
+		<button {...props} class="box">...</button>
+	{/snippet}
+</Checkbox.Root>
 ```
 
-The wrapper exists for three reasons: it gives the project's block a name
-(`suede-button`), it stacks utility classes onto the rendered element, and it
-lets the project's `<style>` block target a single class for all block-level
-visuals. Reach for `<button>` directly only inside the wrapper; never in
-user-facing markup. Bits UI's accessibility behaviour — keyboard handling, ARIA
-wiring, focus management — is the point of wrapping it.
+Forget the `{...props}` and you get a control that looks right and does nothing.
 
 **A new interactive primitive is a human-shaped decision.** A new wrapper around
 a new Bits UI headless component shapes the visual contract and ships with a
@@ -126,17 +162,6 @@ boundary movement — [STOP-2] applies. Stop and ask; don't add it because the
 task happened to need it.
 
 ## Markup patterns
-
-Group classes with the CUBE bracket convention, in this order — main block
-first, additional blocks second, utilities last:
-
-```svelte
-<article class="[ card ] [ section box ] [ u:fs-2 ]" data-state="reversed"></article>
-```
-
-This isn't decoration — it tells the next reader which layer each class is doing
-work in. A class list that mixes blocks and utilities without separation is
-harder to refactor.
 
 Inside a block, prefer letting HTML elements inherit rather than classing them.
 If `.card` already styles headings via element selectors, don't add a class to
@@ -166,20 +191,35 @@ most of the work before the block ever loads.
   distance between two shades is predictable rather than a guess. `500` is the
   base vibrant shade. Never `color: #abc123`.
 
-  **Dividers and borders** use `--hue-z0-divider`, which is `color-mix` against
-  `currentColor` — always correct against whatever text colour is in play, in
-  either theme. Reaching for a gray primitive instead is more work and worse.
+  **Each z-layer set has the same shape:** `bg`, `fg`, `muted`, `border`. Pick the
+  set for the surface and stay in it. Reaching across sets is a smell.
+  `--hue-z0-divider` is a heavier line, `color-mix` against `currentColor`.
 
-- **Spacing.** `--space-5xs` through `--space-5xl`, with `sm` and `medium`
-  slotted between `xs` and `lg` (the stops are `5xs, 4xs, 3xs, 2xs, xs, sm,
-medium, lg, xl, 2xl, 3xl, 4xl, 5xl`). Fluid via `clamp()` — viewport-aware
-  without media queries. Apply via `padding`, `margin`, or `gap`; never via
-  width/height where it would clip the fluid scaling.
-- **Typography.** `--fs-0..10` for size,
-  `--lh-{ui,snug,condensed,standard,expanded,loose}` for line-height, and
-  `--ff-{system,sans,serif,ui,content,heading,old-style,rounded-sans-display,...}`
-  for family. The `--ff-ui`, `--ff-content`, `--ff-heading`, `--ff-sans`,
-  `--ff-serif` aliases are usually what you want.
+  `--hue-white` and `--hue-black` name the extremes the scale stops short of.
+  Additions on their way to suede-css live in `src/lib/styles/port-to-suede-css.css`.
+
+  Dark surfaces with a tint come from the `slate` and `zinc` scales, whose `950` steps
+  are dark and slightly blue. Check the scales before calling a colour a gap.
+
+  suede's palette caps chroma at 0.15, so vivid colours are out of its reach. A saturated brand or accent colour on a prototype goes in one
+  clearly marked file beside the route, in the `token` layer. Promoting it is the human's call.
+
+- **Spacing.** `--gap-{xs,sm,md,lg,xl}` are fixed at 4, 8, 12, 16 and 24px.
+  `--gap-{2xl,3xl,4xl,5xl}` scale from 375px to 1440px, ending at 32, 48, 64 and
+  112px. Apply via `padding`, `margin`, or `gap`, and let padding size controls
+  and rows. `--space-*` is suede-css's older scale. Nothing here uses it, so don't start.
+- **Typography.** `--text-{xs,sm,md,lg,xl}` are fixed at 12, 14, 16, 18 and 20px.
+  `--text-{2xl..8xl}` scale from 375px to 1440px, ending at 24, 32, 38, 48, 72, 96 and
+  128px. `--fs-*` is the older scale, and only `DynamicText.stories.svelte` still uses it. Line height is
+  `--leading-ui` (1), `--leading-tight` or `--leading-loose`. Tight and loose
+  resolve to a length, so set them on the same element as the font size, or a child
+  with a different size inherits the wrong line. `--ff-{system,sans,serif,ui,content,
+heading,old-style,didone-display,...}` for family. The `--ff-ui`, `--ff-content`,
+  `--ff-heading`, `--ff-sans`, `--ff-serif` aliases are usually what you want. When
+  a brief names a typeface the project doesn't have, use the closest stack and name
+  the gap.
+- **Page width.** `--page-max` is 1440px. Past it, content stops growing and centres.
+  Set `--grid-max-width` on a parent to change a grid's ceiling.
 - **Grid.** `--grid-max-width`, `--grid-gutter`, `--grid-columns`. Override on
   the parent when a section needs a different ceiling.
 - **Flow gaps.** `--waterfall-gap`, `--river-gap`. Defaulted on the utility;
@@ -195,23 +235,39 @@ the wrong source of truth.
 
 When a block needs scoped CSS — colours, sizing, a hover state — the recipe is:
 
-1. Wrap a Bits UI primitive (or a semantic HTML element if no primitive fits).
-2. Apply a single block class plus any token-backed utilities (`u:fs-*`,
-   `u:lh-*`).
-3. In the scoped `<style>`, use `:global(.your-block)` because the wrapper class
-   lives on a child component's rendered element. Reference tokens by name. Stay
+1. Render a semantic HTML element in the component's own markup, through a Bits UI
+   primitive's `child` snippet when one applies ([CSS-2]).
+2. Apply a single block class, and set type with `--text-*` and `--leading-*`.
+3. In the scoped `<style>`, reference that class directly and tokens by name. Stay
    under ~80 lines. Don't wrap the block in `@layer`.
 
 A working example is `src/lib/components/ui/SuedeButton.svelte` in any
-suede-family project. The `:global` wrapper, the `--hue-blue-500` →
-`--hue-blue-600` hover transition, the `[href]` exception for the link variant,
-the `:focus-visible` outline using a token — that's the shape.
+suede-family project. The `--hue-blue-500` → `--hue-blue-600` hover transition and
+the separate rules for the link variant: that's the shape.
+
+## When an element earns a class
+
+**[CSS-1]** Wrapper elements are fine. A wrapper gets a class name only if it has
+styles, and it has styles only if existing utility classes and data attributes
+can't reasonably cover them.
+
+**[CSS-6]** An element selector fits when the tag already says what the thing is, like
+`kbd` and `small`. A class fits when a `span` needs a name.
+
+## When to use a custom property
+
+**[CSS-7]** A custom property generally works like an API for a class: something a parent
+can tweak, with guard rails. Stating which property the value feeds is usually guard rail
+enough, as in `--action-gap`. A custom property also helps when a value's semantic meaning
+would otherwise be hard to understand. Neither of these is a design token, which still
+belongs in the `token` layer.
 
 ## Common mistakes
 
-- **Reaching for raw HTML where a Bits UI primitive exists.** `<button>` instead
-  of `Button.Root`, `<dialog>` instead of `Dialog.Root`. The accessibility is
-  the point.
+- **Reaching for raw HTML where Bits UI implements the behaviour.** `<dialog>`
+  instead of `Dialog.Root`, a hand-rolled checkbox. The accessibility is the point.
+- **Using `:global` where `child` is available.** The primitive's element can be in
+  your own markup, where a scoped rule reaches it ([CSS-2]).
 - **Reaching past a semantic token to a primitive.** `background:
 var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
   light mode and is wrong in dark mode, which is why it survives review.
@@ -234,6 +290,13 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
   `src/lib/styles/` that doesn't declare `@layer layout { … }` (or whatever
   layer) lands unlayered and wins by accident, not by intent. Declare the
   layer.
+- **Letting suede's element defaults leak in.** Text inside `article` gets a serif at a
+  larger size, headings get their own sizes, and `p` gets its own line height. Use a
+  `div` for a short item in a list, keep `article` for long-form reading, and audit the
+  rendered sizes.
+- **Resetting elements in a scoped block and expecting a layout utility to win.** Unlayered
+  scoped rules outrank every layer, so `p { margin: 0 }` removes the gaps `l:waterfall`
+  would add. Reset in a lower layer, or leave out what the utility sets.
 - **Layering a scoped `<style>` block.** Inside a layer, a component's own
   rules lose to any unlayered CSS on the page. Leave scoped blocks unlayered.
 
@@ -242,6 +305,5 @@ var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
 This file governs **where a rule goes** — which layer, which token, which
 primitive. It does not govern **what the design should be**: which shade carries
 which meaning, how much space a hierarchy needs, when a thing should be quieter
-than the thing next to it. Those are visual-judgment questions and belong in a
-separate skill. If a task needs that judgment and it isn't available, say so
-rather than picking a token and calling it a decision.
+than the thing next to it. When a task needs that judgment and no skill covers
+it, say so rather than picking a token and calling it a decision.

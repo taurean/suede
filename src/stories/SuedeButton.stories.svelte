@@ -12,7 +12,8 @@
 		},
 		argTypes: {
 			href: { control: 'text' },
-			disabled: { control: 'boolean' }
+			disabled: { control: 'boolean' },
+			type: { control: 'select', options: ['button', 'submit', 'reset'] }
 		}
 	});
 </script>
@@ -29,8 +30,16 @@
 	<SuedeButton href="https://bits-ui.com" onclick={fn()}>Visit bits-ui</SuedeButton>
 </Story>
 
+<Story name="Disabled link" asChild>
+	<SuedeButton href="https://bits-ui.com" disabled onclick={fn()}>Unavailable link</SuedeButton>
+</Story>
+
 <Story name="With class override" asChild>
-	<SuedeButton class="u:fs-1" style="background-color: var(--hue-emerald-500);" onclick={fn()}>
+	<SuedeButton
+		class="custom-class"
+		style="background-color: var(--hue-emerald-500);"
+		onclick={fn()}
+	>
 		Custom styled
 	</SuedeButton>
 </Story>

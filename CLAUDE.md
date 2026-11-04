@@ -123,8 +123,8 @@ not a substitute for the tracker.
 
 **Agents own implementation within that contract:**
 
-- Svelte markup, using Bits UI primitives for any interactive element rather
-  than raw HTML.
+- Svelte markup, using Bits UI primitives for any interactive element whose
+  behaviour they implement, rather than raw HTML.
 - `<style>` blocks and CSS in `src/lib/styles/`, drawing colour, spacing, and
   typography from suede-css properties and `u:` utilities.
 - Layout, spacing, and typography — within the suede-css vocabulary.
@@ -137,8 +137,8 @@ not a substitute for the tracker.
   flag it for the human to add at the source.
 - Don't introduce a new UI primitive without explicit approval. Primitives shape
   the visual contract and ship with stories.
-- Don't reach for raw HTML where a Bits UI primitive exists. The accessibility
-  behaviour is the point of wrapping it.
+- Don't reach for raw HTML where Bits UI implements the behaviour. The
+  accessibility behaviour is the point of wrapping it.
 
 Mechanics — which layer a rule goes in, which token, which primitive — are in
 the `writing-css` skill. This section owns _who decides_; that skill owns _where
@@ -240,10 +240,16 @@ In-repo skills (`.claude/skills/`):
   `testing.md` owns test quality and the prune pass.
 - `project-plan` — cut plan for work too big for one PR. User-invoked.
 - `review` — four-axis review, dispatching to the in-repo reviewer agents.
-- `design` — visual judgment for new UI in suede-css + Bits UI. Loads
-  automatically on `.svelte` and CSS files.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
+- `product-design-typography` — how type carries hierarchy in product UI.
+- `product-design-color` — how much strong colour product UI uses, and what for.
+- `product-design-elevation` — when a surface in product UI is raised, and how far.
+- `design-type-rhythm` — how text sizes, line heights and text spacing relate on any page.
+- `design-page-layout` — how a page takes up the viewport and adapts across widths.
+- `design-self-critique` — how to build a large page and check visual work.
+- `design-point-of-view` — how a page gets an idea and character, not only correctness.
+- `design-from-references` — what to take from a prototype, inspiration images or brand material.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 - `orient` — render the current work unit as a visual page in `tmp/`.
@@ -251,6 +257,12 @@ In-repo skills (`.claude/skills/`):
   brief's reversibility line names something hard to undo, or when the human
   shows they've lost the thread: asking what something is for or why it's
   there, or returning to a branch after time away.
+
+Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
+`design-page-layout` and `design-self-critique`, along with `writing-css`, and
+`design-from-references` when the brief includes a prototype, images or brand material. Run
+the audit in `DSC-6` before showing the page. On request, `DSC-7` reviews the page against
+every rule, one at a time.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and

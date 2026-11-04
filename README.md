@@ -104,15 +104,22 @@ Branch types and commit types share one vocabulary — the conventional-commits 
 
 ### In-repo skills (`.claude/skills/`)
 
-| Skill           | Purpose                                                                                            |
-| --------------- | -------------------------------------------------------------------------------------------------- |
-| `task`          | The task spine: alignment, prep, build, verify, review, closeout. `brief.md` owns the brief format |
-| `project-plan`  | Cut plan for multi-PR work, published as one plan issue                                            |
-| `review`        | Four-axis review (Standards, Spec, Discipline, Legibility) in parallel subagents                   |
-| `design`        | Visual judgment for new UI in a suede-css + Bits UI project                                        |
-| `writing-css`   | CSS and component markup in suede-css + Bits UI; loads on `.svelte` and CSS files                  |
-| `suede-kickoff` | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
-| `orient`        | Visual page of the current work unit (diagrams, schemas, endpoints, decisions) in `tmp/`           |
+| Skill                       | Purpose                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| `task`                      | The task spine: alignment, prep, build, verify, review, closeout. `brief.md` owns the brief format |
+| `project-plan`              | Cut plan for multi-PR work, published as one plan issue                                            |
+| `review`                    | Four-axis review (Standards, Spec, Discipline, Legibility) in parallel subagents                   |
+| `writing-css`               | CSS and component markup in suede-css + Bits UI; loads on `.svelte` and CSS files                  |
+| `product-design-typography` | How type carries hierarchy in product UI                                                           |
+| `product-design-color`      | How much strong colour product UI uses, and what for                                               |
+| `product-design-elevation`  | When a surface in product UI is raised, and how far                                                |
+| `design-type-rhythm`        | How text sizes, line heights and text spacing relate on any page                                   |
+| `design-page-layout`        | How a page takes up the viewport and adapts across widths                                          |
+| `design-self-critique`      | How to build a large page and check visual work, with a convention audit                           |
+| `design-point-of-view`      | How a page gets an idea and character, not only correctness                                        |
+| `design-from-references`    | What to take from a prototype, inspiration images or brand material                                |
+| `suede-kickoff`             | One-shot tailoring of a project created by `pnpm create suede` (see above)                         |
+| `orient`                    | Visual page of the current work unit (diagrams, schemas, endpoints, decisions) in `tmp/`           |
 
 ## Git workflow and releases
 
