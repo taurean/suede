@@ -1,0 +1,37 @@
+/*
+ * Training prototype. Everything this page needed that suede-css 0.13 lacks.
+ * Isolated here so each gap can be judged and either promoted or dropped.
+ */
+@layer token {
+	:root {
+		/* suede's palette caps chroma at 0.15, so --hue-red-500 reads as salmon and
+		   --hue-red-600 as dusty rose. The reference's badge and destructive button
+		   are saturated, and white text needs that darker, stronger red. */
+		--ext-danger: oklch(64% 0.21 25);
+
+		/* The reference's raised surfaces are pure white. The lightest suede surface,
+		   --hue-z0-bg, is 98.83% and loses the search field against the sidebar. */
+		--ext-surface-raised: light-dark(var(--hue-white), var(--hue-neutral-900));
+
+		/* Space tokens are golden-ratio and fluid: 7px then 11.5px at this width.
+		   Fixed control and row heights hold the table's grid, and the skill says not
+		   to apply space tokens to width or height. */
+		--ext-size-icon: 1rem;
+		--ext-size-control: 2rem;
+		--ext-size-row: 3rem;
+
+		/* fs-0 is 11.5px and fs-1 is 14.3px at 1440. The reference's text sits between
+		   them: fs-1 in system-ui ran 5.6% wider than its Inter, measured on the row
+		   title. Inter itself would be a dependency, so these sizes match its widths. */
+		--ext-fs-body: 0.84rem;
+		--ext-fs-compact: 0.77rem;
+	}
+}
+
+/* The compact size is on many rows. A utility lets wrappers carry it without earning a
+   class name. */
+@layer utility {
+	.u\:fs-compact {
+		font-size: var(--ext-fs-compact);
+	}
+}

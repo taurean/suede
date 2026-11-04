@@ -97,27 +97,24 @@ rearrangements, not for a second design.
 
 ## Bits UI is the source of interactive primitives
 
-The interactive vocabulary comes from Bits UI. Any interactive element — button,
-dialog, dropdown, tabs, accordion, tooltip, combobox, switch — uses its Bits UI
-primitive as the wrapper. The SuedeButton example is the shape:
+The interactive vocabulary comes from Bits UI. Any interactive element whose
+behaviour Bits UI implements (dialog, dropdown, tabs, accordion, tooltip, combobox,
+checkbox, switch) uses its primitive. Bits UI's accessibility behaviour (keyboard
+handling, ARIA wiring, focus management) is the point.
+
+**[CSS-2]** Keep a component's elements in its own markup so its styles stay
+scoped. When a Bits UI primitive offers a `child` snippet, use it and spread
+`{...props}` onto your element. `:global` is the last resort.
 
 ```svelte
-<script lang="ts">
-	import { Button, type ButtonRootProps } from 'bits-ui';
-	let { href, children, class: className, ...rest }: Props = $props();
-</script>
-
-<Button.Root {href} {...rest} class={`suede-button u:fs-1${className ? ` ${className}` : ''}`}>
-	{@render children?.()}
-</Button.Root>
+<Checkbox.Root bind:checked>
+	{#snippet child({ props })}
+		<button {...props} class="box">...</button>
+	{/snippet}
+</Checkbox.Root>
 ```
 
-The wrapper exists for three reasons: it gives the project's block a name
-(`suede-button`), it stacks utility classes onto the rendered element, and it
-lets the project's `<style>` block target a single class for all block-level
-visuals. Reach for `<button>` directly only inside the wrapper; never in
-user-facing markup. Bits UI's accessibility behaviour — keyboard handling, ARIA
-wiring, focus management — is the point of wrapping it.
+Forget the `{...props}` and you get a control that looks right and does nothing.
 
 **A new interactive primitive is a human-shaped decision.** A new wrapper around
 a new Bits UI headless component shapes the visual contract and ships with a
@@ -126,17 +123,6 @@ boundary movement — [STOP-2] applies. Stop and ask; don't add it because the
 task happened to need it.
 
 ## Markup patterns
-
-Group classes with the CUBE bracket convention, in this order — main block
-first, additional blocks second, utilities last:
-
-```svelte
-<article class="[ card ] [ section box ] [ u:fs-2 ]" data-state="reversed"></article>
-```
-
-This isn't decoration — it tells the next reader which layer each class is doing
-work in. A class list that mixes blocks and utilities without separation is
-harder to refactor.
 
 Inside a block, prefer letting HTML elements inherit rather than classing them.
 If `.card` already styles headings via element selectors, don't add a class to
@@ -166,9 +152,12 @@ most of the work before the block ever loads.
   distance between two shades is predictable rather than a guess. `500` is the
   base vibrant shade. Never `color: #abc123`.
 
-  **Dividers and borders** use `--hue-z0-divider`, which is `color-mix` against
-  `currentColor` — always correct against whatever text colour is in play, in
-  either theme. Reaching for a gray primitive instead is more work and worse.
+  **Each z-layer set has the same shape:** `bg`, `fg`, `muted`, `border`. Pick the
+  set for the surface and stay in it. Reaching across sets is a smell.
+  `--hue-z0-divider` is a heavier line, `color-mix` against `currentColor`.
+
+  `--hue-white` and `--hue-black` name the extremes the scale stops short of.
+  Additions on their way to suede-css live in `src/lib/styles/port-to-suede-css.css`.
 
 - **Spacing.** `--space-5xs` through `--space-5xl`, with `sm` and `medium`
   slotted between `xs` and `lg` (the stops are `5xs, 4xs, 3xs, 2xs, xs, sm,
@@ -195,23 +184,30 @@ the wrong source of truth.
 
 When a block needs scoped CSS — colours, sizing, a hover state — the recipe is:
 
-1. Wrap a Bits UI primitive (or a semantic HTML element if no primitive fits).
+1. Render a semantic HTML element in the component's own markup, through a Bits UI
+   primitive's `child` snippet when one applies ([CSS-2]).
 2. Apply a single block class plus any token-backed utilities (`u:fs-*`,
    `u:lh-*`).
-3. In the scoped `<style>`, use `:global(.your-block)` because the wrapper class
-   lives on a child component's rendered element. Reference tokens by name. Stay
+3. In the scoped `<style>`, reference that class directly and tokens by name. Stay
    under ~80 lines. Don't wrap the block in `@layer`.
 
 A working example is `src/lib/components/ui/SuedeButton.svelte` in any
-suede-family project. The `:global` wrapper, the `--hue-blue-500` →
-`--hue-blue-600` hover transition, the `[href]` exception for the link variant,
-the `:focus-visible` outline using a token — that's the shape.
+suede-family project. The `--hue-blue-500` → `--hue-blue-600` hover transition, the
+`[href]` exception for the link variant, the `:focus-visible` outline using a token:
+that's the shape.
+
+## When an element earns a class
+
+**[CSS-1]** Wrapper elements are fine. A wrapper gets a class name only if it has
+styles, and it has styles only if existing utility classes and data attributes
+can't reasonably cover them.
 
 ## Common mistakes
 
-- **Reaching for raw HTML where a Bits UI primitive exists.** `<button>` instead
-  of `Button.Root`, `<dialog>` instead of `Dialog.Root`. The accessibility is
-  the point.
+- **Reaching for raw HTML where Bits UI implements the behaviour.** `<dialog>`
+  instead of `Dialog.Root`, a hand-rolled checkbox. The accessibility is the point.
+- **Using `:global` where `child` is available.** The primitive's element can be in
+  your own markup, where a scoped rule reaches it ([CSS-2]).
 - **Reaching past a semantic token to a primitive.** `background:
 var(--hue-neutral-50)` where `var(--hue-z0-bg)` exists. It looks identical in
   light mode and is wrong in dark mode, which is why it survives review.

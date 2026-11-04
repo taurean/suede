@@ -1,21 +1,32 @@
 <script lang="ts">
-	import { Button, type ButtonRootProps } from 'bits-ui';
+	import type { Snippet } from 'svelte';
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
-	type Props = ButtonRootProps;
+	type Props = Omit<HTMLButtonAttributes & HTMLAnchorAttributes, 'type' | 'disabled'> & {
+		type?: HTMLButtonAttributes['type'];
+		disabled?: boolean | null;
+		children?: Snippet;
+	};
 
-	let { href, children, class: className, ...rest }: Props = $props();
+	let { href, type = 'button', disabled, children, class: className, ...rest }: Props = $props();
 </script>
 
-<Button.Root
-	{href}
-	{...rest as Record<string, unknown>}
+<svelte:element
+	this={href ? 'a' : 'button'}
+	href={href && !disabled ? href : undefined}
+	type={href ? undefined : type}
+	disabled={href ? undefined : disabled}
+	aria-disabled={href ? disabled : undefined}
+	role={href && disabled ? 'link' : undefined}
+	tabindex={href && disabled ? -1 : undefined}
+	{...rest}
 	class={`suede-button u:fs-1${className ? ` ${className}` : ''}`}
 >
 	{@render children?.()}
-</Button.Root>
+</svelte:element>
 
 <style>
-	:global(.suede-button) {
+	.suede-button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -24,7 +35,7 @@
 		font-weight: 600;
 		line-height: 1;
 		background-color: var(--hue-blue-500);
-		color: white;
+		color: var(--hue-white);
 		padding: var(--space-sm) var(--space-lg);
 		border: 0;
 		border-radius: 0.375rem;
@@ -36,15 +47,15 @@
 			transform 0.05s ease;
 	}
 
-	:global(.suede-button:not([href]):hover:not(:disabled):not([aria-disabled='true'])) {
+	.suede-button:not([href]):hover:not(:disabled):not([aria-disabled='true']) {
 		background-color: var(--hue-blue-600);
 	}
 
-	:global(.suede-button:not([href]):active:not(:disabled):not([aria-disabled='true'])) {
+	.suede-button:not([href]):active:not(:disabled):not([aria-disabled='true']) {
 		transform: scale(0.98);
 	}
 
-	:global(.suede-button[href]) {
+	.suede-button[href] {
 		background-color: transparent;
 		color: var(--hue-blue-500);
 		padding-inline: 0;
@@ -53,12 +64,12 @@
 		text-underline-offset: 0.2em;
 	}
 
-	:global(.suede-button[href]:hover:not(:disabled):not([aria-disabled='true'])) {
+	.suede-button[href]:hover:not(:disabled):not([aria-disabled='true']) {
 		color: var(--hue-blue-600);
 	}
 
-	:global(.suede-button:disabled),
-	:global(.suede-button[aria-disabled='true']) {
+	.suede-button:disabled,
+	.suede-button[aria-disabled='true'] {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}

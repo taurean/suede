@@ -123,8 +123,8 @@ not a substitute for the tracker.
 
 **Agents own implementation within that contract:**
 
-- Svelte markup, using Bits UI primitives for any interactive element rather
-  than raw HTML.
+- Svelte markup, using Bits UI primitives for any interactive element whose
+  behaviour they implement, rather than raw HTML.
 - `<style>` blocks and CSS in `src/lib/styles/`, drawing colour, spacing, and
   typography from suede-css properties and `u:` utilities.
 - Layout, spacing, and typography — within the suede-css vocabulary.
@@ -137,8 +137,8 @@ not a substitute for the tracker.
   flag it for the human to add at the source.
 - Don't introduce a new UI primitive without explicit approval. Primitives shape
   the visual contract and ship with stories.
-- Don't reach for raw HTML where a Bits UI primitive exists. The accessibility
-  behaviour is the point of wrapping it.
+- Don't reach for raw HTML where Bits UI implements the behaviour. The
+  accessibility behaviour is the point of wrapping it.
 
 Mechanics — which layer a rule goes in, which token, which primitive — are in
 the `writing-css` skill. This section owns _who decides_; that skill owns _where
@@ -242,6 +242,9 @@ In-repo skills (`.claude/skills/`):
 - `review` — four-axis review, dispatching to the in-repo reviewer agents.
 - `writing-css` — CSS and component markup in suede-css + Bits UI. Loads
   automatically on `.svelte` and CSS files.
+- `product-design-typography` — how type carries hierarchy in product UI.
+- `product-design-color` — how much strong colour product UI uses, and what for.
+- `product-design-elevation` — when a surface in product UI is raised, and how far.
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 - `orient` — render the current work unit as a visual page in `tmp/`.

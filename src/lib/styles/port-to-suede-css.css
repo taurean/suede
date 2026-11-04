@@ -1,0 +1,27 @@
+/*
+ * Additions meant for suede-css itself. They live here until they ship upstream, then
+ * this file shrinks. Nothing page-specific belongs here.
+ */
+@layer token {
+	:root {
+		/* Named extremes. The scale stops at 98.83% and 19.34%, so pure white and black
+		   had no token. */
+		--hue-white: oklch(100% 0 0);
+		--hue-black: oklch(0% 0 0);
+
+		/* Every z-layer set has the same shape, so choosing a surface gives all its colours
+		   and reaching across sets stands out. z0 was the only set without a border. */
+		--hue-z0-border: light-dark(var(--hue-neutral-200), var(--hue-neutral-800));
+
+		/* Secondary text. The 62% was matched by eye to one screenshot: not a final value. */
+		--hue-z0-muted: color-mix(in oklch, var(--hue-z0-fg) 62%, transparent);
+		--hue-z1-muted: color-mix(in oklch, var(--hue-z1-fg) 62%, transparent);
+		--hue-z2-muted: color-mix(in oklch, var(--hue-z2-fg) 62%, transparent);
+	}
+}
+
+@layer utility {
+	.u\:fg-muted {
+		color: var(--hue-z0-muted);
+	}
+}
