@@ -152,9 +152,12 @@ most of the work before the block ever loads.
   distance between two shades is predictable rather than a guess. `500` is the
   base vibrant shade. Never `color: #abc123`.
 
-  **Dividers and borders** use `--hue-z0-divider`, which is `color-mix` against
-  `currentColor` — always correct against whatever text colour is in play, in
-  either theme. Reaching for a gray primitive instead is more work and worse.
+  **Each z-layer set has the same shape:** `bg`, `fg`, `muted`, `border`. Pick the
+  set for the surface and stay in it. Reaching across sets is a smell.
+  `--hue-z0-divider` is a heavier line, `color-mix` against `currentColor`.
+
+  `--hue-white` and `--hue-black` name the extremes the scale stops short of.
+  Additions on their way to suede-css live in `src/lib/styles/port-to-suede-css.css`.
 
 - **Spacing.** `--space-5xs` through `--space-5xl`, with `sm` and `medium`
   slotted between `xs` and `lg` (the stops are `5xs, 4xs, 3xs, 2xs, xs, sm,

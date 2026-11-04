@@ -4,11 +4,6 @@
  */
 @layer token {
 	:root {
-		/* suede has z-layer foregrounds but no secondary text colour. The reference
-		   uses one everywhere. Mixed against currentColor, the way --hue-z0-divider
-		   is, so it stays correct in both themes without reaching for a primitive. */
-		--ext-fg-muted: color-mix(in oklch, currentColor 62%, transparent);
-
 		/* suede's palette caps chroma at 0.15, so --hue-red-500 reads as salmon and
 		   --hue-red-600 as dusty rose. The reference's badge and destructive button
 		   are saturated, and white text needs that darker, stronger red. */
@@ -16,7 +11,7 @@
 
 		/* The reference's raised surfaces are pure white. The lightest suede surface,
 		   --hue-z0-bg, is 98.83% and loses the search field against the sidebar. */
-		--ext-surface-raised: light-dark(white, var(--hue-neutral-900));
+		--ext-surface-raised: light-dark(var(--hue-white), var(--hue-neutral-900));
 
 		/* Space tokens are golden-ratio and fluid: 7px then 11.5px at this width.
 		   Fixed control and row heights hold the table's grid, and the skill says not
@@ -33,12 +28,9 @@
 	}
 }
 
-/* Secondary text is on nearly every row, and so is the compact size. Utilities let
-   wrappers carry them without earning a class name. Each maps to a token above. */
+/* The compact size is on many rows. A utility lets wrappers carry it without earning a
+   class name. */
 @layer utility {
-	.u\:fg-muted {
-		color: var(--ext-fg-muted);
-	}
 	.u\:fs-compact {
 		font-size: var(--ext-fs-compact);
 	}

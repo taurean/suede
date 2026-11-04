@@ -35,7 +35,7 @@
 		font-weight: 600;
 		line-height: 1;
 		background-color: var(--hue-blue-500);
-		color: white;
+		color: var(--hue-white);
 		padding: var(--space-sm) var(--space-lg);
 		border: 0;
 		border-radius: 0.375rem;

@@ -57,7 +57,7 @@
 		background: var(--hue-z1-bg);
 	}
 	.action-button[data-variant='quiet'] {
-		color: var(--ext-fg-muted);
+		color: var(--hue-z0-muted);
 	}
 	.action-button[data-variant='raised'] {
 		background: var(--ext-surface-raised);
@@ -81,7 +81,7 @@
 	}
 	.action-button[data-variant='danger'] {
 		background: var(--ext-danger);
-		color: white;
+		color: var(--hue-white);
 	}
 	.action-button[data-variant='link'] {
 		text-decoration: underline;

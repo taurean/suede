@@ -115,7 +115,7 @@
 		margin: calc(var(--space-sm) + var(--space-2xs));
 		margin-inline-start: 0;
 		overflow: hidden;
-		border: var(--border-w-thin) solid var(--hue-z1-border);
+		border: var(--border-w-thin) solid var(--hue-z0-border);
 		border-radius: var(--radius-lg);
 		background: var(--ext-surface-raised);
 	}
@@ -128,7 +128,7 @@
 		flex-wrap: nowrap;
 		block-size: 3.5rem;
 		padding-inline: calc(var(--space-sm) * 2);
-		border-block-end: var(--border-w-thin) solid var(--hue-z1-border);
+		border-block-end: var(--border-w-thin) solid var(--hue-z0-border);
 	}
 	.heading {
 		display: flex;

@@ -81,7 +81,7 @@
 	th,
 	td {
 		padding: 0;
-		border-block-end: var(--border-w-thin) solid var(--hue-z1-border);
+		border-block-end: var(--border-w-thin) solid var(--hue-z0-border);
 		text-align: start;
 		white-space: nowrap;
 	}
@@ -95,7 +95,7 @@
 		z-index: 1;
 		block-size: 2.25rem;
 		background: var(--hue-z1-bg);
-		color: var(--ext-fg-muted);
+		color: var(--hue-z0-muted);
 		font-weight: var(--fw-regular);
 	}
 	td {
@@ -123,7 +123,7 @@
 		block-size: 1.25rem;
 		border-radius: var(--radius-full);
 		background: var(--hue-orange-800);
-		color: white;
+		color: var(--hue-white);
 		font-size: var(--fs-0);
 	}
 	.bars {

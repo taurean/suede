@@ -187,14 +187,14 @@
 	}
 	kbd {
 		margin-inline-end: var(--space-sm);
-		color: var(--ext-fg-muted);
+		color: var(--hue-z1-muted);
 		font: inherit;
 	}
 	.badge {
 		padding-inline: var(--space-xs);
 		border-radius: var(--radius-sm);
 		background: var(--ext-danger);
-		color: white;
+		color: var(--hue-white);
 	}
 	.emoji {
 		inline-size: var(--ext-size-icon);
@@ -207,14 +207,14 @@
 		block-size: 1.5rem;
 		border-radius: var(--radius-full);
 		background: var(--hue-orange-700);
-		color: white;
+		color: var(--hue-white);
 	}
 	.identity {
 		display: grid;
 		text-align: start;
 	}
 	small {
-		color: var(--ext-fg-muted);
+		color: var(--hue-z1-muted);
 		font-size: var(--ext-fs-compact);
 	}
 </style>

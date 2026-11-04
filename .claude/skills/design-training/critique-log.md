@@ -51,3 +51,7 @@ The human's notes, newest last. Format is defined in `SKILL.md`, steps 5 and 6.
 - "sounds good, I'm into that suggestion. I do think we need a --hue-white and --hue-black for the extremes, they are useful."
   Why: approves giving every z-layer set the same shape (`bg`, `fg`, `muted`, `border`). The reason for white and black: "they are useful" for the extremes.
   Became: waiting, a suede-css change for the human
+
+- "we can create a global "port-to-suede-css" style css file with our additions, wrapped in @layers"
+  Why: not stated
+  Became: `src/lib/styles/port-to-suede-css.css`

@@ -134,11 +134,11 @@
 	}
 	.pager {
 		display: flex;
-		border: var(--border-w-thin) solid var(--hue-z1-border);
+		border: var(--border-w-thin) solid var(--hue-z0-border);
 		border-radius: var(--radius-md);
 	}
 	.pager-rule {
-		border-inline-start: var(--border-w-thin) solid var(--hue-z1-border);
+		border-inline-start: var(--border-w-thin) solid var(--hue-z0-border);
 	}
 	.rows-menu {
 		padding: var(--space-xs);
