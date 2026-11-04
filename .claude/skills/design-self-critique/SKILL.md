@@ -40,3 +40,16 @@ bash .claude/skills/design-self-critique/audit.sh src/routes/your-page
 
 Fix each finding, or name it as a deliberate exception in your report. Reading a rule
 doesn't mean the code follows it, and the audit shows what actually happened.
+
+**[DSC-7]** Optional, when asked for: review the page against the rules, one at a time.
+Go through every rule in the design skills that apply and in `writing-css`, in ID order. For
+each one, check the rendered page or the code, then record one of these:
+
+- **Met:** say what shows it.
+- **Not applicable:** say why, for this page.
+- **Not met, justified:** give a reason specific to this page.
+- **Not met, not justified:** fix it, then check again.
+
+Don't answer from memory of having followed a rule, and don't batch rules together. A fresh
+agent given only the code, the renders and the rules makes a stronger reviewer than the one
+that built the page. Report only the rules not met, each with its justification or fix.

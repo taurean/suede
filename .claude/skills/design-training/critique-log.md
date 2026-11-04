@@ -235,3 +235,7 @@ Built from two sketches, prose notes and brand guide screenshots. The route was 
 - Answers to my open questions, chosen from options I wrote: rebuild the other prototype in this worktree, review the point-of-view rules before the test, add a bigger step to the type scale, leave the archive branches local.
   Why: not stated
   Became: `--text-8xl`, rule review pending
+
+- "1, 6 (though we shouldnt offer a solution here), 7, 8, 10. we should also have an optional review stage where it reads through the rules we have one at a time and asks if this criteria has actually been met and if not, is that justified."
+  Why: not stated. The numbers answer my review list: keep the idea, closing the page, width as a ceiling, proximity and DSC-5. That cuts size contrast, one expressive colour, the signature element rule, quiet chrome and display type at small sizes.
+  Became: `DPV-1` to `DPV-4`, `DSC-5`, `DSC-7`

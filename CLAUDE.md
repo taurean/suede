@@ -254,7 +254,8 @@ In-repo skills (`.claude/skills/`):
 Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
 `design-page-layout` and `design-self-critique`, along with `writing-css`, and
 `design-from-references` when the brief includes a prototype, images or brand material. Run
-the audit in `DSC-6` before showing the page.
+the audit in `DSC-6` before showing the page. On request, `DSC-7` reviews the page against
+every rule, one at a time.
 
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
