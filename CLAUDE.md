@@ -250,13 +250,6 @@ In-repo skills (`.claude/skills/`):
 - `design-self-critique` — how to build a large page and check visual work.
 - `design-point-of-view` — how a page gets an idea and character, not only correctness.
 - `design-from-references` — what to take from a prototype, inspiration images or brand material.
-
-Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
-`design-page-layout` and `design-self-critique`, along with `writing-css`, and
-`design-from-references` when the brief includes a prototype, images or brand material. Run
-the audit in `DSC-6` before showing the page. On request, `DSC-7` reviews the page against
-every rule, one at a time.
-
 - `suede-kickoff` — tailor a project created by `pnpm create suede`. Deletes
   itself when consumed.
 - `orient` — render the current work unit as a visual page in `tmp/`.
@@ -264,11 +257,12 @@ every rule, one at a time.
   brief's reversibility line names something hard to undo, or when the human
   shows they've lost the thread: asking what something is for or why it's
   there, or returning to a branch after time away.
-- `design-training` — temporary, user-invoked. Grows the design skills through
-  exercises and critique. Round branches base on
-  `feat/design-training-montage`, the one exception to branch-from-`main`. The
-  skill and this line are deleted before that branch merges to `main`. Pages under
-  `src/routes/training/` are throwaway exercises, so don't treat them as patterns.
+
+Building or restyling any page loads `design-point-of-view`, `design-type-rhythm`,
+`design-page-layout` and `design-self-critique`, along with `writing-css`, and
+`design-from-references` when the brief includes a prototype, images or brand material. Run
+the audit in `DSC-6` before showing the page. On request, `DSC-7` reviews the page against
+every rule, one at a time.
 
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and

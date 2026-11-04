@@ -60,8 +60,6 @@ past the top of the scale.
 **[CSS-5]** A `<style>` block stops at about 80 lines. Past that, split the page into
 components with their inputs as props.
 
-Other training pages under `src/routes/` don't set the pattern. This file does.
-
 ## The four layers
 
 **Composition (suede-css `suede-layout` layer).** Page-level layout, rhythm, and flow.
