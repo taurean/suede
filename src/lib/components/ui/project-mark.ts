@@ -1,6 +1,6 @@
 export type VersionScheme = 'chronver' | 'semver';
 
-export interface ProjectMarkInput {
+interface ProjectMarkInput {
 	/** Past stage 2 (Fit) of the experiment levels: marked `G`, otherwise `E`. */
 	isGreenlit: boolean;
 	project: number;
@@ -17,6 +17,9 @@ const CHRONVER = /^(\d{4})\.([1-9]\d?)\.([1-9]\d?)(?:\.([1-9]\d*))?(?:-(?:featur
 
 /** `MAJOR.MINOR.PATCH` only; a prerelease or build suffix doesn't fit the mark. */
 const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+
+/** `A`–`Z`, then `AA`–`ZZ`. */
+const MAX_CUTS_PER_DAY = 26 + 26 * 26;
 
 /**
  * Builds a release mark such as `DW/G3-MK261113A`: dot work, greenlit or
@@ -60,9 +63,6 @@ function chronverRelease(version: string): string {
 	}
 	return `${year.slice(2)}${month.padStart(2, '0')}${day.padStart(2, '0')}${cutLetters(cut)}`;
 }
-
-/** `A`–`Z`, then `AA`–`ZZ`. */
-const MAX_CUTS_PER_DAY = 26 + 26 * 26;
 
 /** Counts like spreadsheet columns: 1 → `A`, 26 → `Z`, 27 → `AA`, 702 → `ZZ`. */
 function cutLetters(cut: number): string {
