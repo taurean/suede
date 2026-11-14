@@ -67,5 +67,24 @@
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/*": "./src/lib/*"
+	},
+	"suedeInstall": {
+		"process": [
+			"task",
+			"review",
+			"project-plan",
+			"orient"
+		],
+		"css": [
+			"writing-css",
+			"product-design-typography",
+			"product-design-color",
+			"product-design-elevation",
+			"design-type-rhythm",
+			"design-page-layout",
+			"design-self-critique",
+			"design-point-of-view",
+			"design-from-references"
+		]
 	}
 }

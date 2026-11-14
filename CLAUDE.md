@@ -264,6 +264,12 @@ Building or restyling any page loads `design-point-of-view`, `design-type-rhythm
 the audit in `DSC-6` before showing the page. On request, `DSC-7` reviews the page against
 every rule, one at a time.
 
+`package.json#suedeInstall` tells `suede install` which skills to copy into an
+existing project: `process` always, `css` when the developer adds suede-css. A
+new skill goes in one of the two lists, or in `NOT_INSTALLED` in
+`src/suede-install.test.ts` when install shouldn't copy it. That test fails
+until it's listed.
+
 In-repo agents (`.claude/agents/`): `standards-reviewer`, `spec-reviewer`,
 `discipline-reviewer`, and `legibility-reviewer` (dispatched by `review`), and
 `story-test-writer` (dispatched by `task`).
