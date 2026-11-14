@@ -45,3 +45,8 @@ Version and scheme come from \`package.json\` (\`version\` and \`suede.versionin
 	name="Chronver, last letter of the day"
 	args={{ version: '2026.11.13.701', scheme: 'chronver' }}
 />
+
+<Story
+	name="Experiment on semver"
+	args={{ isGreenlit: false, project: 7, version: '2.31.6', scheme: 'semver' }}
+/>

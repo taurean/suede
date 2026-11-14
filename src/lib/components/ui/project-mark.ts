@@ -15,6 +15,9 @@ export interface ProjectMarkInput {
  */
 const CHRONVER = /^(\d{4})\.([1-9]\d?)\.([1-9]\d?)(?:\.([1-9]\d*))?(?:-(?:feature|break))?$/;
 
+/** `MAJOR.MINOR.PATCH` only; a prerelease or build suffix doesn't fit the mark. */
+const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+
 /**
  * Builds a release mark such as `DW/G3-MK261113A`: dot work, greenlit or
  * experiment plus project number, then the release. Throws on a version it
@@ -27,13 +30,25 @@ export function formatProjectMark({
 	scheme
 }: ProjectMarkInput): string {
 	const kind = isGreenlit ? 'G' : 'E';
-	return `DW/${kind}${project}-MK${formatRelease(version, scheme)}`;
+	const release = scheme === 'semver' ? semverRelease(version) : chronverRelease(version);
+	return `DW/${kind}${project}-MK${release}`;
 }
 
-function formatRelease(version: string, scheme: VersionScheme): string {
+/** `2.31.6` → `2-31-6`. Semver has no same-day count, so no letter. */
+function semverRelease(version: string): string {
+	const match = SEMVER.exec(version);
+	if (!match) {
+		throw new Error(`ProjectMark can't read version "${version}" as semver.`);
+	}
+	const [, major, minor, patch] = match;
+	return `${major}-${minor}-${patch}`;
+}
+
+/** `2026.11.13.3` → `261113D`: the date, then a letter for the day's cut. */
+function chronverRelease(version: string): string {
 	const match = CHRONVER.exec(version);
 	if (!match) {
-		throw new Error(`ProjectMark can't read version "${version}" as ${scheme}.`);
+		throw new Error(`ProjectMark can't read version "${version}" as chronver.`);
 	}
 	const [, year, month, day, sameDaySuffix] = match;
 	// The bare version is the day's first cut; `.N` is cut N + 1.

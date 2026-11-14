@@ -45,4 +45,30 @@ describe('ProjectMark', () => {
 			expect(mark, version).toBe(expected);
 		}
 	});
+
+	it('renders the experiment mark for a semver release', () => {
+		const mark = renderedMark({
+			isGreenlit: false,
+			project: 7,
+			version: '2.31.6',
+			scheme: 'semver'
+		});
+
+		expect(mark).toBe('DW/E7-MK2-31-6');
+	});
+
+	it('throws an error naming the version when it cannot be encoded', () => {
+		const cases = [
+			{ version: '2026.11.13.702', scheme: 'chronver' as const },
+			{ version: 'not-a-version', scheme: 'chronver' as const },
+			{ version: '2.31', scheme: 'semver' as const }
+		];
+
+		for (const { version, scheme } of cases) {
+			expect(
+				() => render(ProjectMark, { isGreenlit: true, project: 3, version, scheme }),
+				version
+			).toThrow(version);
+		}
+	});
 });
