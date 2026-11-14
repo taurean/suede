@@ -8,8 +8,12 @@ export interface ProjectMarkInput {
 	scheme: VersionScheme;
 }
 
-/** `YYYY.M.D`, then an optional same-day `.N` and `-feature` or `-break` suffix. */
-const CHRONVER = /^(\d{4})\.(\d{1,2})\.(\d{1,2})(?:\.(\d+))?(?:-(?:feature|break))?$/;
+/**
+ * `YYYY.M.D`, then an optional same-day `.N` and `-feature` or `-break` suffix.
+ * No leading zeros, as `pnpm version` writes them, so `.0` can't collide with
+ * the bare version.
+ */
+const CHRONVER = /^(\d{4})\.([1-9]\d?)\.([1-9]\d?)(?:\.([1-9]\d*))?(?:-(?:feature|break))?$/;
 
 /**
  * Builds a release mark such as `DW/G3-MK261113A`: dot work, greenlit or
@@ -31,8 +35,26 @@ function formatRelease(version: string, scheme: VersionScheme): string {
 	if (!match) {
 		throw new Error(`ProjectMark can't read version "${version}" as ${scheme}.`);
 	}
-	const [, year, month, day] = match;
-	return `${year.slice(2)}${month.padStart(2, '0')}${day.padStart(2, '0')}A`;
+	const [, year, month, day, sameDaySuffix] = match;
+	// The bare version is the day's first cut; `.N` is cut N + 1.
+	const cut = sameDaySuffix === undefined ? 1 : Number(sameDaySuffix) + 1;
+	if (cut > MAX_CUTS_PER_DAY) {
+		throw new Error(
+			`ProjectMark can't letter version "${version}": the mark runs out at ZZ, cut ${MAX_CUTS_PER_DAY} of a day.`
+		);
+	}
+	return `${year.slice(2)}${month.padStart(2, '0')}${day.padStart(2, '0')}${cutLetters(cut)}`;
+}
+
+/** `A`–`Z`, then `AA`–`ZZ`. */
+const MAX_CUTS_PER_DAY = 26 + 26 * 26;
+
+/** Counts like spreadsheet columns: 1 → `A`, 26 → `Z`, 27 → `AA`, 702 → `ZZ`. */
+function cutLetters(cut: number): string {
+	const first = Math.floor((cut - 1) / 26);
+	const last = (cut - 1) % 26;
+	const letter = (index: number) => String.fromCharCode('A'.charCodeAt(0) + index);
+	return (first === 0 ? '' : letter(first - 1)) + letter(last);
 }
 
 /**

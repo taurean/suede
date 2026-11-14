@@ -35,3 +35,13 @@ Version and scheme come from \`package.json\` (\`version\` and \`suede.versionin
 <Story name="From package.json" />
 
 <Story name="Chronver, first cut" args={{ version: '2026.11.13', scheme: 'chronver' }} />
+
+<Story
+	name="Chronver, fourth cut of the day"
+	args={{ version: '2026.11.13.3', scheme: 'chronver' }}
+/>
+
+<Story
+	name="Chronver, last letter of the day"
+	args={{ version: '2026.11.13.701', scheme: 'chronver' }}
+/>
